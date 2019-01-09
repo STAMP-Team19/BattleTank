@@ -13,20 +13,30 @@ public class GameHost {
 
     public GameHost(Game game){
         spaceRepository = new SpaceRepository();
+        setupCommandBoundary();
+        setupWorldBoundary();
 
+        openGates();
+        initializeHosting();
+    }
+
+
+    private void setupCommandBoundary(){
         //Create Command Space
         SequentialSpace incomingCommands = new SequentialSpace();
         commandRetriever = new CommandRetriever(incomingCommands);
-
-        //Create World Space
-        //TODO: Add world space here.
-
-        //Add spaces to repo.
         spaceRepository.add("commands", incomingCommands);
+    }
+
+    private void setupWorldBoundary() {
+        //TODO: Add world space here.
+    }
+
+    private void openGates(){
         spaceRepository.addGate("tcp://127.0.0.1:9001/?keep");
+    }
 
-        //Start Threads
+    private void initializeHosting() {
         new Thread(commandRetriever).start();
-
     }
 }

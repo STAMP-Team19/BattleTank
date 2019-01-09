@@ -5,10 +5,15 @@ import org.jspace.SequentialSpace;
 public class CommandRetriever implements Runnable{
 
     private SequentialSpace incomingCommands;
-    private boolean runInLoop = true;
+    private boolean runInLoop;
 
     public CommandRetriever(SequentialSpace incomingCommands){
+        this(incomingCommands,true);
+    }
+
+    public CommandRetriever(SequentialSpace incomingCommands, boolean runInLoop){
         this.incomingCommands=incomingCommands;
+        this.runInLoop = runInLoop;
     }
 
     @Override
