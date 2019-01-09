@@ -1,4 +1,4 @@
-package commands;
+package spaces.game.connect.commands;
 
 import org.jspace.RemoteSpace;
 
