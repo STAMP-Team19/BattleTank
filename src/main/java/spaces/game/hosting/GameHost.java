@@ -16,12 +16,11 @@ public class GameHost {
     Game game;
 
     public GameHost(Game game){
+        this.game = game;
+
         spaceRepository = new SpaceRepository();
         setupActionSpace();
-
-        game.setWorldController(new WorldController(setupWorldSpace()));
-
-        this.game = game;
+        setupWorldSpace();
 
         openGates();
         initializeThreads();
@@ -34,14 +33,14 @@ public class GameHost {
         spaceRepository.add("actions", incomingCommands);
     }
 
-    private SequentialSpace setupWorldSpace() {
+    private void setupWorldSpace() {
         //TODO: Add world space setup here.
 
         SequentialSpace incomingWorldEvents = new SequentialSpace();
         //
         spaceRepository.add("world", incomingWorldEvents);
 
-        return incomingWorldEvents;
+        game.setWorldController(new WorldController(incomingWorldEvents));
     }
 
     private void openGates(){
