@@ -1,4 +1,4 @@
-package spaces.game.connect.commands;
+package spaces.game.connect.actions;
 
 public enum Action {
     Move_Forward,

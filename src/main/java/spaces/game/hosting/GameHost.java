@@ -3,13 +3,14 @@ package spaces.game.hosting;
 import battletank.Game;
 import org.jspace.SequentialSpace;
 import org.jspace.SpaceRepository;
-import spaces.game.hosting.commands.CommandRetriever;
+import spaces.game.hosting.actions.ActionRetriever;
 
 public class GameHost {
 
+    private final String uri = "tcp://127.0.0.1:9001/?keep";
     private final SpaceRepository spaceRepository;
 
-    CommandRetriever commandRetriever;
+    private ActionRetriever actionRetriever;
 
     public GameHost(Game game){
         spaceRepository = new SpaceRepository();
@@ -24,19 +25,19 @@ public class GameHost {
     private void setupCommandBoundary(){
         //Create Command Space
         SequentialSpace incomingCommands = new SequentialSpace();
-        commandRetriever = new CommandRetriever(incomingCommands);
-        spaceRepository.add("commands", incomingCommands);
+        actionRetriever = new ActionRetriever(incomingCommands);
+        spaceRepository.add("actions", incomingCommands);
     }
 
     private void setupWorldBoundary() {
-        //TODO: Add world space here.
+        //TODO: Add world space setup here.
     }
 
     private void openGates(){
-        spaceRepository.addGate("tcp://127.0.0.1:9001/?keep");
+        spaceRepository.addGate(uri);
     }
 
     private void initializeHosting() {
-        new Thread(commandRetriever).start();
+        new Thread(actionRetriever).start();
     }
 }

@@ -1,15 +1,15 @@
-package spaces.game.connect.commands;
+package spaces.game.connect.actions;
 
 import org.jspace.RemoteSpace;
 
 import java.io.IOException;
 
-public class CommandSender {
+public class ActionSender {
 
     private RemoteSpace commands;
 
-    public CommandSender() {
-        String uri = "tcp://127.0.0.1:9001/commands?keep";
+    public ActionSender() {
+        String uri = "tcp://127.0.0.1:9001/actions?keep";
         try {
             commands = new RemoteSpace(uri);
         } catch (IOException e) {
