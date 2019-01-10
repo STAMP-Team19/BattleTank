@@ -14,10 +14,10 @@ public class GameHost {
 
     private ActionRetriever actionRetriever;
 
-    IGame IGame;
+    IGame game;
 
-    public GameHost(IGame IGame){
-        this.IGame = IGame;
+    public GameHost(IGame Game){
+        this.game = Game;
 
         spaceRepository = new SpaceRepository();
         setupActionSpace();
@@ -41,7 +41,7 @@ public class GameHost {
         //
         spaceRepository.add("world", incomingWorldEvents);
 
-        IGame.setWorldController(new WorldController(incomingWorldEvents));
+        game.setWorldController(new WorldController(incomingWorldEvents));
     }
 
     private void openGates(){
