@@ -1,9 +1,9 @@
-package battletank.Core;
+package battletank.scene_management.screen;
 
 import battletank.controls.controllers.Input;
 import battletank.world.gameobjects.Player;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,7 +14,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
-public class MyGame implements ApplicationListener {
+public class MyGame extends Game implements ApplicationListener {
+
+
     Texture texture;
     SpriteBatch batch;
     float elapsed;
@@ -29,6 +31,8 @@ public class MyGame implements ApplicationListener {
 
     @Override
     public void create () {
+
+        //ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU, 0);
         texture = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/Tank.png"));
         batch = new SpriteBatch();
         loadMap();
