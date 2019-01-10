@@ -1,4 +1,4 @@
-package battletank.controls.controllers;
+package battletank.controllers;
 
 import battletank.controls.ActionInfo;
 

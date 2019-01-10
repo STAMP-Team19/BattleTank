@@ -1,9 +1,8 @@
 package battletank.world;
 
-import battletank.Game;
-import org.jspace.SequentialSpace;
+import battletank.IGame;
 
-public class DummyGame implements Game {
+public class DummyIGame implements IGame {
     private WorldController worldController;
 
     public void setWorldController(WorldController worldController){

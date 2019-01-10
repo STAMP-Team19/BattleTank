@@ -1,8 +1,8 @@
 package spaces.game.hosting;
 
 import battletank.Game;
-import battletank.world.DummyGame;
-import battletank.world.WorldController;
+
+import battletank.controllers.ActionControllerFactory;
 import org.jspace.SequentialSpace;
 import org.jspace.SpaceRepository;
 
@@ -29,7 +29,7 @@ public class GameHost {
 
     private void setupActionSpace(){
         SequentialSpace incomingCommands = new SequentialSpace();
-        actionRetriever = new ActionRetriever(incomingCommands);
+        actionRetriever = new ActionRetriever(incomingCommands, new ActionControllerFactory());
         spaceRepository.add("actions", incomingCommands);
     }
 
