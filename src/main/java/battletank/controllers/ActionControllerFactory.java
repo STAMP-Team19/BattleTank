@@ -1,7 +1,5 @@
 package battletank.controllers;
 
-import battletank.controllers.ActionController;
-import battletank.controllers.MovementController;
 import battletank.controls.ActionInfo;
 
 public class ActionControllerFactory {
