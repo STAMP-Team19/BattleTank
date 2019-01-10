@@ -1,4 +1,4 @@
-package controls;
+package battletank.controls;
 
 public enum Action {
     Move_Forward,

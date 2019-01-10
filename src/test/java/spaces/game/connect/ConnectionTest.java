@@ -1,8 +1,8 @@
 package spaces.game.connect;
 
 import battletank.Game;
-import controls.Action;
-import controls.ActionInfo;
+import battletank.controls.Action;
+import battletank.controls.ActionInfo;
 import spaces.game.hosting.GameHost;
 
 public class ConnectionTest {

@@ -1,6 +1,6 @@
 package spaces.game.connect;
 
-import controls.ActionInfo;
+import battletank.controls.ActionInfo;
 import org.jspace.RemoteSpace;
 
 import java.io.IOException;

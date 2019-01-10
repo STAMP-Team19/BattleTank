@@ -1,4 +1,4 @@
-package controls;
+package battletank.controls;
 
 public class ActionInfo {
 

@@ -1,6 +1,6 @@
 package spaces.game.hosting;
 
-import controls.ActionInfo;
+import battletank.controls.ActionInfo;
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
 public class ActionRetriever implements Runnable{
