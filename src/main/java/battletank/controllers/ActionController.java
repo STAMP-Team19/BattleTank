@@ -1,4 +1,4 @@
-package battletank.controls.controllers;
+package battletank.controllers;
 
 public abstract class ActionController {
 }
