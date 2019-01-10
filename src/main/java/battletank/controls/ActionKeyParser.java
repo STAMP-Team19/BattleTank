@@ -16,16 +16,37 @@ public class ActionKeyParser {
 
     private JsonParser jsonParser;
 
-    ActionKeyParser(){
-        jsonParser=new JsonParser();
+    public ActionKeyParser() {
+        jsonParser = new JsonParser();
     }
 
-    public Map<Action,List<String>> getControlMapping(){
+    public Map<Action, List<String>> getActionMapping() {
         String jsonSettings = getFile("controls.json");
-        Type type = new TypeToken<Map<Action,List<String>>>(){}.getType();
-        HashMap<Action,List<String>> map = new Gson().fromJson(jsonSettings,type);
+        Type type = new TypeToken<Map<Action, List<String>>>() {
+        }.getType();
+        HashMap<Action, List<String>> map = new Gson().fromJson(jsonSettings, type);
         return map;
     }
+
+    public Map<String, Action> getControlMapping() {
+
+        HashMap<String, Action> controlMapping = new HashMap<String, Action>();
+
+        Map<Action, List<String>> actionMapping;
+
+        actionMapping = getActionMapping();
+
+        for (Action a : actionMapping.keySet()) {
+            List<String> actionKeys = actionMapping.get(a);
+
+            for (String key : actionKeys) {
+                controlMapping.put(key, a);
+            }
+        }
+
+        return controlMapping;
+    }
+
 
     private String getFile(String fileName) {
 
@@ -49,4 +70,6 @@ public class ActionKeyParser {
 
         return result.toString();
     }
+
+
 }

@@ -1,9 +1,8 @@
 package battletank.Core;
 
-import battletank.controls.controllers.Input;
+import battletank.controls.controllers.ActionListener;
 import battletank.world.gameobjects.Player;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,27 +18,27 @@ public class MyGame implements ApplicationListener {
     SpriteBatch batch;
     float elapsed;
 
-    static Player player = new Player("Troels", 100,100, 64,64, 0);
+    static Player player = new Player("Troels", 100, 100, 64, 64, 0);
 
-    private static Input input = new Input(player);
+    private static ActionListener actionListener = new ActionListener(player, null);
 
     TiledMap tiledMap;
     OrthographicCamera camera;
     TiledMapRenderer tiledMapRenderer;
 
     @Override
-    public void create () {
+    public void create() {
         texture = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/Tank.png"));
         batch = new SpriteBatch();
         loadMap();
     }
 
     @Override
-    public void resize (int width, int height) {
+    public void resize(int width, int height) {
     }
 
     @Override
-    public void render () {
+    public void render() {
         /*
         elapsed += Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0, 0, 0, 0);
@@ -55,33 +54,33 @@ public class MyGame implements ApplicationListener {
         tiledMapRenderer.render();
 
         batch.begin();
-        batch.draw(texture, player.getPositionX(), player.getPositionY(), 100,100);
+        batch.draw(texture, player.getPositionX(), player.getPositionY(), 100, 100);
         batch.end();
     }
 
     @Override
-    public void pause () {
+    public void pause() {
     }
 
     @Override
-    public void resume () {
+    public void resume() {
     }
 
     @Override
-    public void dispose () {
+    public void dispose() {
     }
 
 
-    private void loadMap(){
+    private void loadMap() {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false,w,h);
+        camera.setToOrtho(false, w, h);
         camera.update();
         tiledMap = new TmxMapLoader().load("src/main/java/battletank/Assets/maps/desertmap2/desertmap2.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-        Gdx.input.setInputProcessor(input);
+        Gdx.input.setInputProcessor(actionListener);
     }
 
 }
