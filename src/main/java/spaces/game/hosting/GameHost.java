@@ -3,7 +3,6 @@ package spaces.game.hosting;
 import battletank.Game;
 import org.jspace.SequentialSpace;
 import org.jspace.SpaceRepository;
-import spaces.game.hosting.actions.ActionRetriever;
 
 public class GameHost {
 
@@ -18,7 +17,7 @@ public class GameHost {
         setupWorldSpace();
 
         openGates();
-        initializeHosting();
+        initializeThreads();
     }
 
 
@@ -36,7 +35,7 @@ public class GameHost {
         spaceRepository.addGate(uri);
     }
 
-    private void initializeHosting() {
+    private void initializeThreads() {
         new Thread(actionRetriever).start();
     }
 }

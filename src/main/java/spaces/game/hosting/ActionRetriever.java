@@ -1,4 +1,4 @@
-package spaces.game.hosting.actions;
+package spaces.game.hosting;
 
 import controls.ActionInfo;
 import org.jspace.FormalField;

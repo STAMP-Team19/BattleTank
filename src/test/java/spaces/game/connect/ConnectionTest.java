@@ -1,4 +1,4 @@
-package spaces.game.connect.actions;
+package spaces.game.connect;
 
 import battletank.Game;
 import controls.Action;
