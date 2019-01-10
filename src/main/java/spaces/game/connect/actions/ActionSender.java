@@ -1,5 +1,6 @@
 package spaces.game.connect.actions;
 
+import controls.ActionInfo;
 import org.jspace.RemoteSpace;
 
 import java.io.IOException;
@@ -18,9 +19,9 @@ public class ActionSender {
 
     }
 
-    public void sendCommand(String cmd){
+    public void sendAction(ActionInfo action){
         try {
-            commands.put(cmd);
+            commands.put(action);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

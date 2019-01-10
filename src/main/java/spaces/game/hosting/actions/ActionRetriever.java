@@ -1,5 +1,6 @@
 package spaces.game.hosting.actions;
 
+import controls.ActionInfo;
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
 public class ActionRetriever implements Runnable{
@@ -20,8 +21,9 @@ public class ActionRetriever implements Runnable{
     public void run() {
         try {
             while (runInLoop){
-                Object[] objects = incomingCommands.get(new FormalField(String.class));
-                System.out.println(objects[0]);
+                Object[] objects = incomingCommands.get(new FormalField(ActionInfo.class));
+                ActionInfo action = (ActionInfo)objects[0];
+                System.out.println(action.getUserIdentifier()+": "+action.getAction());
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

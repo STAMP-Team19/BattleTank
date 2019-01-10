@@ -14,22 +14,21 @@ public class GameHost {
 
     public GameHost(Game game){
         spaceRepository = new SpaceRepository();
-        setupCommandBoundary();
-        setupWorldBoundary();
+        setupActionSpace();
+        setupWorldSpace();
 
         openGates();
         initializeHosting();
     }
 
 
-    private void setupCommandBoundary(){
-        //Create Command Space
+    private void setupActionSpace(){
         SequentialSpace incomingCommands = new SequentialSpace();
         actionRetriever = new ActionRetriever(incomingCommands);
         spaceRepository.add("actions", incomingCommands);
     }
 
-    private void setupWorldBoundary() {
+    private void setupWorldSpace() {
         //TODO: Add world space setup here.
     }
 
