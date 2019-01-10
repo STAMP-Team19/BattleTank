@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="25" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="1">
- <tileset firstgid="1" source="src/main/java/battletank/Assets/maps/desertmap.tmx"/>
+ <tileset firstgid="1" source="desertmap.tsx"/>
  <layer id="1" name="Ground" width="25" height="25">
   <data encoding="csv">
 30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,

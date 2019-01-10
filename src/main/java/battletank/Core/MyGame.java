@@ -1,6 +1,7 @@
 package battletank.Core;
 
 import battletank.controls.controllers.Input;
+import battletank.world.gameobjects.Player;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -18,7 +19,9 @@ public class MyGame implements ApplicationListener {
     SpriteBatch batch;
     float elapsed;
 
-    private static Input input = new Input();
+    static Player player = new Player("Troels", 100,100, 64,64, 0);
+
+    private static Input input = new Input(player);
 
     TiledMap tiledMap;
     OrthographicCamera camera;
@@ -42,9 +45,7 @@ public class MyGame implements ApplicationListener {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
         */
-        batch.begin();
-        batch.draw(texture, 10, 10, 100,100);
-        batch.end();
+
 
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -52,6 +53,10 @@ public class MyGame implements ApplicationListener {
         camera.update();
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
+
+        batch.begin();
+        batch.draw(texture, player.getPositionX(), player.getPositionY(), 100,100);
+        batch.end();
     }
 
     @Override
@@ -74,7 +79,7 @@ public class MyGame implements ApplicationListener {
         camera = new OrthographicCamera();
         camera.setToOrtho(false,w,h);
         camera.update();
-        tiledMap = new TmxMapLoader().load("src/main/java/battletank/Assets/maps/desertmap.tmx");
+        tiledMap = new TmxMapLoader().load("src/main/java/battletank/Assets/maps/desertmap2/desertmap2.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         Gdx.input.setInputProcessor(input);
     }
