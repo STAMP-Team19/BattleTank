@@ -1,8 +1,9 @@
 package spaces.game.hosting;
 
-import battletank.Game;
+import battletank.IGame;
 
 import battletank.controllers.ActionControllerFactory;
+import battletank.world.WorldController;
 import org.jspace.SequentialSpace;
 import org.jspace.SpaceRepository;
 
@@ -13,10 +14,10 @@ public class GameHost {
 
     private ActionRetriever actionRetriever;
 
-    Game game;
+    IGame IGame;
 
-    public GameHost(Game game){
-        this.game = game;
+    public GameHost(IGame IGame){
+        this.IGame = IGame;
 
         spaceRepository = new SpaceRepository();
         setupActionSpace();
@@ -40,7 +41,7 @@ public class GameHost {
         //
         spaceRepository.add("world", incomingWorldEvents);
 
-        game.setWorldController(new WorldController(incomingWorldEvents));
+        IGame.setWorldController(new WorldController(incomingWorldEvents));
     }
 
     private void openGates(){

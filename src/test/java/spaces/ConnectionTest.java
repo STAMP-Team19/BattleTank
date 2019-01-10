@@ -1,15 +1,14 @@
 package spaces;
 
-import battletank.Game;
+import battletank.IGame;
 import battletank.controls.Action;
-import battletank.controls.ActionInfo;
 import spaces.game.connect.ActionSender;
 import spaces.game.hosting.GameHost;
 
 public class ConnectionTest {
 
     public static void main(String[] args){
-        GameHost host = new GameHost(new Game() {
+        GameHost host = new GameHost(new IGame() {
         });
         ActionSender sender = new ActionSender();
         for(int i = 0; i<100; i++) {
