@@ -1,6 +1,8 @@
 package spaces.game.hosting;
 
 import battletank.Game;
+import battletank.world.DummyGame;
+import battletank.world.WorldController;
 import org.jspace.SequentialSpace;
 import org.jspace.SpaceRepository;
 
@@ -11,10 +13,15 @@ public class GameHost {
 
     private ActionRetriever actionRetriever;
 
+    Game game;
+
     public GameHost(Game game){
         spaceRepository = new SpaceRepository();
         setupActionSpace();
-        setupWorldSpace();
+
+        game.setWorldController(new WorldController(setupWorldSpace()));
+
+        this.game = game;
 
         openGates();
         initializeThreads();
@@ -27,8 +34,14 @@ public class GameHost {
         spaceRepository.add("actions", incomingCommands);
     }
 
-    private void setupWorldSpace() {
+    private SequentialSpace setupWorldSpace() {
         //TODO: Add world space setup here.
+
+        SequentialSpace incomingWorldEvents = new SequentialSpace();
+        //
+        spaceRepository.add("world", incomingWorldEvents);
+
+        return incomingWorldEvents;
     }
 
     private void openGates(){
