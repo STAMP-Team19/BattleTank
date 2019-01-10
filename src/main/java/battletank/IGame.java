@@ -2,6 +2,6 @@ package battletank;
 
 import battletank.world.WorldController;
 
-public interface Game {
+public interface IGame {
     void setWorldController(WorldController worldController);
 }

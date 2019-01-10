@@ -2,7 +2,7 @@ package battletank.world;
 
 import battletank.IGame;
 
-public class DummyIGame implements IGame {
+public class Game implements IGame {
     private WorldController worldController;
 
     public void setWorldController(WorldController worldController){
