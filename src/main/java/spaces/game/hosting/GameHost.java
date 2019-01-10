@@ -27,6 +27,9 @@ public class GameHost {
         initializeThreads();
     }
 
+    public IGame getGame() {
+        return game;
+    }
 
     private void setupActionSpace(){
         SequentialSpace incomingCommands = new SequentialSpace();

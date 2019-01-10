@@ -9,5 +9,10 @@ public class Game implements IGame {
         this.worldController = worldController;
     }
 
+    @Override
+    public WorldController getWorldController() {
+        return worldController;
+    }
+
 
 }
