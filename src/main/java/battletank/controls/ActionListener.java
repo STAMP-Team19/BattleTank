@@ -1,41 +1,83 @@
 package battletank.controls;
 
+import battletank.controls.Action;
+import battletank.controls.ActionKeyParser;
+import battletank.world.gameobjects.Player;
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import spaces.game.connect.ActionSender;
+import spaces.game.connect.IActionSender;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class ActionListener implements KeyListener {
+public class ActionListener extends ApplicationAdapter implements InputProcessor {
 
-    private ActionSender sender;
-    private final char key;
-    private final Action pressedAction;
-    private final Action releasedAction;
+    Player player;
+    private IActionSender actionSender;
+    ActionKeyParser actionKeyParser = new ActionKeyParser();
+    Map<String, Action> controlMapping;
 
-    public ActionListener(ActionSender sender,char key, Action pressedAction, Action releaseAction) {
-        this.sender = sender;
-        this.key = key;
-        this.pressedAction = pressedAction;
-        this.releasedAction = releaseAction;
+
+    public ActionListener(Player player, IActionSender actionSender) {
+        this.player = player;
+        this.actionSender = actionSender;
+        controlMapping = actionKeyParser.getControlMapping();
     }
 
 
     @Override
-    public void keyTyped(KeyEvent e) {
-        return;
+    public boolean keyDown(int i) {
+
+        String userInput = Input.Keys.toString(i) + "_p";
+        Action userAction = controlMapping.get(userInput);
+
+        actionSender.notifyAction(userAction);
+
+        return false;
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyChar()==key){
-            sender.notifyAction(pressedAction);
-        }
+    public boolean keyUp(int i) {
+
+        String userInput = Input.Keys.toString(i) + "_r";
+        Action userAction = controlMapping.get(userInput);
+
+        actionSender.notifyAction(userAction);
+
+        return false;
+    }
+
+
+    @Override
+    public boolean keyTyped(char c) {
+        return false;
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
-        if (e.getKeyChar()==key){
-            sender.notifyAction(releasedAction);
-        }
+    public boolean touchDown(int i, int i1, int i2, int i3) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int i, int i1, int i2, int i3) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int i, int i1, int i2) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int i, int i1) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int i) {
+        return false;
     }
 }

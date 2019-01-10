@@ -1,6 +1,5 @@
 package spaces;
 
-import battletank.IGame;
 import battletank.controls.Action;
 import battletank.world.Game;
 import spaces.game.connect.ActionSender;

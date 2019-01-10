@@ -6,7 +6,7 @@ import org.jspace.RemoteSpace;
 
 import java.io.IOException;
 
-public class ActionSender {
+public class ActionSender implements IActionSender {
 
     private final String uri = "tcp://127.0.0.1:9001/actions?keep";
     private RemoteSpace commands;
@@ -20,10 +20,10 @@ public class ActionSender {
 
     }
 
-    public void notifyAction(Action action){
+    public void notifyAction(Action action) {
         try {
             //TODO: Make this variable:
-            commands.put(new ActionInfo(action,"name"));
+            commands.put(new ActionInfo(action, "name"));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

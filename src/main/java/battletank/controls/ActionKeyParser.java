@@ -1,28 +1,52 @@
 package battletank.controls;
 
-import com.google.gson.JsonElement;
+import com.google.gson.Gson;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ActionKeyParser {
 
-    JsonParser jsonParser;
+    private JsonParser jsonParser;
 
-    ActionKeyParser(){
-        jsonParser=new JsonParser();
+    public ActionKeyParser() {
+        jsonParser = new JsonParser();
     }
 
-    public List<ActionListener> createActionListenersFromDefault(){
-        String jsonSetting = getFile("controls.json");
-        JsonElement jsonTree = jsonParser.parse(jsonSetting);
-        //TODO: Implements Control
-        
-        return null;
+    public Map<Action, List<String>> getActionMapping() {
+        String jsonSettings = getFile("controls.json");
+        Type type = new TypeToken<Map<Action, List<String>>>() {
+        }.getType();
+        HashMap<Action, List<String>> map = new Gson().fromJson(jsonSettings, type);
+        return map;
     }
+
+    public Map<String, Action> getControlMapping() {
+
+        HashMap<String, Action> controlMapping = new HashMap<String, Action>();
+
+        Map<Action, List<String>> actionMapping;
+
+        actionMapping = getActionMapping();
+
+        for (Action a : actionMapping.keySet()) {
+            List<String> actionKeys = actionMapping.get(a);
+
+            for (String key : actionKeys) {
+                controlMapping.put(key, a);
+            }
+        }
+
+        return controlMapping;
+    }
+
 
     private String getFile(String fileName) {
 
@@ -46,4 +70,6 @@ public class ActionKeyParser {
 
         return result.toString();
     }
+
+
 }
