@@ -1,4 +1,4 @@
-package battletank.controls.controllers;
+package battletank.controls;
 
 import battletank.controls.Action;
 import battletank.controls.ActionKeyParser;

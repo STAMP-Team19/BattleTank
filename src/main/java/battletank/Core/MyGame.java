@@ -1,6 +1,6 @@
 package battletank.Core;
 
-import battletank.controls.controllers.ActionListener;
+import battletank.controls.ActionListener;
 import battletank.world.gameobjects.Player;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
