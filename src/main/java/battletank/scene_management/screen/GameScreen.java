@@ -23,7 +23,7 @@ public class GameScreen implements Screen {
 
 	static Player player = new Player("Troels", 100,100, 64,64, 0);
 
-	private static ActionListener input = new ActionListener(player, null);
+	private static ActionListener input = new ActionListener("hej", null);
 
 	TiledMap tiledMap;
 	OrthographicCamera camera;
@@ -46,7 +46,7 @@ public class GameScreen implements Screen {
         texture = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/Tank.png"));
         batch = new SpriteBatch();
 
-        loadMap();
+        loadMap(level);
 	}
 
 
@@ -54,7 +54,7 @@ public class GameScreen implements Screen {
     public void show() {
 
     }
-    
+
     @Override
     public void resize (int width, int height) {
     }
@@ -96,7 +96,7 @@ public class GameScreen implements Screen {
     }
 
 
-    private void loadMap(){
+    private void loadMap(int Level){
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 

@@ -16,6 +16,6 @@ public class MyGameDesktop {
         config.width = 800;
         config.resizable = true;
         config.title = "BattelTank";
-        new LwjglApplication(new MyGame(), config);
+        new LwjglApplication(MyGame.getInstance(), config);
     }
 }

@@ -1,6 +1,6 @@
 package battletank.controls;
 
-import battletank.Core.MyGame;
+import battletank.scene_management.screen.MyGame;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -18,7 +18,7 @@ class ActionListenerTest {
         config.width = 800;
         config.resizable = true;
         config.title = "BattleTank";
-        MyGame game = new MyGame();
+        MyGame game = MyGame.getInstance();
         new LwjglApplication(game, config);
 
         ActionListener actionListener = new ActionListener("Test", null);

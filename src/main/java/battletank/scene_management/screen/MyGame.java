@@ -29,6 +29,20 @@ public class MyGame extends Game {
     public SpriteBatch batch;
     float elapsed;
 
+    private static MyGame single_instance = null;
+
+    private MyGame() {
+
+    }
+
+    public static MyGame getInstance()
+    {
+        if (single_instance == null)
+            single_instance = new MyGame();
+
+        return single_instance;
+    }
+
     static Player player = new Player("Troels", 100,100, 64,64, 0);
 
   //  private static ActionListener input = new ActionListener(player, null);
@@ -47,7 +61,7 @@ public class MyGame extends Game {
         //ScreenManager.getInstance().initialize(this);
         //ScreenManager.getInstance().showScreen( ScreenEnum.MAIN_MENU );
 
-        this.setScreen(new MainMenuScreen(this));
+        this.setScreen(new JoinScreen(this));
 
         texture = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/Tank.png"));
         batch = new SpriteBatch();
