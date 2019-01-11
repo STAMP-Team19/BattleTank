@@ -9,7 +9,7 @@ import org.jspace.SpaceRepository;
 
 public class GameHost {
 
-    private final String uri = "tcp://127.0.0.1:9001/?keep";
+    private final String uri = "tcp://0.0.0.0:9001/?keep";
     private final SpaceRepository spaceRepository;
 
     private ActionRetriever actionRetriever;
