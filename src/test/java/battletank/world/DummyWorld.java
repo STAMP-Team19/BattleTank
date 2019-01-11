@@ -1,16 +1,16 @@
 package battletank.world;
 
-import battletank.world.events.Event;
 import battletank.world.events.go.CreateGameObject;
 import battletank.world.events.transitions.StartTransition;
 import battletank.world.events.transitions.StopTransition;
 import battletank.world.gameobjects.DummyGameObject;
 import spaces.game.hosting.GameHost;
+import spaces.game.hosting.WorldGateway;
 
 public class DummyWorld {
 
     public void load(GameHost gameHost) throws InterruptedException {
-        WorldController controller = gameHost.getGame().getWorldController();
+        WorldGateway controller = gameHost.getGame().getWorldGateway();
 
         System.out.println("Generating the DummyWorld.");
 

@@ -7,7 +7,7 @@ public class EventsTest {
 
     public static void main(String[] args){
 
-        GameHost gameHost = new GameHost(new Game());
+        GameHost gameHost = new GameHost(new Game(null));
 
         System.out.println("Init connection and starting to listen...");
         WorldEventsListener eventsListener = new WorldEventsListener("Arvid");
