@@ -1,5 +1,6 @@
 package battletank.Desktop;
 import battletank.scene_management.MyGdxGame;
+import battletank.scene_management.screen.MyGame;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -15,6 +16,6 @@ public class MyGameDesktop {
         config.width = 800;
         config.resizable = true;
         config.title = "BattelTank";
-        new LwjglApplication(new MyGdxGame(), config);
+        new LwjglApplication(new MyGame(), config);
     }
 }

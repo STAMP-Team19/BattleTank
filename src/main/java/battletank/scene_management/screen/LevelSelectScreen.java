@@ -43,9 +43,9 @@ public class LevelSelectScreen extends AbstractScreen {
 		btnLevel2.setPosition(220.f, 100.f, Align.center);
 		addActor(btnLevel2);
 		
-		btnBack.addListener( UIFactory.createListener( ScreenEnum.MAIN_MENU ) );
-		btnLevel1.addListener( UIFactory.createListener(ScreenEnum.GAME, 1) );
-		btnLevel2.addListener( UIFactory.createListener(ScreenEnum.GAME, 2) );
+		//btnBack.addListener( UIFactory.createListener( ScreenEnum.MAIN_MENU ) );
+		//btnLevel1.addListener( UIFactory.createListener(ScreenEnum.GAME, 1) );
+		//btnLevel2.addListener( UIFactory.createListener(ScreenEnum.GAME, 2) );
 	}
 
 	@Override

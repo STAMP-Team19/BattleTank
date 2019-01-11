@@ -1,11 +1,17 @@
 package battletank.scene_management.screen;
 
-import battletank.controls.controllers.Input;
+
+import battletank.controls.ActionListener;
+import battletank.scene_management.util.ScreenEnum;
+import battletank.scene_management.util.ScreenManager;
 import battletank.world.gameobjects.Player;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -13,30 +19,43 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import spaces.game.connect.ActionSender;
 
-public class MyGame extends Game implements ApplicationListener {
+import java.awt.*;
 
+public class MyGame extends Game {
 
     Texture texture;
-    SpriteBatch batch;
+    public SpriteBatch batch;
     float elapsed;
 
     static Player player = new Player("Troels", 100,100, 64,64, 0);
 
-    private static Input input = new Input(player);
+  //  private static ActionListener input = new ActionListener(player, null);
 
     TiledMap tiledMap;
     OrthographicCamera camera;
     TiledMapRenderer tiledMapRenderer;
+    public BitmapFont font;
 
     @Override
     public void create () {
 
-        //ScreenManager.getInstance().showScreen(ScreenEnum.MAIN_MENU, 0);
+        batch = new SpriteBatch();
+        font = new BitmapFont();
+
+        //ScreenManager.getInstance().initialize(this);
+        //ScreenManager.getInstance().showScreen( ScreenEnum.MAIN_MENU );
+
+        this.setScreen(new MainMenuScreen(this));
+
         texture = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/Tank.png"));
         batch = new SpriteBatch();
         loadMap();
+
+
     }
+
 
     @Override
     public void resize (int width, int height) {
@@ -44,11 +63,12 @@ public class MyGame extends Game implements ApplicationListener {
 
     @Override
     public void render () {
-        /*
+        super.render();
+/*
         elapsed += Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
-        */
+
 
 
         Gdx.gl.glClearColor(1, 0, 0, 1);
@@ -61,6 +81,8 @@ public class MyGame extends Game implements ApplicationListener {
         batch.begin();
         batch.draw(texture, player.getPositionX(), player.getPositionY(), 100,100);
         batch.end();
+*/
+
     }
 
     @Override
@@ -70,6 +92,7 @@ public class MyGame extends Game implements ApplicationListener {
     @Override
     public void resume () {
     }
+
 
     @Override
     public void dispose () {
@@ -85,7 +108,7 @@ public class MyGame extends Game implements ApplicationListener {
         camera.update();
         tiledMap = new TmxMapLoader().load("src/main/java/battletank/Assets/maps/desertmap2/desertmap2.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-        Gdx.input.setInputProcessor(input);
+       // Gdx.input.setInputProcessor(input);
     }
 
 }
