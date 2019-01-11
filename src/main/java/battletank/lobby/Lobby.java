@@ -54,6 +54,9 @@ class CommandsListener implements Runnable{
                 switch(com){
                     case JOIN:
                         info.put(playerInfo.getName(), playerInfo);
+                        for(PlayerInfo player:info.values()){
+                            lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.REFRESH);
+                        }
                         break;
 
                     case CHANGERULES:
