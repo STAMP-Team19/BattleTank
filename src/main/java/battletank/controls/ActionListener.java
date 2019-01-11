@@ -1,28 +1,23 @@
 package battletank.controls;
 
-import battletank.controls.Action;
-import battletank.controls.ActionKeyParser;
 import battletank.world.gameobjects.Player;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import spaces.game.connect.ActionSender;
 import spaces.game.connect.IActionSender;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ActionListener extends ApplicationAdapter implements InputProcessor {
 
-    Player player;
+    String playerName;
     private IActionSender actionSender;
     ActionKeyParser actionKeyParser = new ActionKeyParser();
     Map<String, Action> controlMapping;
 
 
-    public ActionListener(Player player, IActionSender actionSender) {
-        this.player = player;
+    public ActionListener(String playerName, IActionSender actionSender) {
+        this.playerName = playerName;
         this.actionSender = actionSender;
         controlMapping = actionKeyParser.getControlMapping();
     }
