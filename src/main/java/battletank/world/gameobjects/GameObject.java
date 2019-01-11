@@ -5,17 +5,19 @@ public abstract class GameObject {
     String name;
     String[] tags;
 
-    int positionX, positionY, width, height, rotation;
+    int positionX, positionY, width, height, speed, rotation, rotationSpeed;
 
     boolean hidden;
 
-    public GameObject(String name, int positionX, int positionY, int width, int height, int rotation) {
+    public GameObject(String name, int positionX, int positionY, int width, int height, int rotation, int speed, int rotationSpeed) {
         this.name = name;
         this.positionX = positionX;
         this.positionY = positionY;
         this.width = width;
         this.height = height;
         this.rotation = rotation;
+        this.speed = speed;
+        this.rotationSpeed = rotationSpeed;
         this.hidden = false;
     }
 
@@ -27,7 +29,7 @@ public abstract class GameObject {
         this.hidden = hidden;
     }
 
-    public void setTags(String[] tags){
+    public void setTags(String[] tags) {
         this.tags = tags;
     }
 
@@ -81,5 +83,21 @@ public abstract class GameObject {
 
     public void setRotation(int rotation) {
         this.rotation = rotation;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = rotation;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setRotationSpeed(int rotationSpeed) {
+        this.rotationSpeed = rotationSpeed;
+    }
+
+    public int getRotationSpeed() {
+        return rotationSpeed;
     }
 }

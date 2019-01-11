@@ -1,6 +1,6 @@
 package battletank.controls;
 
-import battletank.Core.MyGame;
+import battletank.scene_management.screen.MyGame;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 

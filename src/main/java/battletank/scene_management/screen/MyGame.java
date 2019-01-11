@@ -29,7 +29,7 @@ public class MyGame extends Game {
     public SpriteBatch batch;
     float elapsed;
 
-    static Player player = new Player("Troels", 100,100, 64,64, 0);
+    static Player player = new Player("Troels", 100,100, 64,64, 0,10,5);
 
   //  private static ActionListener input = new ActionListener(player, null);
 

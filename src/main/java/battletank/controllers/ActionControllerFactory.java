@@ -7,16 +7,16 @@ public class ActionControllerFactory {
 
     private final IGame game;
 
-    public ActionControllerFactory(IGame game){
-        this.game=game;
+    public ActionControllerFactory(IGame game) {
+        this.game = game;
     }
 
     public ActionController constructAction(ActionInfo action) {
         switch (action.getAction()) {
-            case Move_Backward:
-            case Move_Forward:
-            case Move_Stop:
-                return new MovementController(game,action);
+            case MOVE_BACKWARD:
+            case MOVE_FORWARD:
+            case MOVE_STOP:
+                return new MovementController(game, action);
         }
         return null;
     }
