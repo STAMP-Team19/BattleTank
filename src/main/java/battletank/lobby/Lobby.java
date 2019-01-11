@@ -5,6 +5,7 @@ import battletank.world.GameRules;
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
 import org.jspace.SpaceRepository;
+import spaces.game.hosting.GameHost;
 
 import java.util.HashMap;
 
@@ -35,11 +36,17 @@ public class Lobby {
 
 class CommandsListener implements Runnable{
 
+    GameRules rules;
     SequentialSpace lobbyspace;
     HashMap<String, PlayerInfo> info;
+    int numberOfMaxPlayers;
+    int numberOfActualPlayers;
 
-    CommandsListener(SequentialSpace lobbyspace){
+    CommandsListener(SequentialSpace lobbyspace, int numberOfMaxPlayers, GameRules rules){
         this.lobbyspace = lobbyspace;
+        this.numberOfMaxPlayers = numberOfMaxPlayers;
+        this.rules = rules;
+        numberOfActualPlayers = 0;
     }
 
     @Override
@@ -53,9 +60,12 @@ class CommandsListener implements Runnable{
 
                 switch(com){
                     case JOIN:
-                        info.put(playerInfo.getName(), playerInfo);
-                        for(PlayerInfo player:info.values()){
-                            lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.REFRESH);
+                        if(numberOfActualPlayers<numberOfMaxPlayers) {
+                            info.put(playerInfo.getName(), playerInfo);
+                            for (PlayerInfo player : info.values()) {
+                                lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.REFRESH);
+                            }
+                            ++numberOfActualPlayers;
                         }
                         break;
 
@@ -63,9 +73,14 @@ class CommandsListener implements Runnable{
                         break;
 
                     case DELETELOBBY:
+                        Thread.currentThread().interrupt();
                         break;
 
                     case STARTGAME:
+                        if(numberOfActualPlayers==numberOfMaxPlayers){
+                            GameHost gameHost = new GameHost(new Game(rules, info));
+                        }
+
                         break;
                 }
 
