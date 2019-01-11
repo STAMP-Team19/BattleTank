@@ -1,6 +1,5 @@
 package battletank.controls;
 
-import battletank.world.gameobjects.Player;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -30,6 +29,7 @@ public class ActionListener extends ApplicationAdapter implements InputProcessor
         Action userAction = controlMapping.get(userInput);
 
         actionSender.notifyAction(userAction);
+
 
         return false;
     }
