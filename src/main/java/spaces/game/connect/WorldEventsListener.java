@@ -12,10 +12,12 @@ public class WorldEventsListener {
 
     private RemoteSpace world;
 
-    public WorldEventsListener(){
+    public WorldEventsListener(String username){
         String uri = "tcp://127.0.0.1:9001/world?keep";
         try {
             world = new RemoteSpace(uri);
+
+            new Thread(new WorldObserver(world, username)).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,7 +46,7 @@ class WorldObserver implements Runnable{
                 GameObject target = (GameObject) event[1];
                 Event targetEvent = (Event) event[2];
 
-                System.out.println(target.getName()+" "+event.getClass());
+                System.out.println(target.getName()+" "+targetEvent.getClass().getSimpleName());
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
