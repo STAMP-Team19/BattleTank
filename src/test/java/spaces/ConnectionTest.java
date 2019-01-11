@@ -2,6 +2,7 @@ package spaces;
 
 import battletank.controls.Action;
 import battletank.world.Game;
+import battletank.world.GameRules;
 import battletank.world.gameobjects.Player;
 import spaces.game.connect.ActionSender;
 import spaces.game.connect.WorldEventsListener;

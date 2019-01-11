@@ -1,6 +1,7 @@
 package battletank.world;
 
 import battletank.IGame;
+import battletank.lobby.PlayerInfo;
 import battletank.world.gameobjects.Player;
 import spaces.game.hosting.WorldGateway;
 
@@ -11,9 +12,13 @@ public class Game implements IGame {
     private WorldGateway worldGateway;
 
     private HashMap<String, Player> players;
+    private HashMap<String, PlayerInfo> playersinfo;
 
     public Game(HashMap<String,Player> players){
         this.players=players;
+    }
+    public Game(GameRules rules, HashMap<String,PlayerInfo> playersinfo){
+        this.playersinfo = playersinfo;
     }
 
     public void setWorldGateway(WorldGateway worldGateway){
