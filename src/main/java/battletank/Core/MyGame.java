@@ -20,7 +20,7 @@ public class MyGame implements ApplicationListener {
 
     static Player player = new Player("Troels", 100, 100, 64, 64, 0);
 
-    private static ActionListener actionListener = new ActionListener(player, null);
+    private static ActionListener actionListener = new ActionListener("test", null);
 
     TiledMap tiledMap;
     OrthographicCamera camera;
