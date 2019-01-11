@@ -10,7 +10,7 @@ public class EventsTest {
 
     public static void main(String[] args){
         HashMap<String, Player> players = new HashMap<>();
-        players.put("name",new Player("name",0,0,0,0,0));
+        players.put("name",new Player("name",0,0,0,0,0,0,0));
         GameHost gameHost = new GameHost(new Game(players));
 
         System.out.println("Init connection and starting to listen...");

@@ -19,7 +19,7 @@ public class DummyWorld {
         System.out.println("Creation of Mads.");
 
         controller.update(
-                new DummyGameObject("Mads", 0, 0, 10, 10, -3),
+                new DummyGameObject("Mads", 0, 0, 10, 10, -3,10,5),
                 new CreateGameObject(0));
 
         System.out.println("Mads has been created.");
@@ -29,7 +29,7 @@ public class DummyWorld {
         System.out.println("Moving Mads.");
 
         controller.update(
-                new DummyGameObject("Mads", 0, 0, 10, 10, -3),
+                new DummyGameObject("Mads", 0, 0, 10, 10, -3,10,5),
                 new StartTransition(4));
 
         Thread.sleep(3000);
@@ -37,7 +37,7 @@ public class DummyWorld {
         System.out.println("Stopping.");
 
         controller.update(
-                new DummyGameObject("Mads", 0, 0, 10, 10, -3),
+                new DummyGameObject("Mads", 0, 0, 10, 10, -3,10,5),
                 new StopTransition());
 
     }

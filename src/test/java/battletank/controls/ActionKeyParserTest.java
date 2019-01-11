@@ -16,6 +16,6 @@ class ActionKeyParserTest {
 
         Map<Action, List<String>> myMap = actionKeyParser.getActionMapping();
 
-        assertEquals("w_p",myMap.get(Action.Move_Forward).get(0));
+        assertEquals("w_p",myMap.get(Action.MOVE_FORWARD).get(0));
     }
 }

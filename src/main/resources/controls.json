@@ -1,5 +1,5 @@
 {
-  "Move_Forward" : ["W_p"],
-  "Move_Backward": ["S_p"],
-  "Move_Stop" : ["W_r","S_r"]
+  "MOVE_FORWARD" : ["W_p"],
+  "MOVE_BACKWARDS": ["S_p"],
+  "MOVE_STOP" : ["W_r","S_r"]
 }
