@@ -9,6 +9,7 @@ import spaces.game.hosting.WorldGateway;
 
 public class MovementController extends ActionController {
 
+    //TODO: Update for rotation
 
     public MovementController(IGame game, ActionInfo action) {
         WorldGateway gateway = game.getWorldGateway();
