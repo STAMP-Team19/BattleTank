@@ -18,19 +18,19 @@ public class ConnectionTest {
         });
         new WorldEventsListener("name");
         ActionSender sender = new ActionSender();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             System.out.println("Sending action " + (i + 1));
             sender.notifyAction(Action.MOVE_FORWARD);
 
             try {
-                Thread.sleep(1000);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
             sender.notifyAction(Action.MOVE_STOP);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
