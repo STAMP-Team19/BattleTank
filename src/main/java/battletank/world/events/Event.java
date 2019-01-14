@@ -1,5 +1,9 @@
 package battletank.world.events;
 
+
+import battletank.world.EventVisitor;
+import battletank.world.gameobjects.GameObject;
+
 public abstract class Event {
 
     int delay = 0;
@@ -15,4 +19,9 @@ public abstract class Event {
     public Event(int delay) {
         this.delay = delay;
     }
+
+
+    public abstract void accept(GameObject gameObject, EventVisitor visitor);
+
+
 }
