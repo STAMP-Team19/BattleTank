@@ -28,7 +28,7 @@ public class GameScreen implements Screen {
 	SpriteBatch batch;
 	float elapsed;
 
-	static Player player = new Player("Troels", 100,100, 64,64, 0,0,0);
+	static Player player = new Player("Troels", 100,100, 64,64, 0,0,0,1);
 
     public static Player getPlayer() {
         return player;
