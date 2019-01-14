@@ -46,7 +46,8 @@ class WorldObserver implements Runnable{
                 GameObject target = (GameObject) event[1];
                 Event targetEvent = (Event) event[2];
 
-                System.out.println(target.getName()+" "+targetEvent.getClass().getSimpleName());
+                System.out.println(target.getName()+": "+targetEvent.getClass().getSimpleName());
+                System.out.println("x: "+ target.getPositionX()+" y: "+target.getPositionY());
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

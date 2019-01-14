@@ -10,13 +10,17 @@ import battletank.world.events.transitions.StartTransition;
 import battletank.world.events.transitions.StopTransition;
 import battletank.world.gameobjects.GameObject;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class WorldSimulator  implements EventVisitor,Runnable{
 
-    private Map<GameObject, Set<Event>> simulatedEvents;
+    private Map<GameObject, Map<Class<?>, Event>> simulatedEvents;
+
+    private Map<Class<?>, Event> s;
 
     private Set<GameObject> gameObjects;
 
@@ -39,7 +43,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     public void handleTick(){
 
         for(GameObject currentObject : simulatedEvents.keySet()){
-            for(Event event : simulatedEvents.get(currentObject)) {
+            for(Event event : simulatedEvents.get(currentObject).values()) {
                 event.accept(currentObject,this);
             }
         }
@@ -63,7 +67,8 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public void handle(GameObject gameObject, StopTransition transition){
-
+        simulatedEvents.get(gameObject).remove(StartRotation.class);
+        simulatedEvents.get(gameObject).remove(transition.getClass());
     }
 
     @Override
@@ -96,9 +101,18 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     }
 
     public void addEvent(GameObject go, Event event) {
-        Set<Event> events = simulatedEvents.get(go);
+        Map<Class<?>,Event> events = simulatedEvents.get(go);
+        if(events==null){
+            events=new ConcurrentHashMap<>();
+            simulatedEvents.put(go,events);
+        }
         //TODO: Remove duplicate and incompatiple events. Possibly make it a map instead.
-        events.add(event);
+        events.put(event.getClass(),event);
+
+    }
+
+    public List<GameObject> getGameObjects(){
+        return gameObjects.stream().collect(Collectors.toList());
     }
 
 }
