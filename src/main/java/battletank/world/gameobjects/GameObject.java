@@ -5,7 +5,13 @@ public abstract class GameObject {
     String name;
     String[] tags;
 
-    int positionX, positionY, width, height, speed, rotation, rotationSpeed;
+    double positionX;
+    double positionY;
+    double width;
+    double height;
+    double speed;
+    double rotation;
+    double rotationSpeed;
 
     boolean hidden;
 
@@ -45,43 +51,43 @@ public abstract class GameObject {
         return tags;
     }
 
-    public int getPositionX() {
+    public double getPositionX() {
         return positionX;
     }
 
-    public void setPositionX(int positionX) {
+    public void setPositionX(double positionX) {
         this.positionX = positionX;
     }
 
-    public int getPositionY() {
+    public double getPositionY() {
         return positionY;
     }
 
-    public void setPositionY(int positionY) {
+    public void setPositionY(double positionY) {
         this.positionY = positionY;
     }
 
-    public int getWidth() {
+    public double getWidth() {
         return width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(double width) {
         this.width = width;
     }
 
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(double height) {
         this.height = height;
     }
 
-    public int getRotation() {
+    public double getRotation() {
         return rotation;
     }
 
-    public void setRotation(int rotation) {
+    public void setRotation(double rotation) {
         this.rotation = rotation;
     }
 
@@ -89,15 +95,15 @@ public abstract class GameObject {
         this.speed = rotation;
     }
 
-    public int getSpeed() {
+    public double getSpeed() {
         return speed;
     }
 
-    public void setRotationSpeed(int rotationSpeed) {
+    public void setRotationSpeed(double rotationSpeed) {
         this.rotationSpeed = rotationSpeed;
     }
 
-    public int getRotationSpeed() {
+    public double getRotationSpeed() {
         return rotationSpeed;
     }
 }
