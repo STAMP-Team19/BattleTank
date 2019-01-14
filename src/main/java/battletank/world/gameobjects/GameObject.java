@@ -5,22 +5,19 @@ public abstract class GameObject {
     String name;
     String[] tags;
 
-    //rotation here is in degrees.
-    double positionX;
-    double positionY;
-    double width;
-    double height;
-    double rotation;
+    int positionX, positionY, width, height, speed, rotation, rotationSpeed;
 
     boolean hidden;
 
-    public GameObject(String name, int positionX, int positionY, int width, int height, int rotation) {
+    public GameObject(String name, int positionX, int positionY, int width, int height, int rotation, int speed, int rotationSpeed) {
         this.name = name;
         this.positionX = positionX;
         this.positionY = positionY;
         this.width = width;
         this.height = height;
         this.rotation = rotation;
+        this.speed = speed;
+        this.rotationSpeed = rotationSpeed;
         this.hidden = false;
     }
 
@@ -32,7 +29,7 @@ public abstract class GameObject {
         this.hidden = hidden;
     }
 
-    public void setTags(String[] tags){
+    public void setTags(String[] tags) {
         this.tags = tags;
     }
 
@@ -48,43 +45,59 @@ public abstract class GameObject {
         return tags;
     }
 
-    public double getPositionX() {
+    public int getPositionX() {
         return positionX;
     }
 
-    public void setPositionX(double positionX) {
+    public void setPositionX(int positionX) {
         this.positionX = positionX;
     }
 
-    public double getPositionY() {
+    public int getPositionY() {
         return positionY;
     }
 
-    public void setPositionY(double positionY) {
+    public void setPositionY(int positionY) {
         this.positionY = positionY;
     }
 
-    public double getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public void setWidth(double width) {
+    public void setWidth(int width) {
         this.width = width;
     }
 
-    public double getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public void setHeight(double height) {
+    public void setHeight(int height) {
         this.height = height;
     }
 
-    public double getRotation() {
+    public int getRotation() {
         return rotation;
     }
 
-    public void setRotation(double rotation) {
+    public void setRotation(int rotation) {
         this.rotation = rotation;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = rotation;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setRotationSpeed(int rotationSpeed) {
+        this.rotationSpeed = rotationSpeed;
+    }
+
+    public int getRotationSpeed() {
+        return rotationSpeed;
     }
 }
