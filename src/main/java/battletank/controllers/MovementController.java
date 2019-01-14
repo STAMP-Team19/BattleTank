@@ -24,6 +24,7 @@ public class MovementController extends ActionController {
                 break;
             case MOVE_STOP:
                 gateway.update(player, new StopTransition());
+                game.addPlayerEvent(player,new StopTransition());
                 return;
         }
         StartTransition transition = new StartTransition(player.getSpeed() * direction);

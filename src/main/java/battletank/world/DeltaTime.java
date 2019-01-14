@@ -3,9 +3,13 @@ package battletank.world;
 public class DeltaTime {
 
     long time=0;
+    private long lastSysTime=System.currentTimeMillis();
 
     public void update(){
-        time =System.currentTimeMillis()-time;
+        long currentTime = System.currentTimeMillis();
+        time =currentTime-lastSysTime;
+        lastSysTime =System.currentTimeMillis();
+
     }
 
     public double last(){

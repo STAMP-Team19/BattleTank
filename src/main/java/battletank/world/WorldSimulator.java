@@ -10,17 +10,15 @@ import battletank.world.events.transitions.StartTransition;
 import battletank.world.events.transitions.StopTransition;
 import battletank.world.gameobjects.GameObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public class WorldSimulator  implements EventVisitor,Runnable{
 
-    private Map<GameObject, Map<Class<?>, Event>> simulatedEvents;
-
-    private Map<Class<?>, Event> s;
+    private Map<GameObject, Map<String, Event>> simulatedEvents;
 
     private Set<GameObject> gameObjects;
 
@@ -58,7 +56,6 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
         double newX = gameObject.getPositionX()+ timeMilliSeconds *transition.getTransitionSpeed()*Math.cos(aRadians);
         double newY = gameObject.getPositionY()+ timeMilliSeconds *transition.getTransitionSpeed()*Math.sin(aRadians);
-
         //TODO: Check collision
 
         gameObject.setPositionX(newX);
@@ -67,8 +64,8 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public void handle(GameObject gameObject, StopTransition transition){
-        simulatedEvents.get(gameObject).remove(StartRotation.class);
-        simulatedEvents.get(gameObject).remove(transition.getClass());
+        simulatedEvents.get(gameObject).remove(StartTransition.class.getSimpleName());
+        simulatedEvents.get(gameObject).remove(transition.getClass().getSimpleName());
     }
 
     @Override
@@ -101,18 +98,18 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     }
 
     public void addEvent(GameObject go, Event event) {
-        Map<Class<?>,Event> events = simulatedEvents.get(go);
+        Map<String,Event> events = simulatedEvents.get(go);
         if(events==null){
             events=new ConcurrentHashMap<>();
-            simulatedEvents.put(go,events);
+
         }
-        //TODO: Remove duplicate and incompatiple events. Possibly make it a map instead.
-        events.put(event.getClass(),event);
+        events.put(event.getClass().getSimpleName(),event);
+        simulatedEvents.put(go,events);
 
     }
 
     public List<GameObject> getGameObjects(){
-        return gameObjects.stream().collect(Collectors.toList());
+        return new ArrayList<>(gameObjects);
     }
 
 }

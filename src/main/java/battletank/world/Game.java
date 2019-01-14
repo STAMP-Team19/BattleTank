@@ -2,7 +2,6 @@ package battletank.world;
 
 import battletank.IGame;
 import battletank.world.events.Event;
-import battletank.world.gameobjects.GameObject;
 import battletank.world.gameobjects.Player;
 import spaces.game.hosting.WorldGateway;
 
