@@ -75,6 +75,8 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public void handle(GameObject gameObject, StopRotation rotation){
+        simulatedEvents.get(gameObject).remove(StartRotation.class.getSimpleName());
+        simulatedEvents.get(gameObject).remove(rotation.getClass().getSimpleName());
     }
 
     @Override
