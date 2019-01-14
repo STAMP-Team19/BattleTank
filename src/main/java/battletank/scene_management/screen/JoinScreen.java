@@ -29,9 +29,10 @@ public class JoinScreen implements Screen {
 
     final MyGame game;
 
-    Texture dropImage;
+    Texture tankImage;
     Texture playbtn;
-    Texture serverbtn;
+    Texture serverbtnTexture;
+    Texture createserverbtnTexture;
     Sound dropSound;
     Music music;
     OrthographicCamera camera;
@@ -45,6 +46,7 @@ public class JoinScreen implements Screen {
 
     ImageButton newurlbtn;
     ImageButton playButton;
+    ImageButton createButton;
 
     public JoinScreen(final MyGame game) {
         this.game = game;
@@ -58,10 +60,10 @@ public class JoinScreen implements Screen {
 
 
         // load the images for the droplet and the bucket, 64x64 pixels each
-        dropImage = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/Tank.png"));
+        tankImage = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/Tank.png"));
         playbtn = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/playbtn.png"));
-        serverbtn = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/editserverbtn.png"));
-
+        serverbtnTexture = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/editserverbtn.png"));
+        createserverbtnTexture = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/createserverbtn.png"));
 
         // load the drop sound effect and the rain background "music"
         //dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
@@ -102,7 +104,7 @@ public class JoinScreen implements Screen {
             }
         });
 
-        Drawable newurl = new TextureRegionDrawable(new TextureRegion(serverbtn));
+        Drawable newurl = new TextureRegionDrawable(new TextureRegion(serverbtnTexture));
         newurlbtn = new ImageButton(newurl);
 
         newurlbtn.addListener(new ChangeListener() {
@@ -113,18 +115,34 @@ public class JoinScreen implements Screen {
             }
         });
 
+        Drawable drawcreateserver = new TextureRegionDrawable(new TextureRegion(createserverbtnTexture));
+        createButton = new ImageButton(drawcreateserver);
 
-        newurlbtn.setPosition(400, 100);
+
+        createButton.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                System.out.println("create server");
+                Gdx.input.getTextInput(listener, "Enter name of server", "", "server name");
+            }
+        });
+
+
+        newurlbtn.setPosition(400-(newurlbtn.getWidth()/2), 100);
         newurlbtn.setHeight(200);
 
-        playButton.setPosition(400, 200);
+        playButton.setPosition(400-(playButton.getWidth()/2), 200);
         playButton.setHeight(200);
+
+        createButton.setPosition(400-(createButton.getWidth()/2), 300);
+        createButton.setHeight(200);
 
 
         // add to stage
         stage = new Stage(new ScreenViewport()); //Set up a stage for the ui
         stage.addActor(playButton); //Add the button to the stage to perform rendering and take input.
         stage.addActor(newurlbtn);
+        stage.addActor(createButton);
         Gdx.input.setInputProcessor(stage); //Start taking input from the ui
 
 
@@ -181,11 +199,11 @@ public class JoinScreen implements Screen {
         //game.batch.draw(playbtn, bucket.x, bucket.y, bucket.width*2, bucket.height);
 
         for (Rectangle raindrop : raindrops) {
-            game.batch.draw(dropImage, raindrop.x, raindrop.y);
+            game.batch.draw(tankImage, raindrop.x, raindrop.y);
         }
 
         for (int i = 0; i < joinedPlayersList.size(); i++) {
-            game.font.draw(game.batch, joinedPlayersList.get(i), 800/2, i*20+300);
+            game.font.draw(game.batch, joinedPlayersList.get(i), 800/2-(joinedPlayersList.get(i).length()*3), i*20+330);
         }
 
         game.batch.end();
@@ -240,7 +258,7 @@ public class JoinScreen implements Screen {
 
     @Override
     public void dispose() {
-        dropImage.dispose();
+        tankImage.dispose();
         playbtn.dispose();
         dropSound.dispose();
         music.dispose();
