@@ -43,7 +43,7 @@ public class MyGame extends Game {
         return single_instance;
     }
 
-    static Player player = new Player("Troels", 100,100, 64,64, 0);
+    static Player player = new Player("Troels", 100,100, 64,64, 0,10,2);
 
   //  private static ActionListener input = new ActionListener(player, null);
 

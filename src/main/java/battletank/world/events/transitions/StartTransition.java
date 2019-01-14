@@ -6,17 +6,17 @@ import battletank.world.gameobjects.GameObject;
 
 public class StartTransition extends Event {
 
-    int transitionSpeed;
+    double transitionSpeed;
 
-    public int getTransitionSpeed() {
+    public double getTransitionSpeed() {
         return transitionSpeed;
     }
 
-    public void setTransitionSpeed(int transitionSpeed) {
+    public void setTransitionSpeed(double transitionSpeed) {
         this.transitionSpeed = transitionSpeed;
     }
 
-    public StartTransition(int transitionSpeed) {
+    public StartTransition(double transitionSpeed) {
         this.transitionSpeed = transitionSpeed;
     }
 

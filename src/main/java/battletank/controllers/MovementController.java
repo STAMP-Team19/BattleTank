@@ -28,6 +28,10 @@ public class MovementController extends ActionController {
         }
         StartTransition transition = new StartTransition(player.getSpeed() * direction);
         gateway.update(player, transition);
+        game.addPlayerEvent(player,transition);
+
+
+
 
     }
 

@@ -21,7 +21,7 @@ public class GameScreen implements Screen {
 	SpriteBatch batch;
 	float elapsed;
 
-	static Player player = new Player("Troels", 100,100, 64,64, 0);
+	static Player player = new Player("Troels", 100,100, 64,64, 0,10,2);
 
 	private static ActionListener input = new ActionListener("hej", null);
 
@@ -77,7 +77,7 @@ public class GameScreen implements Screen {
         tiledMapRenderer.render();
 
         batch.begin();
-        batch.draw(texture, player.getPositionX(), player.getPositionY(), 100,100);
+        //batch.draw(texture, player.getPositionX(), player.getPositionY(), 100,100);
         batch.end();
 
 
