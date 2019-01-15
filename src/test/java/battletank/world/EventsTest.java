@@ -14,7 +14,7 @@ public class EventsTest {
         GameHost gameHost = new GameHost(new Game(players));
 
         System.out.println("Init connection and starting to listen...");
-        WorldEventsListener eventsListener = new WorldEventsListener("name");
+        WorldEventsListener eventsListener = new WorldEventsListener("name",null);
         System.out.println("Connected to server. Listening...");
 
         try {

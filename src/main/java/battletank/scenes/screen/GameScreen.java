@@ -2,11 +2,16 @@ package battletank.scenes.screen;
 
 import battletank.controls.ActionListener;
 import battletank.controls.ActionSenderOffline;
+import battletank.world.DeltaTime;
+import battletank.world.Game;
+import battletank.world.WorldSimulator;
+import battletank.world.gameobjects.GameObject;
 import battletank.world.gameobjects.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
@@ -17,6 +22,12 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
+import spaces.game.connect.ActionSender;
+import spaces.game.connect.WorldEventsListener;
+import spaces.game.hosting.GameHost;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class GameScreen implements Screen {
 
@@ -25,13 +36,16 @@ public class GameScreen implements Screen {
 	float elapsed;
     MapObjects objects;
 
+    WorldSimulator worldSimulator;
+
 	static Player player = new Player("Troels", 0,0, 134/4,249/4, 0,0,0,100);
+    private DeltaTime deltaTime;
 
     public static Player getPlayer() {
         return player;
     }
 
-    private static ActionListener input = new ActionListener("hej", new ActionSenderOffline());
+    private static ActionListener input = null;
 
 	TiledMap tiledMap;
 	OrthographicCamera camera;
@@ -56,7 +70,7 @@ public class GameScreen implements Screen {
         batch = new SpriteBatch();
 
         shapeRenderer = new ShapeRenderer();
-
+        setupOnlineGame();
         Gdx.input.setInputProcessor(input);
 
 
@@ -64,6 +78,17 @@ public class GameScreen implements Screen {
         loadMap(level);
 	}
 
+	private void setupOnlineGame(){
+        HashMap<String, Player> players = new HashMap<>();
+        Player player =new Player("Troels", 100,100, 134/4,249/4, 90,50,90,100);
+        players.put(player.getName(), player);
+        GameHost host = new GameHost(new Game(players) {
+        });
+        deltaTime=new DeltaTime();
+        worldSimulator = new WorldSimulator(deltaTime);
+        new WorldEventsListener(player.getName(),worldSimulator);
+        input=new ActionListener(player.getName(), new ActionSender(player.getName()));
+    }
 
     @Override
     public void show() {
@@ -76,6 +101,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void render (float v) {
+	    deltaTime.setTime((long) ((1000)*Gdx.graphics.getDeltaTime()));
+	    worldSimulator.handleTick();
         elapsed += Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
@@ -88,28 +115,42 @@ public class GameScreen implements Screen {
         tiledMapRenderer.render();
 
         batch.begin();
-        batch.draw(texture, (int)player.getPositionX(), (int)player.getPositionY(), (int)player.getWidth(),(int)player.getHeight());
+        List<GameObject> gameObjects =worldSimulator.getGameObjects();
+        for(GameObject go : gameObjects) {
+            Player player = (Player) go;
+            //batch.draw(texture, (int) player.getPositionX(), (int) player.getPositionY(), (int) player.getWidth(), (int) player.getHeight());
 
-        Rectangle playerbody = player.getBody();
+            batch.draw(new TextureRegion(texture),
+                    (float) player.getPositionX(),
+                    (float) player.getPositionY(),
+                    (float) player.getWidth()/2,
+                    (float) (player.getHeight()*(1-(0.36/2.11)))/2,
+                    (float) player.getWidth(),
+                    (float) player.getHeight(),
+                    1,
+                    1,
+                    (float)player.getRotation()-90);
+            Rectangle playerbody = player.getBody();
 
-// there are several other types, Rectangle is probably the most common one
-        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+            // there are several other types, Rectangle is probably the most common one
+            for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
 
-            Rectangle rectangle = rectangleObject.getRectangle();
-            if (Intersector.overlaps(rectangle, playerbody)) {
-                // collision happened
-                System.out.println("Col with wall");
+                Rectangle rectangle = rectangleObject.getRectangle();
+                if (Intersector.overlaps(rectangle, playerbody)) {
+                    // collision happened
+                    //System.out.println("Col with wall");
 
+                }
             }
-        }
         /*
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.rect(playerbody.x, playerbody.y, playerbody.getWidth(), playerbody.getHeight());
         shapeRenderer.end();
         */
-
+        }
         batch.end();
+
 
     }
 
@@ -156,7 +197,7 @@ public class GameScreen implements Screen {
         float opacity = collisionObjectLayer.getOpacity();
         boolean isVisible = collisionObjectLayer.isVisible();
 
-        System.out.println("obj til col: " + objects.getCount() + "  name: " + name + "op: " + opacity + "isvis: " + isVisible);
+        //System.out.println("obj til col: " + objects.getCount() + "  name: " + name + "op: " + opacity + "isvis: " + isVisible);
 
     }
 

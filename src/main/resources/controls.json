@@ -1,7 +1,8 @@
 {
   "MOVE_FORWARD" : ["W_p"],
   "MOVE_BACKWARD": ["S_p"],
-  "MOVE_STOP" : ["W_r","S_r", "A_r", "D_r"],
+  "MOVE_STOP" : ["W_r","S_r"],
   "ROTATE_LEFT" : ["A_p"],
-  "ROTATE_RIGHT" : ["D_p"]
+  "ROTATE_RIGHT" : ["D_p"],
+  "ROTATE_STOP" : ["A_r", "D_r"]
 }

@@ -11,10 +11,11 @@ public class ActionSender implements IActionSender {
     private final String uri = "tcp://127.0.0.1:9001/actions?keep";
 
     //TODO: Make this variable
-    private String playerName="name";
+    private String playerName;
     private RemoteSpace commands;
 
-    public ActionSender() {
+    public ActionSender(String playerName) {
+        this.playerName = playerName;
         try {
             commands = new RemoteSpace(uri);
         } catch (IOException e) {

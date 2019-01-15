@@ -1,6 +1,6 @@
 package battletank.world.controllers;
 
-import battletank.IGame;
+import battletank.world.IGame;
 import battletank.controls.ActionInfo;
 
 public class ActionControllerFactory {
@@ -17,6 +17,11 @@ public class ActionControllerFactory {
             case MOVE_FORWARD:
             case MOVE_STOP:
                 return new MovementController(game, action);
+
+            case ROTATE_LEFT:
+            case ROTATE_RIGHT:
+            case ROTATE_STOP:
+                return new RotationController(game,action);
         }
         return null;
     }

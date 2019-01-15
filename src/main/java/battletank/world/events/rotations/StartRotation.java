@@ -6,9 +6,9 @@ import battletank.world.gameobjects.GameObject;
 
 public class StartRotation extends Event {
 
-    int rotationSpeed;
+    double rotationSpeed;
 
-    public int getRotationSpeed() {
+    public double getRotationSpeed() {
         return rotationSpeed;
     }
 
@@ -16,7 +16,7 @@ public class StartRotation extends Event {
         this.rotationSpeed = rotationSpeed;
     }
 
-    public StartRotation(int rotationSpeed) {
+    public StartRotation(double rotationSpeed) {
         this.rotationSpeed = rotationSpeed;
     }
 

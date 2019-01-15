@@ -1,7 +1,9 @@
 package spaces;
 
 import battletank.controls.Action;
+import battletank.world.DeltaTime;
 import battletank.world.Game;
+import battletank.world.WorldSimulator;
 import battletank.world.gameobjects.Player;
 import spaces.game.connect.ActionSender;
 import spaces.game.connect.WorldEventsListener;
@@ -16,8 +18,8 @@ public class ConnectionTest {
         players.put("name", new Player("name", 1, 1, 0, 0, 1, 10, 10,1));
         GameHost host = new GameHost(new Game(players) {
         });
-        new WorldEventsListener("name");
-        ActionSender sender = new ActionSender();
+        new WorldEventsListener("name",new WorldSimulator(new DeltaTime()));
+        ActionSender sender = new ActionSender("name");
         for (int i = 0; i < 100; i++) {
             System.out.println("Sending action " + (i + 1));
             sender.notifyAction(Action.MOVE_FORWARD);

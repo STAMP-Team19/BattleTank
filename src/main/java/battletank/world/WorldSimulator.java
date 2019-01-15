@@ -20,7 +20,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     private Map<GameObject, Map<String, Event>> simulatedEvents;
 
-    private Set<GameObject> gameObjects;
+
 
     private DeltaTime updateTime;
 
@@ -28,7 +28,6 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     public WorldSimulator(DeltaTime dt){
         updateTime=dt;
         simulatedEvents = new ConcurrentHashMap<>();
-        gameObjects = ConcurrentHashMap.newKeySet();
     }
 
     @Override
@@ -51,11 +50,11 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public void handle(GameObject gameObject, StartTransition transition){
-        double timeMilliSeconds = updateTime.last()/1000;
+        double timeSeconds = updateTime.last()/1000;
         double aRadians = gameObject.getRotation()*Math.PI/180;
 
-        double newX = gameObject.getPositionX()+ timeMilliSeconds *transition.getTransitionSpeed()*Math.cos(aRadians);
-        double newY = gameObject.getPositionY()+ timeMilliSeconds *transition.getTransitionSpeed()*Math.sin(aRadians);
+        double newX = gameObject.getPositionX()+ timeSeconds *transition.getTransitionSpeed()*Math.cos(aRadians);
+        double newY = gameObject.getPositionY()+ timeSeconds *transition.getTransitionSpeed()*Math.sin(aRadians);
         //TODO: Check collision
 
         gameObject.setPositionX(newX);
@@ -70,7 +69,8 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public void handle(GameObject gameObject, StartRotation rotation){
-        
+        double timeSeconds = updateTime.last()/1000;
+        gameObject.setRotation(gameObject.getRotation()+rotation.getRotationSpeed()*timeSeconds);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
 
     public void addGameObject(GameObject go) {
-        gameObjects.add(go);
+        simulatedEvents.put(go,new ConcurrentHashMap<>());
     }
 
     public void addEvent(GameObject go, Event event) {
@@ -111,7 +111,15 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     }
 
     public List<GameObject> getGameObjects(){
-        return new ArrayList<>(gameObjects);
+        return new ArrayList<>(simulatedEvents.keySet());
     }
 
+    public void setGameObject(GameObject target) {
+        Map<String, Event> events =simulatedEvents.remove(target);
+        if(events==null){
+            events=new ConcurrentHashMap<>();
+
+        }
+        simulatedEvents.put(target,events);
+    }
 }

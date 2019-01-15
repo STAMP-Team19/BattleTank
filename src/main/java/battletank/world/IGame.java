@@ -1,4 +1,4 @@
-package battletank;
+package battletank.world;
 
 import battletank.world.events.Event;
 import battletank.world.gameobjects.Player;

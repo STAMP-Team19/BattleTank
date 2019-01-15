@@ -1,41 +1,36 @@
 package battletank.world.controllers;
 
-import battletank.world.IGame;
 import battletank.controls.ActionInfo;
+import battletank.world.IGame;
+import battletank.world.events.rotations.StartRotation;
+import battletank.world.events.rotations.StopRotation;
 import battletank.world.events.transitions.StartTransition;
 import battletank.world.events.transitions.StopTransition;
 import battletank.world.gameobjects.Player;
 import spaces.game.hosting.WorldGateway;
 
-public class MovementController extends ActionController {
+public class RotationController extends ActionController {
 
-    //TODO: Update for rotation
-
-    public MovementController(IGame game, ActionInfo action) {
+    public RotationController(IGame game, ActionInfo action) {
+        super();
         WorldGateway gateway = game.getWorldGateway();
         Player player = game.getPlayer(action.getUserIdentifier());
 
         int direction = 0;
         switch (action.getAction()) {
-            case MOVE_FORWARD:
-                direction = 1;
-                break;
-            case MOVE_BACKWARD:
+            case ROTATE_RIGHT:
                 direction = -1;
                 break;
+            case ROTATE_LEFT:
+                direction = 1;
+                break;
             case MOVE_STOP:
-                gateway.update(player, new StopTransition());
-                game.addPlayerEvent(player,new StopTransition());
+                gateway.update(player, new StopRotation());
+                game.addPlayerEvent(player,new StopRotation());
                 return;
         }
-        StartTransition transition = new StartTransition(player.getSpeed() * direction);
+        StartRotation transition = new StartRotation(player.getRotationSpeed() * direction);
         gateway.update(player, transition);
         game.addPlayerEvent(player,transition);
-
-
-
-
     }
-
-
 }

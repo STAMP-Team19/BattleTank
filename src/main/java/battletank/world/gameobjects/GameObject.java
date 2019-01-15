@@ -116,4 +116,20 @@ public abstract class GameObject {
     public int getHealthpoints() {
         return healthpoints;
     }
+
+
+
+    @Override
+    public int hashCode(){
+        return name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other){
+        if(other.getClass()!=this.getClass()){
+            return false;
+        }
+        GameObject otherGO = (GameObject) other;
+        return otherGO.getName().equals(this.getName());
+    }
 }
