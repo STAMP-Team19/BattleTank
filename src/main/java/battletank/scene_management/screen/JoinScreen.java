@@ -60,14 +60,14 @@ public class JoinScreen implements Screen {
 
 
         // load the images for the droplet and the bucket, 64x64 pixels each
-        tankImage = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/Tank.png"));
-        playbtn = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/playbtn.png"));
-        serverbtnTexture = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/editserverbtn.png"));
-        createserverbtnTexture = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/createserverbtn.png"));
+        tankImage = new Texture(Gdx.files.internal("src/main/java/battletank/assets/img/Tank.png"));
+        playbtn = new Texture(Gdx.files.internal("src/main/java/battletank/assets/img/playbtn.png"));
+        serverbtnTexture = new Texture(Gdx.files.internal("src/main/java/battletank/assets/img/editserverbtn.png"));
+        createserverbtnTexture = new Texture(Gdx.files.internal("src/main/java/battletank/assets/img/createserverbtn.png"));
 
         // load the drop sound effect and the rain background "music"
         //dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-        music = Gdx.audio.newMusic(Gdx.files.internal("src/main/java/battletank/Assets/music/music.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("src/main/java/battletank/assets/music/music.mp3"));
         music.setLooping(true);
 
         // create the camera and the SpriteBatch

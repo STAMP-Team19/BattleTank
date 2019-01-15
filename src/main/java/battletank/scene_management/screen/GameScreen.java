@@ -28,7 +28,7 @@ public class GameScreen implements Screen {
 	float elapsed;
     MapObjects objects;
 
-	static Player player = new Player("Troels", 0,0, 134/3,249/3, 0,0,0,100);
+	static Player player = new Player("Troels", 0,0, 134/4,249/4, 0,0,0,100);
 
     public static Player getPlayer() {
         return player;
@@ -52,10 +52,10 @@ public class GameScreen implements Screen {
 		super();
         this.level = level.intValue();
         camera = new OrthographicCamera();
-		txtrBg   = new Texture( Gdx.files.internal("/Users/troels/IdeaProjects/BattleTank/src/main/java/battletank/Assets/img/playbtn.png") );
-		txtrBack = new Texture( Gdx.files.internal("/Users/troels/IdeaProjects/BattleTank/src/main/java/battletank/Assets/img/playbtn.png") );
+		txtrBg   = new Texture( Gdx.files.internal("src/main/java/battletank/assets/img/playbtn.png") );
+		txtrBack = new Texture( Gdx.files.internal("src/main/java/battletank/assets/img/playbtn.png") );
 
-        texture = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/Tank.png"));
+        texture = new Texture(Gdx.files.internal("src/main/java/battletank/assets/img/Tank.png"));
         batch = new SpriteBatch();
 
         shapeRenderer = new ShapeRenderer();
@@ -105,12 +105,12 @@ public class GameScreen implements Screen {
 
             }
         }
-
+        /*
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.rect(playerbody.x, playerbody.y, playerbody.getWidth(), playerbody.getHeight());
         shapeRenderer.end();
-
+        */
 
         batch.end();
 
@@ -138,13 +138,13 @@ public class GameScreen implements Screen {
 
         switch (level){
             case 0:
-                tiledMap = new TmxMapLoader().load("src/main/java/battletank/Assets/maps/desertmap2/desertmap1new.tmx");
+                tiledMap = new TmxMapLoader().load("src/main/java/battletank/assets/maps/desertmap2/desertmap1new.tmx");
                 break;
             case 1:
-                tiledMap = new TmxMapLoader().load("src/main/java/battletank/Assets/maps/maps/desertmap2new.tmx");
+                tiledMap = new TmxMapLoader().load("src/main/java/battletank/assets/maps/maps/desertmap2new.tmx");
                 break;
             default:
-                tiledMap = new TmxMapLoader().load("src/main/java/battletank/Assets/maps/maps/desertmap1new.tmx");
+                tiledMap = new TmxMapLoader().load("src/main/java/battletank/assets/maps/maps/desertmap1new.tmx");
                 break;
         }
 
