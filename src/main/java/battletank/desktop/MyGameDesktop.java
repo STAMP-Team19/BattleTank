@@ -1,5 +1,5 @@
 package battletank.desktop;
-import battletank.scene_management.screen.MyGame;
+import battletank.scenes.screen.MyGame;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 

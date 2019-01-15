@@ -1,7 +1,5 @@
-package battletank.scene_management;
+package battletank.scenes;
 
-import battletank.scene_management.util.ScreenEnum;
-import battletank.scene_management.util.ScreenManager;
 import com.badlogic.gdx.Game;
 
 public class MyGdxGame extends Game {

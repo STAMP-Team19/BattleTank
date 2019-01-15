@@ -1,9 +1,7 @@
-package battletank.scene_management.util;
+package battletank.scenes.util;
 
-import battletank.scene_management.screen.GameScreen;
-import battletank.scene_management.screen.JoinScreen;
-import battletank.scene_management.screen.MainMenuScreen;
-import battletank.scene_management.screen.MyGame;
+import battletank.scenes.screen.MainMenuScreen;
+import battletank.scenes.screen.MyGame;
 import com.badlogic.gdx.Input;
 
 public class IPInputListener implements Input.TextInputListener {

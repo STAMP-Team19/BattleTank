@@ -1,6 +1,6 @@
-package battletank.scene_management.screen;
+package battletank.scenes.screen;
 
-import battletank.scene_management.util.IPInputListener;
+import battletank.scenes.util.IPInputListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;

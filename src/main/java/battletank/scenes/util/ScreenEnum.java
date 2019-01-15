@@ -1,6 +1,6 @@
-package battletank.scene_management.util;
+package battletank.scenes.util;
 
-import battletank.scene_management.screen.*;
+import battletank.scenes.screen.*;
 
 
 public enum ScreenEnum {

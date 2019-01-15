@@ -1,16 +1,9 @@
-package battletank.scene_management.screen;
+package battletank.scenes.screen;
 
-import battletank.scene_management.util.ScreenEnum;
-import battletank.scene_management.util.UIFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.utils.Align;
 
 
 public class MainMenuScreen implements Screen {

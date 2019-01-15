@@ -1,4 +1,4 @@
-package battletank.scene_management.screen;
+package battletank.scenes.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;

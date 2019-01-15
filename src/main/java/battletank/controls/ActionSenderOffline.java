@@ -1,12 +1,8 @@
 package battletank.controls;
 
-import battletank.scene_management.screen.MyGame;
-import org.jspace.RemoteSpace;
 import spaces.game.connect.IActionSender;
 
-import java.io.IOException;
-
-import static battletank.scene_management.screen.GameScreen.getPlayer;
+import static battletank.scenes.screen.GameScreen.getPlayer;
 
 public class ActionSenderOffline implements IActionSender {
 
