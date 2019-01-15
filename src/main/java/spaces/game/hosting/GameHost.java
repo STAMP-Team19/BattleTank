@@ -1,8 +1,8 @@
 package spaces.game.hosting;
 
-import battletank.IGame;
+import battletank.world.IGame;
 
-import battletank.controllers.ActionControllerFactory;
+import battletank.world.controllers.ActionControllerFactory;
 import org.jspace.SequentialSpace;
 import org.jspace.SpaceRepository;
 

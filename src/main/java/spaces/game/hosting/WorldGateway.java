@@ -1,7 +1,6 @@
 package spaces.game.hosting;
 
-import battletank.IGame;
-import battletank.world.Game;
+import battletank.world.IGame;
 import battletank.world.events.Event;
 import battletank.world.gameobjects.GameObject;
 import org.jspace.SequentialSpace;

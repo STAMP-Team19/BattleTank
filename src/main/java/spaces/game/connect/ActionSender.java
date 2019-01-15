@@ -9,9 +9,13 @@ import java.io.IOException;
 public class ActionSender implements IActionSender {
 
     private final String uri = "tcp://127.0.0.1:9001/actions?keep";
+
+    //TODO: Make this variable
+    private String playerName;
     private RemoteSpace commands;
 
-    public ActionSender() {
+    public ActionSender(String playerName) {
+        this.playerName = playerName;
         try {
             commands = new RemoteSpace(uri);
         } catch (IOException e) {
@@ -22,8 +26,7 @@ public class ActionSender implements IActionSender {
 
     public void notifyAction(Action action) {
         try {
-            //TODO: Make this variable:
-            commands.put(new ActionInfo(action, "name"));
+            commands.put(new ActionInfo(action, playerName));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
