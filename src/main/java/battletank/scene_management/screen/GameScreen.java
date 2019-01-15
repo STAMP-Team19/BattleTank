@@ -6,11 +6,10 @@ import battletank.world.gameobjects.Player;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -27,8 +26,9 @@ public class GameScreen implements Screen {
 	Texture texture;
 	SpriteBatch batch;
 	float elapsed;
+    MapObjects objects;
 
-	static Player player = new Player("Troels", 100,100, 64,64, 0,0,0,1);
+	static Player player = new Player("Troels", 0,0, 134/3,249/3, 0,0,0,100);
 
     public static Player getPlayer() {
         return player;
@@ -43,6 +43,7 @@ public class GameScreen implements Screen {
 	private Texture txtrBg;
 	private Texture txtrBack;
 	private Texture txtrLevelImage;
+	private ShapeRenderer shapeRenderer;
 
 	// Current level
 	private int level;
@@ -56,6 +57,12 @@ public class GameScreen implements Screen {
 
         texture = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/Tank.png"));
         batch = new SpriteBatch();
+
+        shapeRenderer = new ShapeRenderer();
+
+        Gdx.input.setInputProcessor(input);
+
+
 
         loadMap(level);
 	}
@@ -72,13 +79,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void render (float v) {
-        //System.out.println("render game");
-
         elapsed += Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
-
-
 
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -89,93 +92,29 @@ public class GameScreen implements Screen {
 
         batch.begin();
         batch.draw(texture, player.getPositionX(), player.getPositionY(), 100,100);
-        batch.end();
 
-        int objectLayerId = 3;
-        TiledMapTileLayer collisionObjectLayer = (TiledMapTileLayer) tiledMap.getLayers().get(objectLayerId);
-        MapObjects objects = collisionObjectLayer.getObjects();
-
-        System.out.println(objects.getByType(MapObject.class));
-
+        Rectangle playerbody = player.getBody();
 
 // there are several other types, Rectangle is probably the most common one
         for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
 
             Rectangle rectangle = rectangleObject.getRectangle();
-            if (Intersector.overlaps(rectangle, player.getBody())) {
+            if (Intersector.overlaps(rectangle, playerbody)) {
                 // collision happened
                 System.out.println("Col with wall");
+
             }
         }
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.rect(playerbody.x, playerbody.y, playerbody.getWidth(), playerbody.getHeight());
+        shapeRenderer.end();
+
+
+        batch.end();
 
     }
-    /*
-    private void update(int deltatime){
-        // perform collision detection & response, on each axis, separately
-        // if the koala is moving right, check the tiles to the right of it's
-        // right bounding box edge, otherwise check the ones to the left
-        Rectangle koalaRect = rectPool.obtain();
-        koalaRect.set(player.getPositionX(), player.getPositionY(), player.getWidth(), player.getHeight());
-        int startX, startY, endX, endY;
-        if (player.getSpeed() > 0) {
-            startX = endX = (int)(player.getPositionX() + player.getWidth() + player.getPositionX());
-        } else {
-            startX = endX = (int)(player.getPositionX() + player.getSpeed());
-        }
-        startY = (int)(player.position.y);
-        endY = (int)(player.position.y + player.HEIGHT);
-        getTiles(startX, startY, endX, endY, tiles);
-        koalaRect.x += player.velocity.x;
-        for (Rectangle tile : tiles) {
-            if (koalaRect.overlaps(tile)) {
-                player.velocity.x = 0;
-                break;
-            }
-        }
-        koalaRect.x = player.position.x;
-
-        // if the koala is moving upwards, check the tiles to the top of its
-        // top bounding box edge, otherwise check the ones to the bottom
-        if (player.velocity.y > 0) {
-            startY = endY = (int)(player.position.y + player.HEIGHT + player.velocity.y);
-        } else {
-            startY = endY = (int)(player.position.y + player.velocity.y);
-        }
-        startX = (int)(player.position.x);
-        endX = (int)(player.position.x + player.WIDTH);
-        getTiles(startX, startY, endX, endY, tiles);
-        koalaRect.y += player.velocity.y;
-        for (Rectangle tile : tiles) {
-            if (koalaRect.overlaps(tile)) {
-                // we actually reset the koala y-position here
-                // so it is just below/above the tile we collided with
-                // this removes bouncing :)
-                if (player.velocity.y > 0) {
-                    player.position.y = tile.y - player.HEIGHT;
-                    // we hit a block jumping upwards, let's destroy it!
-                    TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("walls");
-                    layer.setCell((int)tile.x, (int)tile.y, null);
-                } else {
-                    player.position.y = tile.y + tile.height;
-                    // if we hit the ground, mark us as grounded so we can jump
-                    player.grounded = true;
-                }
-                player.velocity.y = 0;
-                break;
-            }
-        }
-        rectPool.free(koalaRect);
-
-        // unscale the velocity by the inverse delta time and set
-        // the latest position
-        player.position.add(player.velocity);
-        player.velocity.scl(1 / deltaTime);
-
-        // Apply damping to the velocity on the x-axis so we don't
-        // walk infinitely once a key was pressed
-        player.velocity.x *= player.DAMPING;
-    }
-*/
 
     public void pause () {
     }
@@ -196,9 +135,32 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false,w,h);
         camera.update();
-        tiledMap = new TmxMapLoader().load("src/main/java/battletank/Assets/maps/desertmap2/desertmap1.tmx");
+
+        switch (level){
+            case 0:
+                tiledMap = new TmxMapLoader().load("src/main/java/battletank/Assets/maps/desertmap2/desertmap1new.tmx");
+                break;
+            case 1:
+                tiledMap = new TmxMapLoader().load("src/main/java/battletank/Assets/maps/maps/desertmap2new.tmx");
+                break;
+            default:
+                tiledMap = new TmxMapLoader().load("src/main/java/battletank/Assets/maps/maps/desertmap1new.tmx");
+                break;
+        }
+
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-        Gdx.input.setInputProcessor(input);
+
+        int objectLayerId = tiledMap.getLayers().getIndex("Collidables");
+
+        MapLayer collisionObjectLayer = tiledMap.getLayers().get(objectLayerId);
+        objects = collisionObjectLayer.getObjects();
+
+        String name = collisionObjectLayer.getName();
+        float opacity = collisionObjectLayer.getOpacity();
+        boolean isVisible = collisionObjectLayer.isVisible();
+
+        System.out.println("obj til col: " + objects.getCount() + "  name: " + name + "op: " + opacity + "isvis: " + isVisible);
+
     }
 
 

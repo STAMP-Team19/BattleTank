@@ -3,6 +3,7 @@ package spaces;
 import battletank.controls.Action;
 import battletank.world.Game;
 import battletank.world.gameobjects.Player;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import spaces.game.connect.ActionSender;
 import spaces.game.connect.WorldEventsListener;
 import spaces.game.hosting.GameHost;
