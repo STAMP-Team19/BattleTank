@@ -15,9 +15,14 @@ public class Lobby {
     private String hostname;
     private Game game;
 
-    public Lobby(String hostname, int numberOfMaxPlayers, GameRules rules){
+    private SequentialSpace lobbyspace;
+
+    public Lobby(String hostname, int numberOfMaxPlayers, GameRules rules, SequentialSpace lobbyspace){
         this.numberOfMaxPlayers = numberOfMaxPlayers;
         this.hostname = hostname;
+        this.lobbyspace = lobbyspace;
+
+        new Thread(new CommandsListener(lobbyspace, numberOfMaxPlayers, rules)).start();
     }
 
     public int getNumberOfMaxPlayers() {
