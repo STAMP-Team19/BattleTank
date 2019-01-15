@@ -23,14 +23,29 @@ public class ConnectionTest {
             sender.notifyAction(Action.MOVE_FORWARD);
 
             try {
-                Thread.sleep(20);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
             sender.notifyAction(Action.MOVE_STOP);
             try {
-                Thread.sleep(20);
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            sender.notifyAction(Action.MOVE_BACKWARD);
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            sender.notifyAction(Action.MOVE_STOP);
+            try {
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

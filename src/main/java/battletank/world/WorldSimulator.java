@@ -70,7 +70,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public void handle(GameObject gameObject, StartRotation rotation){
-        //TODO: HandleRotation.
+        
     }
 
     @Override
