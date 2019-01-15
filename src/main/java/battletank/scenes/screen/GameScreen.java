@@ -7,6 +7,7 @@ import battletank.world.Game;
 import battletank.world.WorldSimulator;
 import battletank.world.gameobjects.GameObject;
 import battletank.world.gameobjects.Player;
+import battletank.world.gameobjects.PlayerColors;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
@@ -38,7 +39,7 @@ public class GameScreen implements Screen {
 
     WorldSimulator worldSimulator;
 
-	static Player player = new Player("Troels", 0,0, 134/4,249/4, 0,0,0,100);
+	static Player player = new Player("Troels", 0,0, 134/4,249/4, 0,0,0,100, PlayerColors.PLAYERCOLOR.Blue);
     private DeltaTime deltaTime;
 
     public static Player getPlayer() {
@@ -80,7 +81,7 @@ public class GameScreen implements Screen {
 
 	private void setupOnlineGame(){
         HashMap<String, Player> players = new HashMap<>();
-        Player player =new Player("Troels", 100,100, 134/4,249/4, 90,50,90,100);
+        Player player =new Player("Troels", 100,100, 134/4,249/4, 90,50,90,100, PlayerColors.PLAYERCOLOR.Blue);
         players.put(player.getName(), player);
         GameHost host = new GameHost(new Game(players) {
         });

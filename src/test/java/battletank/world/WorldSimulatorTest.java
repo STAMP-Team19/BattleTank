@@ -2,6 +2,7 @@ package battletank.world;
 
 import battletank.world.events.transitions.StartTransition;
 import battletank.world.gameobjects.Player;
+import battletank.world.gameobjects.PlayerColors;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,7 +12,7 @@ public class WorldSimulatorTest {
     @Test
     public void testThatPositionIsUpdatedCorrectly(){
 
-        Player p = new Player("ho",0,0,10,10,45,10,1,1);
+        Player p = new Player("ho",0,0,10,10,45,10,1,1, PlayerColors.PLAYERCOLOR.Blue);
         DeltaTime dt = new DeltaTime();
         WorldSimulator es = new WorldSimulator(dt);
         dt.setTime(100);

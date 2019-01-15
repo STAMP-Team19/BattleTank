@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.Rectangle;
 public class Player extends GameObject {
 
 
-    public Player(String name, int positionX, int positionY, int width, int height, int rotation, int speed, int rotationSpeed, int healthpoints) {
-        super(name, positionX, positionY, width, height, rotation, speed, rotationSpeed, healthpoints);
+    public Player(String name, int positionX, int positionY, int width, int height, int rotation, int speed, int rotationSpeed, int healthpoints, PlayerColors.PLAYERCOLOR color) {
+        super(name, positionX, positionY, width, height, rotation, speed, rotationSpeed, healthpoints, color);
     }
 
     public Rectangle getBody() {
@@ -23,4 +23,4 @@ public class Player extends GameObject {
     }
 
 
-}
+        }

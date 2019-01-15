@@ -1,6 +1,7 @@
 package battletank.world;
 
 import battletank.world.gameobjects.Player;
+import battletank.world.gameobjects.PlayerColors;
 import spaces.game.connect.WorldEventsListener;
 import spaces.game.hosting.GameHost;
 
@@ -10,7 +11,7 @@ public class EventsTest {
 
     public static void main(String[] args){
         HashMap<String, Player> players = new HashMap<>();
-        players.put("name",new Player("name",0,0,0,0,0,0,0,1));
+        players.put("name",new Player("name",0,0,0,0,0,0,0,1, PlayerColors.PLAYERCOLOR.Blue));
         GameHost gameHost = new GameHost(new Game(players));
 
         System.out.println("Init connection and starting to listen...");
