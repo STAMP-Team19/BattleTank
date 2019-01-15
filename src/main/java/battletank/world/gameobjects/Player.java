@@ -14,6 +14,13 @@ public class Player extends GameObject {
         //System.out.println("x: " + positionX + " + y: " + positionY);
         return new Rectangle((float)positionX, (float)positionY, (float)width,(float) height);
     }
+    public double getOriginX(){
+        return super.getWidth()/2;
+    }
+
+    public double getOriginY(){
+        return (super.getHeight()*(1-(0.36/2.11)))/2;
+    }
 
 
-        }
+}

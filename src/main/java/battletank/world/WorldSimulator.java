@@ -20,10 +20,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     private Map<GameObject, Map<String, Event>> simulatedEvents;
 
-
-
     private DeltaTime updateTime;
-
 
     public WorldSimulator(DeltaTime dt){
         updateTime=dt;
@@ -45,6 +42,11 @@ public class WorldSimulator  implements EventVisitor,Runnable{
             }
         }
         updateTime.update();
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -59,6 +61,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
         gameObject.setPositionX(newX);
         gameObject.setPositionY(newY);
+
     }
 
     @Override
