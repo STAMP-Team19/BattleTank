@@ -28,7 +28,7 @@ public class GameScreen implements Screen {
 	float elapsed;
     MapObjects objects;
 
-	static Player player = new Player("Troels", 0,0, 134/3,249/3, 0,0,0,100);
+	static Player player = new Player("Troels", 0,0, 134/4,249/4, 0,0,0,100);
 
     public static Player getPlayer() {
         return player;
@@ -91,7 +91,7 @@ public class GameScreen implements Screen {
         tiledMapRenderer.render();
 
         batch.begin();
-        batch.draw(texture, player.getPositionX(), player.getPositionY(), 100,100);
+        batch.draw(texture, player.getPositionX(), player.getPositionY(), player.getWidth(),player.getHeight());
 
         Rectangle playerbody = player.getBody();
 
@@ -105,12 +105,12 @@ public class GameScreen implements Screen {
 
             }
         }
-
+        /*
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.rect(playerbody.x, playerbody.y, playerbody.getWidth(), playerbody.getHeight());
         shapeRenderer.end();
-
+        */
 
         batch.end();
 
