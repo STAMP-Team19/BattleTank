@@ -69,7 +69,7 @@ public class MyGame extends Game {
         this.setScreen(new JoinScreen(this));
         //this.setScreen(new GameScreen(0));
 
-        texture = new Texture(Gdx.files.internal("src/main/java/battletank/assets/img/Tank.png"));
+        texture = new Texture(Gdx.files.internal("src/main/resources/assets/img/Tank.png"));
         batch = new SpriteBatch();
         loadMap();
 
@@ -126,7 +126,7 @@ public class MyGame extends Game {
         camera = new OrthographicCamera();
         camera.setToOrtho(false,w,h);
         camera.update();
-        tiledMap = new TmxMapLoader().load("src/main/java/battletank/assets/maps/desertmap2/desertmap2.tmx");
+        tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/desertmap2/desertmap2.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
        // Gdx.input.setInputProcessor(input);
     }

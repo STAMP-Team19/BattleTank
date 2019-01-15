@@ -24,9 +24,9 @@ public class MainMenuScreen implements Screen {
 	public MainMenuScreen(MyGame game) {
 		super();
 		this.game = game;
-		txtrBg   = new Texture( Gdx.files.internal("/Users/troels/IdeaProjects/BattleTank/src/main/java/battletank/assets/img/playbtn.png") );
-		txtrPlay = new Texture( Gdx.files.internal("/Users/troels/IdeaProjects/BattleTank/src/main/java/battletank/assets/img/playbtn.png") );
-		txtrExit = new Texture( Gdx.files.internal("/Users/troels/IdeaProjects/BattleTank/src/main/java/battletank/assets/img/playbtn.png") );
+		txtrBg   = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
+		txtrPlay = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
+		txtrExit = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
 	}
 
 	/*

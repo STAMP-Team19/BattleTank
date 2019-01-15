@@ -52,10 +52,10 @@ public class GameScreen implements Screen {
 		super();
         this.level = level.intValue();
         camera = new OrthographicCamera();
-		txtrBg   = new Texture( Gdx.files.internal("src/main/java/battletank/assets/img/playbtn.png") );
-		txtrBack = new Texture( Gdx.files.internal("src/main/java/battletank/assets/img/playbtn.png") );
+		txtrBg   = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
+		txtrBack = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
 
-        texture = new Texture(Gdx.files.internal("src/main/java/battletank/assets/img/Tank.png"));
+        texture = new Texture(Gdx.files.internal("src/main/resources/assets/img/Tank.png"));
         batch = new SpriteBatch();
 
         shapeRenderer = new ShapeRenderer();
@@ -138,13 +138,13 @@ public class GameScreen implements Screen {
 
         switch (level){
             case 0:
-                tiledMap = new TmxMapLoader().load("src/main/java/battletank/assets/maps/desertmap2/desertmap1new.tmx");
+                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/desertmap2/desertmap1new.tmx");
                 break;
             case 1:
-                tiledMap = new TmxMapLoader().load("src/main/java/battletank/assets/maps/maps/desertmap2new.tmx");
+                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/maps/desertmap2new.tmx");
                 break;
             default:
-                tiledMap = new TmxMapLoader().load("src/main/java/battletank/assets/maps/maps/desertmap1new.tmx");
+                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/maps/desertmap1new.tmx");
                 break;
         }
 
