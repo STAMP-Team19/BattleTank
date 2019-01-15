@@ -4,7 +4,6 @@ import battletank.world.Game;
 import battletank.world.GameRules;
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
-import org.jspace.SpaceRepository;
 import spaces.game.hosting.GameHost;
 
 import java.util.HashMap;
@@ -78,6 +77,9 @@ class CommandsListener implements Runnable{
                         break;
 
                     case DELETELOBBY:
+                        for (PlayerInfo player : info.values()) {
+                            lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.DELETELOBBY);
+                        }
                         Thread.currentThread().interrupt();
                         break;
 
