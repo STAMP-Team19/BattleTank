@@ -91,7 +91,7 @@ public class GameScreen implements Screen {
         tiledMapRenderer.render();
 
         batch.begin();
-        batch.draw(texture, player.getPositionX(), player.getPositionY(), 100,100);
+        batch.draw(texture, (int)player.getPositionX(), (int)player.getPositionY(), (int)player.getWidth(),(int)player.getHeight());
 
         Rectangle playerbody = player.getBody();
 

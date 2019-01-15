@@ -18,7 +18,7 @@ public class Player extends GameObject {
 
     public Rectangle getBody() {
         System.out.println("x: " + positionX + " + y: " + positionY);
-        return new Rectangle(positionX, positionY, width, height);
+        return new Rectangle((float)positionX, (float)positionY, (float)width,(float) height);
     }
 
 
