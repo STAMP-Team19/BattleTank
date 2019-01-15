@@ -13,11 +13,11 @@ public abstract class GameObject {
     double rotation;
     double rotationSpeed;
     int healthpoints;
-    PlayerColors.PLAYERCOLOR color;
+    PlayerColor color;
 
     boolean hidden;
 
-    public GameObject(String name, int positionX, int positionY, int width, int height, int rotation, int speed, int rotationSpeed, int healthpoints, PlayerColors.PLAYERCOLOR color) {
+    public GameObject(String name, int positionX, int positionY, int width, int height, int rotation, int speed, int rotationSpeed, int healthpoints, PlayerColor color) {
         this.name = name;
         this.positionX = positionX;
         this.positionY = positionY;

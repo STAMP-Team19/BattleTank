@@ -1,13 +1,12 @@
 package battletank.scenes.screen;
 
 import battletank.controls.ActionListener;
-import battletank.controls.ActionSenderOffline;
 import battletank.world.DeltaTime;
 import battletank.world.Game;
 import battletank.world.WorldSimulator;
 import battletank.world.gameobjects.GameObject;
 import battletank.world.gameobjects.Player;
-import battletank.world.gameobjects.PlayerColors;
+import battletank.world.gameobjects.PlayerColor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
@@ -39,7 +38,7 @@ public class GameScreen implements Screen {
 
     WorldSimulator worldSimulator;
 
-	static Player player = new Player("Troels", 0,0, 134/4,249/4, 0,0,0,100, PlayerColors.PLAYERCOLOR.Blue);
+	static Player player = new Player("Troels", 0,0, 134/4,249/4, 0,0,0,100, PlayerColor.Blue);
     private DeltaTime deltaTime;
 
     public static Player getPlayer() {
@@ -81,7 +80,7 @@ public class GameScreen implements Screen {
 
 	private void setupOnlineGame(){
         HashMap<String, Player> players = new HashMap<>();
-        Player player =new Player("Troels", 100,100, 134/4,249/4, 90,50,90,100, PlayerColors.PLAYERCOLOR.Blue);
+        Player player =new Player("Troels", 100,100, 134/4,249/4, 90,50,90,100, PlayerColor.Blue);
         players.put(player.getName(), player);
         GameHost host = new GameHost(new Game(players) {
         });

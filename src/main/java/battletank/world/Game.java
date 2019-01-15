@@ -2,9 +2,8 @@ package battletank.world;
 
 import battletank.lobby.PlayerInfo;
 import battletank.world.events.Event;
-import battletank.world.gameobjects.GameObject;
 import battletank.world.gameobjects.Player;
-import battletank.world.gameobjects.PlayerColors;
+import battletank.world.gameobjects.PlayerColor;
 import spaces.game.hosting.WorldGateway;
 
 import java.util.HashMap;
@@ -32,21 +31,27 @@ public class Game implements IGame {
     }
     public Game(GameRules rules, HashMap<String,PlayerInfo> playersinfo){
         this.playersinfo = playersinfo;
-        
+
+        int index = 0;
+        double[] xCoord = {96,672,416,416};
+        double[] yCoord = {416,416,672,96};
+        PlayerColor[] colors = PlayerColor.values();
+
         for(String playerName : playersinfo.keySet()){
             Player player = new Player(playerName,
-                    0,
-                    0,
+                    (int)xCoord[index],
+                    (int)yCoord[index],
                     134/4,
                     249/4,
                     90,
                     50,
                     90,
                     100,
-                    PlayerColors.PLAYERCOLOR.Blue);
+                    colors[index]);
 
 
             worldSimulator.addGameObject(player);
+            index++;
         }
     }
 
