@@ -2,6 +2,8 @@ package battletank.world;
 
 import battletank.lobby.PlayerInfo;
 import battletank.world.events.Event;
+import battletank.world.events.rotations.StopRotation;
+import battletank.world.events.transitions.StopTransition;
 import battletank.world.gameobjects.Player;
 import battletank.world.gameobjects.PlayerColor;
 import spaces.game.hosting.WorldGateway;
@@ -20,15 +22,15 @@ public class Game implements IGame {
         this.players=players;
         worldSimulator = new WorldSimulator(new DeltaTime());
 
-        for(Player p :players.values())
+        for(Player p :players.values()) {
             worldSimulator.addGameObject(p);
+            worldGateway.update(p,new StopTransition());
+        }
+
 
         new Thread(worldSimulator).start();
     }
-    @Override
-    public void addPlayerEvent(Player player, Event event){
-        worldSimulator.addEvent(player,event);
-    }
+
     public Game(GameRules rules, HashMap<String,PlayerInfo> playersinfo){
         this.playersinfo = playersinfo;
 
@@ -51,9 +53,19 @@ public class Game implements IGame {
 
 
             worldSimulator.addGameObject(player);
+            worldGateway.update(player,new StopTransition());
             index++;
         }
+
+
+        new Thread(worldSimulator).start();
     }
+    @Override
+    public void addPlayerEvent(Player player, Event event){
+        worldSimulator.addEvent(player,event);
+    }
+
+
 
     public void setWorldGateway(WorldGateway worldGateway){
         this.worldGateway = worldGateway;
