@@ -19,7 +19,7 @@ public class LobbyProvider {
         SequentialSpace lobbyspace = new SequentialSpace();
         spaceRepository.add("lobby", lobbyspace);
 
-        lobby = new Lobby(hostname, numberOfMaxPlayers, rules, lobbyspace);
+        lobby = new Lobby(hostname, numberOfMaxPlayers, rules, lobbyspace, spaceRepository);
 
         openGates();
     }

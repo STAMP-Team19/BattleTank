@@ -6,6 +6,7 @@ import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 
+import javax.swing.text.StyledEditorKit;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -32,6 +33,19 @@ public class LobbyCommandsListenerSender implements ILobbyCommandsSender {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public boolean isLobbyOpen() {
+        try {
+            Object[] informations = lobbyspace.queryp(
+                    new ActualField("STATUS"), new FormalField(Boolean.class));
+
+            return (Boolean) informations[1];
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
 
 class LobbyObserver implements Runnable{
@@ -48,7 +62,7 @@ class LobbyObserver implements Runnable{
 
     @Override
     public void run() {
-        while(true){
+        loop: while(true){
             try {
                 Object[] information = lobbyspace.get(new ActualField(username),
                         new FormalField(HashMap.class),
@@ -70,7 +84,7 @@ class LobbyObserver implements Runnable{
 
                     case DELETELOBBY:
                         listener.deleteLobby();
-                        break;
+                        break loop;
                 }
 
             } catch (InterruptedException e) {

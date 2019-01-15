@@ -20,6 +20,12 @@ public class LobbyClientConnection{
         LobbyCommandsListenerSender controller =
                 new LobbyCommandsListenerSender("Peter", new LobbyClientTest());
 
+        System.out.println("Lobby Open: "+controller.isLobbyOpen());
+
+        controller.sendCommand(new PlayerInfo("Peter"), LOBBYCOMMANDS.OPEN);
+        Thread.sleep(1000);
+        System.out.println("Lobby Open: "+controller.isLobbyOpen());
+        Thread.sleep(1000);
         controller.sendCommand(new PlayerInfo("Peter"), LOBBYCOMMANDS.JOIN);
         Thread.sleep(1000);
         controller.sendCommand(new PlayerInfo("Mads"), LOBBYCOMMANDS.JOIN);
@@ -32,7 +38,9 @@ public class LobbyClientConnection{
         Thread.sleep(1000);
         controller.sendCommand(new PlayerInfo("Mads"), LOBBYCOMMANDS.JOIN);
         Thread.sleep(1000);
-        controller.sendCommand(new PlayerInfo("Peter"), LOBBYCOMMANDS.STARTGAME);
+        controller.sendCommand(new PlayerInfo("Peter"), LOBBYCOMMANDS.DELETELOBBY);
+
+        System.out.println("Lobby Open: "+controller.isLobbyOpen());
 
         } catch (InterruptedException e) {
             e.printStackTrace();

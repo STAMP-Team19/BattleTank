@@ -5,4 +5,5 @@ import battletank.lobby.PlayerInfo;
 
 public interface ILobbyCommandsSender {
     void sendCommand(PlayerInfo playerInfo, LOBBYCOMMANDS command);
+    boolean isLobbyOpen();
 }

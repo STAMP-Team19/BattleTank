@@ -6,6 +6,7 @@ public enum LOBBYCOMMANDS {
         CHANGERULES,
         DELETELOBBY,
         STARTGAME,
-        REFRESH
+        REFRESH,
+        OPEN
 
 }

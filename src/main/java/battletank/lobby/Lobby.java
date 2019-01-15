@@ -2,8 +2,10 @@ package battletank.lobby;
 
 import battletank.world.Game;
 import battletank.world.GameRules;
+import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
+import org.jspace.SpaceRepository;
 import spaces.game.hosting.GameHost;
 
 import java.util.HashMap;
@@ -16,12 +18,12 @@ public class Lobby {
 
     private SequentialSpace lobbyspace;
 
-    public Lobby(String hostname, int numberOfMaxPlayers, GameRules rules, SequentialSpace lobbyspace){
+    public Lobby(String hostname, int numberOfMaxPlayers, GameRules rules, SequentialSpace lobbyspace, SpaceRepository spaceRepository){
         this.numberOfMaxPlayers = numberOfMaxPlayers;
         this.hostname = hostname;
         this.lobbyspace = lobbyspace;
 
-        new Thread(new CommandsListener(lobbyspace, numberOfMaxPlayers, rules)).start();
+        new Thread(new CommandsListener(lobbyspace, numberOfMaxPlayers, rules, spaceRepository)).start();
     }
 
     public int getNumberOfMaxPlayers() {
@@ -46,33 +48,53 @@ class CommandsListener implements Runnable{
     int numberOfMaxPlayers;
     int numberOfActualPlayers;
 
-    CommandsListener(SequentialSpace lobbyspace, int numberOfMaxPlayers, GameRules rules){
+    boolean isOpen;
+
+    SpaceRepository spaceRepository;
+
+    CommandsListener(SequentialSpace lobbyspace, int numberOfMaxPlayers, GameRules rules, SpaceRepository spaceRepository){
         this.lobbyspace = lobbyspace;
         this.numberOfMaxPlayers = numberOfMaxPlayers;
         this.rules = rules;
+        this.spaceRepository = spaceRepository;
         numberOfActualPlayers = 0;
 
         info = new HashMap<>();
+        isOpen = false;
     }
 
     @Override
     public void run() {
-        while(true){
+
+        try {
+            lobbyspace.put("STATUS", isOpen);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        loop: while(true){
             try {
                 Object[] command = lobbyspace.get(new FormalField(PlayerInfo.class), new FormalField(LOBBYCOMMANDS.class));
-
                 PlayerInfo playerInfo = (PlayerInfo) command[0];
                 LOBBYCOMMANDS com = (LOBBYCOMMANDS) command[1];
 
                 switch(com){
                     case JOIN:
-                        if(numberOfActualPlayers<numberOfMaxPlayers) {
+                        if(numberOfActualPlayers<numberOfMaxPlayers && isOpen) {
                             info.put(playerInfo.getName(), playerInfo);
                             for (PlayerInfo player : info.values()) {
                                 lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.REFRESH);
                             }
                             ++numberOfActualPlayers;
                         }
+                        break;
+
+                    case OPEN:
+                        isOpen = true;
+                        lobbyspace.get(new ActualField("STATUS"), new FormalField(Boolean.class));
+                        lobbyspace.put("STATUS", isOpen);
+
+                        System.out.println("The lobby has been opened.");
                         break;
 
                     case LEAVE:
@@ -87,14 +109,20 @@ class CommandsListener implements Runnable{
                         break;
 
                     case DELETELOBBY:
+                        isOpen = false;
+
+                        lobbyspace.put("STATUS", isOpen);
+
                         for (PlayerInfo player : info.values()) {
                             lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.DELETELOBBY);
                         }
-                        Thread.currentThread().interrupt();
+                        info = new HashMap<>();
+                        System.out.println("The lobby has been closed.");
+
                         break;
 
                     case STARTGAME:
-                        if(numberOfActualPlayers==numberOfMaxPlayers){
+                        if(numberOfActualPlayers==numberOfMaxPlayers && isOpen){
                             for (PlayerInfo player : info.values()) {
                                 lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.STARTGAME);
                             }
