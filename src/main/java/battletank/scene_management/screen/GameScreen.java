@@ -1,29 +1,40 @@
 package battletank.scene_management.screen;
 
 import battletank.controls.ActionListener;
+import battletank.controls.ActionSenderOffline;
 import battletank.world.gameobjects.Player;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 
 public class GameScreen implements Screen {
 
 	Texture texture;
 	SpriteBatch batch;
 	float elapsed;
+    MapObjects objects;
 
-	static Player player = new Player("Troels", 100,100, 64,64, 0,10,2);
+	static Player player = new Player("Troels", 0,0, 134/3,249/3, 0,0,0,100);
 
-	private static ActionListener input = new ActionListener("hej", null);
+    public static Player getPlayer() {
+        return player;
+    }
+
+    private static ActionListener input = new ActionListener("hej", new ActionSenderOffline());
 
 	TiledMap tiledMap;
 	OrthographicCamera camera;
@@ -32,6 +43,7 @@ public class GameScreen implements Screen {
 	private Texture txtrBg;
 	private Texture txtrBack;
 	private Texture txtrLevelImage;
+	private ShapeRenderer shapeRenderer;
 
 	// Current level
 	private int level;
@@ -45,6 +57,12 @@ public class GameScreen implements Screen {
 
         texture = new Texture(Gdx.files.internal("src/main/java/battletank/Assets/img/Tank.png"));
         batch = new SpriteBatch();
+
+        shapeRenderer = new ShapeRenderer();
+
+        Gdx.input.setInputProcessor(input);
+
+
 
         loadMap(level);
 	}
@@ -61,13 +79,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void render (float v) {
-        System.out.println("render game");
-
         elapsed += Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
-
-
 
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -77,12 +91,30 @@ public class GameScreen implements Screen {
         tiledMapRenderer.render();
 
         batch.begin();
-        //batch.draw(texture, player.getPositionX(), player.getPositionY(), 100,100);
+        batch.draw(texture, player.getPositionX(), player.getPositionY(), 100,100);
+
+        Rectangle playerbody = player.getBody();
+
+// there are several other types, Rectangle is probably the most common one
+        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+
+            Rectangle rectangle = rectangleObject.getRectangle();
+            if (Intersector.overlaps(rectangle, playerbody)) {
+                // collision happened
+                System.out.println("Col with wall");
+
+            }
+        }
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.rect(playerbody.x, playerbody.y, playerbody.getWidth(), playerbody.getHeight());
+        shapeRenderer.end();
+
+
         batch.end();
 
-
     }
-
 
     public void pause () {
     }
@@ -103,9 +135,32 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false,w,h);
         camera.update();
-        tiledMap = new TmxMapLoader().load("src/main/java/battletank/Assets/maps/desertmap2/desertmap2.tmx");
+
+        switch (level){
+            case 0:
+                tiledMap = new TmxMapLoader().load("src/main/java/battletank/Assets/maps/desertmap2/desertmap1new.tmx");
+                break;
+            case 1:
+                tiledMap = new TmxMapLoader().load("src/main/java/battletank/Assets/maps/maps/desertmap2new.tmx");
+                break;
+            default:
+                tiledMap = new TmxMapLoader().load("src/main/java/battletank/Assets/maps/maps/desertmap1new.tmx");
+                break;
+        }
+
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-        Gdx.input.setInputProcessor(input);
+
+        int objectLayerId = tiledMap.getLayers().getIndex("Collidables");
+
+        MapLayer collisionObjectLayer = tiledMap.getLayers().get(objectLayerId);
+        objects = collisionObjectLayer.getObjects();
+
+        String name = collisionObjectLayer.getName();
+        float opacity = collisionObjectLayer.getOpacity();
+        boolean isVisible = collisionObjectLayer.isVisible();
+
+        System.out.println("obj til col: " + objects.getCount() + "  name: " + name + "op: " + opacity + "isvis: " + isVisible);
+
     }
 
 
