@@ -51,6 +51,8 @@ class CommandsListener implements Runnable{
         this.numberOfMaxPlayers = numberOfMaxPlayers;
         this.rules = rules;
         numberOfActualPlayers = 0;
+
+        info = new HashMap<>();
     }
 
     @Override
@@ -73,6 +75,14 @@ class CommandsListener implements Runnable{
                         }
                         break;
 
+                    case LEAVE:
+                        info.remove(playerInfo.getName());
+                        for (PlayerInfo player : info.values()) {
+                            lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.REFRESH);
+                        }
+                        --numberOfActualPlayers;
+                        break;
+
                     case CHANGERULES:
                         break;
 
@@ -85,9 +95,12 @@ class CommandsListener implements Runnable{
 
                     case STARTGAME:
                         if(numberOfActualPlayers==numberOfMaxPlayers){
+                            for (PlayerInfo player : info.values()) {
+                                lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.STARTGAME);
+                            }
+
                             GameHost gameHost = new GameHost(new Game(rules, info));
                         }
-
                         break;
                 }
 

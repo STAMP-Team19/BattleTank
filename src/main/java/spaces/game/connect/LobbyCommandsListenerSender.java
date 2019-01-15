@@ -2,8 +2,6 @@ package spaces.game.connect;
 
 import battletank.lobby.LOBBYCOMMANDS;
 import battletank.lobby.PlayerInfo;
-import battletank.world.events.Event;
-import battletank.world.gameobjects.GameObject;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
@@ -16,7 +14,7 @@ public class LobbyCommandsListenerSender implements ILobbyCommandsSender {
     private RemoteSpace lobbyspace;
 
     public LobbyCommandsListenerSender(String username, ILobbyListener listener){
-        String uri = "tcp://127.0.0.1:9001/lobby?keep";
+        String uri = "tcp://0.0.0.0:9001/lobby?keep";
         try {
             lobbyspace = new RemoteSpace(uri);
 
@@ -53,7 +51,7 @@ class LobbyObserver implements Runnable{
         while(true){
             try {
                 Object[] information = lobbyspace.get(new ActualField(username),
-                        new FormalField(PlayerInfo.class),
+                        new FormalField(HashMap.class),
                         new FormalField(LOBBYCOMMANDS.class));
 
                 HashMap<String, PlayerInfo> playerinfo = (HashMap<String, PlayerInfo>) information[1];
@@ -61,10 +59,19 @@ class LobbyObserver implements Runnable{
 
                 System.out.println(playerinfo+" "+command.toString());
 
-                if(command == LOBBYCOMMANDS.REFRESH)
-                    listener.notifyLobby(playerinfo);
-                else
-                    listener.deleteLobby();
+                switch(command){
+                    case REFRESH:
+                        listener.notifyLobby(playerinfo);
+                        break;
+
+                    case STARTGAME:
+                        listener.startGame();
+                        break;
+
+                    case DELETELOBBY:
+                        listener.deleteLobby();
+                        break;
+                }
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

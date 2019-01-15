@@ -7,25 +7,36 @@ import spaces.game.hosting.LobbyProvider;
 
 import java.util.Map;
 
-public class LobbyClientConnection implements ILobbyListener {
+public class LobbyClientConnection{
 
-    public void main(String[] args){
+    public static void main(String[] args){
+
+        try {
         LobbyProvider provider = new LobbyProvider();
         provider.createLobby("Peter", 3, new GameRules());
+
+        Thread.sleep(1000);
+
         LobbyCommandsListenerSender controller =
-                new LobbyCommandsListenerSender("Peter", this);
+                new LobbyCommandsListenerSender("Peter", new LobbyClientTest());
 
-        controller.sendCommand(new PlayerInfo("Arvid"), LOBBYCOMMANDS.JOIN);
+        controller.sendCommand(new PlayerInfo("Peter"), LOBBYCOMMANDS.JOIN);
+        Thread.sleep(1000);
         controller.sendCommand(new PlayerInfo("Mads"), LOBBYCOMMANDS.JOIN);
+        Thread.sleep(1000);
+        controller.sendCommand(new PlayerInfo("Troels"), LOBBYCOMMANDS.JOIN);
+        Thread.sleep(1000);
+        controller.sendCommand(new PlayerInfo("Mads"), LOBBYCOMMANDS.LEAVE);
+        Thread.sleep(1000);
+        controller.sendCommand(new PlayerInfo("Peter"), LOBBYCOMMANDS.STARTGAME);
+        Thread.sleep(1000);
+        controller.sendCommand(new PlayerInfo("Mads"), LOBBYCOMMANDS.JOIN);
+        Thread.sleep(1000);
+        controller.sendCommand(new PlayerInfo("Peter"), LOBBYCOMMANDS.STARTGAME);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public void notifyLobby(Map<String, PlayerInfo> playersList) {
-        System.out.println("REFRESH : "+playersList);
-    }
-
-    @Override
-    public void deleteLobby() {
-        System.out.println("DELETELOBBY");
-    }
 }

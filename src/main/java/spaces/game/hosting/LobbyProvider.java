@@ -20,6 +20,8 @@ public class LobbyProvider {
         spaceRepository.add("lobby", lobbyspace);
 
         lobby = new Lobby(hostname, numberOfMaxPlayers, rules, lobbyspace);
+
+        openGates();
     }
 
     public Lobby getLobby() {
