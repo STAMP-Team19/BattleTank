@@ -24,7 +24,6 @@ public class Game implements IGame {
 
         for(Player p :players.values()) {
             worldSimulator.addGameObject(p);
-            worldGateway.update(p,new StopTransition());
         }
 
 
@@ -53,7 +52,6 @@ public class Game implements IGame {
 
 
             worldSimulator.addGameObject(player);
-            worldGateway.update(player,new StopTransition());
             index++;
         }
 
