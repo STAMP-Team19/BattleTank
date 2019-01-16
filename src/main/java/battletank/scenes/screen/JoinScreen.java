@@ -334,14 +334,15 @@ public class JoinScreen implements Screen, ILobbyListener {
     }
 
     @Override
-    public void notifyLobby(Map<String, PlayerInfo> playersList) {
+    public void notifyLobby(ArrayList<PlayerInfo> playersList) {
         joinedPlayersList.clear();
-        joinedPlayersList.addAll(playersList.values());
+        joinedPlayersList.addAll(playersList);
         joinedPlayersList.toString();
         System.out.println("###########  players joined ############");
-        System.out.println(playersList.values());
+        System.out.println(playersList);
         System.out.println("########################################");
     }
+
 
     @Override
     public void startGame() {

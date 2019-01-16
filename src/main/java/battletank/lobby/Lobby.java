@@ -2,12 +2,14 @@ package battletank.lobby;
 
 import battletank.world.Game;
 import battletank.world.GameRules;
+import com.google.gson.Gson;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
 import org.jspace.SpaceRepository;
 import spaces.game.hosting.GameHost;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Lobby {
@@ -44,7 +46,7 @@ class CommandsListener implements Runnable{
 
     GameRules rules;
     SequentialSpace lobbyspace;
-    HashMap<String, PlayerInfo> info;
+    ArrayList<PlayerInfo> info;
     int numberOfMaxPlayers;
     int numberOfActualPlayers;
 
@@ -59,7 +61,7 @@ class CommandsListener implements Runnable{
         this.spaceRepository = spaceRepository;
         numberOfActualPlayers = 0;
 
-        info = new HashMap<>();
+        info = new ArrayList<>();
         isOpen = false;
     }
 
@@ -73,6 +75,8 @@ class CommandsListener implements Runnable{
         }
 
         loop: while(true){
+            Gson gson = new Gson();
+            String playerinfodata;
             try {
                 Object[] command = lobbyspace.get(new FormalField(PlayerInfo.class), new FormalField(LOBBYCOMMANDS.class));
                 PlayerInfo playerInfo = (PlayerInfo) command[0];
@@ -81,9 +85,10 @@ class CommandsListener implements Runnable{
                 switch(com){
                     case JOIN:
                         if(numberOfActualPlayers<numberOfMaxPlayers && isOpen) {
-                            info.put(playerInfo.getName(), playerInfo);
-                            for (PlayerInfo player : info.values()) {
-                                lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.REFRESH);
+                            info.add(playerInfo);
+                            playerinfodata = gson.toJson(info);
+                            for (PlayerInfo player : info) {
+                                lobbyspace.put(player.getName(), playerinfodata, LOBBYCOMMANDS.REFRESH);
                             }
                             ++numberOfActualPlayers;
                         }
@@ -99,8 +104,9 @@ class CommandsListener implements Runnable{
 
                     case LEAVE:
                         info.remove(playerInfo.getName());
-                        for (PlayerInfo player : info.values()) {
-                            lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.REFRESH);
+                        playerinfodata = gson.toJson(info);
+                        for (PlayerInfo player : info) {
+                            lobbyspace.put(player.getName(), playerinfodata, LOBBYCOMMANDS.REFRESH);
                         }
                         --numberOfActualPlayers;
                         break;
@@ -112,19 +118,20 @@ class CommandsListener implements Runnable{
                         isOpen = false;
 
                         lobbyspace.put("STATUS", isOpen);
-
-                        for (PlayerInfo player : info.values()) {
-                            lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.DELETELOBBY);
+                        playerinfodata = gson.toJson(info);
+                        for (PlayerInfo player : info) {
+                            lobbyspace.put(player.getName(), playerinfodata, LOBBYCOMMANDS.DELETELOBBY);
                         }
-                        info = new HashMap<>();
+                        info = new ArrayList<>();
                         System.out.println("The lobby has been closed.");
 
                         break;
 
                     case STARTGAME:
                         if(numberOfActualPlayers==numberOfMaxPlayers && isOpen){
-                            for (PlayerInfo player : info.values()) {
-                                lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.STARTGAME);
+                            playerinfodata = gson.toJson(info);
+                            for (PlayerInfo player : info) {
+                                lobbyspace.put(player.getName(), playerinfodata, LOBBYCOMMANDS.STARTGAME);
                             }
 
                             GameHost gameHost = new GameHost(new Game(rules, info));

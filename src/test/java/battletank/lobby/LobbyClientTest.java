@@ -2,12 +2,14 @@ package battletank.lobby;
 
 import spaces.game.connect.ILobbyListener;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class LobbyClientTest implements ILobbyListener {
 
     @Override
-    public void notifyLobby(Map<String, PlayerInfo> playersList) {
+    public void notifyLobby(ArrayList<PlayerInfo> playersList) {
         System.out.println("REFRESH : "+playersList);
     }
 
