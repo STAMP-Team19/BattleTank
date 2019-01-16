@@ -150,9 +150,16 @@ public class GameScreen implements Screen {
 
 
     private void loadMap(int level){
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false,w,h);
+        camera.update();
+
+
         MapLoader mapLoader = new MapLoader();
         mapLoader.loadMap(level);
-        camera=mapLoader.getCamera();
         tiledMap = mapLoader.getTiledMap();
         tiledMapRenderer = mapLoader.getTiledMapRenderer();
         objects = mapLoader.getObjects();

@@ -19,12 +19,6 @@ public class MapLoader {
 
 
     public void loadMap(int level){
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
-
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false,w,h);
-        camera.update();
 
         switch (level){
             case 0:
