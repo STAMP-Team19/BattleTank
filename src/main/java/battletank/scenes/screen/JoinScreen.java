@@ -41,38 +41,40 @@ public class JoinScreen implements Screen, ILobbyListener {
     boolean startupDone= false;
     final MyGame game;
 
-    Texture tankImage;
-    Texture playbtn;
-    Texture serverbtnTexture;
-    Texture createserverbtnTexture;
-    Texture leavebtnTexture;
-    Sound dropSound;
-    Music music;
-    OrthographicCamera camera;
-    Rectangle bucket;
-    Array<Rectangle> raindrops;
-    long lastDropTime;
-    int dropsGathered;
-    CreateInputListener createInputListener;
-    JoinInputListener joinInputListener;
-    ArrayList<PlayerInfo> joinedPlayersList;
-    Stage stage;
+    private Texture tankImage;
+
+    private Texture playbtn;
+    private Texture serverbtnTexture;
+    private Texture createserverbtnTexture;
+    private Texture leavebtnTexture;
+    private Texture stopbtnTexture;
+
+    private Texture playbtnDown;
+    private Texture serverbtnTextureDown;
+    private Texture createserverbtnTextureDown;
+    private Texture leavebtnTextureDown;
+    private Texture stopbtnTextureDown;
+
+    private Music music;
+    private OrthographicCamera camera;
+    private long lastDropTime;
+    private CreateInputListener createInputListener;
+    private JoinInputListener joinInputListener;
+    private ArrayList<PlayerInfo> joinedPlayersList;
+    private Stage stage;
     private String name = "";
-
     private String msg = "";
-
     private String IP = "0.0.0.0";
-
     private Boolean playgame = false;
-
     private String ShowIp = "";
-
     private LobbyProvider provider;
+    private Boolean joined = false;
+    private Boolean creater = false;
 
-    ImageButton joinbtn;
-    ImageButton playButton;
-    ImageButton createButton;
-    ImageButton leaveBtn;
+    private ImageButton joinbtn;
+    private ImageButton playButton;
+    private ImageButton createButton;
+    private ImageButton leaveBtn;
 
     static LobbyCommandsListenerSender controller;
 
@@ -81,11 +83,19 @@ public class JoinScreen implements Screen, ILobbyListener {
         this.game = game;
 
         // load the images for the droplet and the bucket, 64x64 pixels each
-        tankImage = new Texture(Gdx.files.internal("src/main/resources/assets/img/Tank.png"));
+        //tankImage = new Texture(Gdx.files.internal("src/main/resources/assets/img/Tank.png"));
         playbtn = new Texture(Gdx.files.internal("src/main/resources/assets/img/playbtn.png"));
         serverbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/editserverbtn.png"));
         createserverbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/createserverbtn.png"));
         leavebtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/Leave.png"));
+        stopbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/Stopserverbtn.png"));
+
+        playbtnDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/playbtnDown.png"));
+        serverbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/editserverbtnDown.png"));
+        createserverbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/createserverbtnDown.png"));
+        leavebtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/LeaveDOwn.png"));
+        stopbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/StopserverbtnDown.png"));
+
 
         // load the drop sound effect and the rain background "music"
         //dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
@@ -103,18 +113,21 @@ public class JoinScreen implements Screen, ILobbyListener {
         Gdx.input.getTextInput(createInputListener, "Write player name", "", "Name of player");
 
         Drawable newurl = new TextureRegionDrawable(new TextureRegion(serverbtnTexture));
-        joinbtn = new ImageButton(newurl);
+        Drawable newurlDown = new TextureRegionDrawable(new TextureRegion(serverbtnTextureDown));
+        joinbtn = new ImageButton(newurl, newurlDown);
 
         joinbtn.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
                 System.out.println("Enter new server");
                 Gdx.input.getTextInput(joinInputListener, "Write IP of server", "", "IP");
+                joined = true;
             }
         });
 
         Drawable drawable = new TextureRegionDrawable(new TextureRegion(playbtn));
-        playButton = new ImageButton(drawable);
+        Drawable drawableDown = new TextureRegionDrawable(new TextureRegion(playbtnDown));
+        playButton = new ImageButton(drawable, drawableDown);
 
         playButton.addListener(new ChangeListener() {
             @Override
@@ -126,13 +139,17 @@ public class JoinScreen implements Screen, ILobbyListener {
         });
 
         Drawable drawcreateserver = new TextureRegionDrawable(new TextureRegion(createserverbtnTexture));
-        createButton = new ImageButton(drawcreateserver);
+        Drawable drawcreateserverDown = new TextureRegionDrawable(new TextureRegion(createserverbtnTextureDown));
+        createButton = new ImageButton(drawcreateserver, drawcreateserverDown);
 
+        Drawable stopdrawable = new TextureRegionDrawable(new TextureRegion(stopbtnTexture));
 
         createButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
                 if(!startupDone){return;}
+                joined = true;
+                if(!creater) {
                 System.out.println("create server");
                 //Gdx.input.getTextInput(createInputListener, "Enter name of server", "", "server name");
                 lobby();
@@ -144,25 +161,36 @@ public class JoinScreen implements Screen, ILobbyListener {
                 }
                 controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.JOIN);
 
-                try {
-                    InetAddress inetAddress = InetAddress.getLocalHost();
-                    ShowIp = inetAddress.getHostAddress();
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    try {
+                        InetAddress inetAddress = InetAddress.getLocalHost();
+                        ShowIp = inetAddress.getHostAddress();
+                    } catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    }
+                    creater = true;
+                    createButton.setBackground(stopdrawable);
+                } else {
+                    creater = false;
+                    createButton.setBackground(drawcreateserver);
+                    controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.DELETELOBBY);
                 }
 
             }
         });
 
 
-        Drawable leaveDrawable = new TextureRegionDrawable(new TextureRegion(serverbtnTexture));
-        leaveBtn = new ImageButton(leaveDrawable);
+        Drawable leaveDrawable = new TextureRegionDrawable(new TextureRegion(leavebtnTexture));
+        Drawable leaveDrawableDown = new TextureRegionDrawable(new TextureRegion(leavebtnTextureDown));
+        leaveBtn = new ImageButton(leaveDrawable, leaveDrawableDown);
 
         leaveBtn.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
-                System.out.println("Leave!");
-                controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.LEAVE);
+                if(joined) {
+                    System.out.println("Leave!");
+                    controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.LEAVE);
+                }
+                joined = false;
             }
         });
 
@@ -195,7 +223,6 @@ public class JoinScreen implements Screen, ILobbyListener {
         drivingTanks.y = 480;
         drivingTanks.width = 64;
         drivingTanks.height = 64;
-        raindrops.add(drivingTanks);
         lastDropTime = TimeUtils.nanoTime();
     }
 
@@ -246,6 +273,12 @@ public class JoinScreen implements Screen, ILobbyListener {
             if(provider.isDone()){
                 startupDone=true;
             }
+        }
+
+        if(!joined){
+            joinbtn.setDisabled(false);
+        }else {
+            joinbtn.setDisabled(true);
         }
 
         // clear the screen with a dark blue color. The
@@ -312,7 +345,6 @@ public class JoinScreen implements Screen, ILobbyListener {
     public void dispose() {
         tankImage.dispose();
         playbtn.dispose();
-        dropSound.dispose();
         music.dispose();
     }
 

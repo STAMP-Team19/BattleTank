@@ -135,8 +135,13 @@ public abstract class GameObject {
         return (getHeight()*(1-(0.36/2.11)))/2;
     }
 
+    public PlayerColor getColor() {
+        return color;
+    }
 
-
+    public void setColor(PlayerColor color) {
+        this.color = color;
+    }
 
     @Override
     public int hashCode(){

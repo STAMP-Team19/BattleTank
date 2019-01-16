@@ -1,5 +1,7 @@
 package battletank.world.gameobjects;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import java.util.EnumMap;
 
 public class ColorTextureMapper {
@@ -18,8 +20,5 @@ public class ColorTextureMapper {
     public String getTexstureFromEnum(PlayerColor color){
         return ColorMap.get(color);
     }
-
-
-
 
 }
