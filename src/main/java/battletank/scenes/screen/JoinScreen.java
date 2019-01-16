@@ -282,6 +282,7 @@ public class JoinScreen implements Screen, ILobbyListener {
 
         backgroundTexture = new Texture("src/main/resources/assets/img/bg.png");
         backgroundSprite = new Sprite(backgroundTexture);
+        backgroundSprite.scale((float) 0.0001);
     }
 
     public void lobby(){
