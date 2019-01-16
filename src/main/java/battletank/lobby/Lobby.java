@@ -67,6 +67,16 @@ class CommandsListener implements Runnable{
         isOpen = false;
     }
 
+    private boolean listContains(PlayerInfo player){
+        for(PlayerInfo pl:info){
+            if(player.getName().equals(pl.getName())){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     @Override
     public void run() {
 
@@ -84,11 +94,13 @@ class CommandsListener implements Runnable{
                 PlayerInfo playerInfo = (PlayerInfo) command[0];
                 LOBBYCOMMANDS com = (LOBBYCOMMANDS) command[1];
 
+
+
                 switch(com){
                     case JOIN:
                         if(numberOfActualPlayers<numberOfMaxPlayers
                                 && isOpen
-                                && !info.contains(playerInfo)) {
+                                && !listContains(playerInfo)) {
                             info.add(playerInfo);
                             playerinfodata = gson.toJson(info);
                             for (PlayerInfo player : info) {

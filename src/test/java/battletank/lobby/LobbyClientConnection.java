@@ -18,7 +18,7 @@ public class LobbyClientConnection{
         Thread.sleep(1000);
 
         LobbyCommandsListenerSender controller =
-                new LobbyCommandsListenerSender("Peter", new LobbyClientTest());
+                new LobbyCommandsListenerSender("Peter","0.0.0.0", new LobbyClientTest());
 
         System.out.println("Lobby Open: "+controller.isLobbyOpen());
 
@@ -26,6 +26,8 @@ public class LobbyClientConnection{
         Thread.sleep(1000);
         System.out.println("Lobby Open: "+controller.isLobbyOpen());
         Thread.sleep(1000);
+        controller.sendCommand(new PlayerInfo("Peter"), LOBBYCOMMANDS.JOIN);
+            Thread.sleep(1000);
         controller.sendCommand(new PlayerInfo("Peter"), LOBBYCOMMANDS.JOIN);
         Thread.sleep(1000);
         controller.sendCommand(new PlayerInfo("Mads"), LOBBYCOMMANDS.JOIN);
