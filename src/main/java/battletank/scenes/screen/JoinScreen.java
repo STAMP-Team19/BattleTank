@@ -252,7 +252,7 @@ public class JoinScreen implements Screen, ILobbyListener {
             }
         }
 
-        if(joined){
+        if(!joined){
             joinbtn.setDisabled(false);
         }else {
             joinbtn.setDisabled(true);

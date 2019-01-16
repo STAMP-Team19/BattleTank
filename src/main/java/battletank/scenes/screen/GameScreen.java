@@ -5,6 +5,7 @@ import battletank.world.DeltaTime;
 import battletank.world.Game;
 import battletank.world.MapLoader;
 import battletank.world.WorldSimulator;
+import battletank.world.gameobjects.ColorTextureMapper;
 import battletank.world.gameobjects.GameObject;
 import battletank.world.gameobjects.Player;
 import battletank.world.gameobjects.PlayerColor;
@@ -58,7 +59,6 @@ public class GameScreen implements Screen {
 		txtrBg   = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
 		txtrBack = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
 
-        texture = new Texture(Gdx.files.internal("src/main/resources/assets/img/Tank.png"));
         batch = new SpriteBatch();
 
         shapeRenderer = new ShapeRenderer();
@@ -105,10 +105,13 @@ public class GameScreen implements Screen {
         tiledMapRenderer.render();
 
         batch.begin();
+        ColorTextureMapper colorTextureMapper = new ColorTextureMapper();
         List<GameObject> gameObjects =worldSimulator.getGameObjects();
         for(GameObject go : gameObjects) {
             Player player = (Player) go;
             //batch.draw(texture, (int) player.getPositionX(), (int) player.getPositionY(), (int) player.getWidth(), (int) player.getHeight());
+
+            texture = new Texture(Gdx.files.internal(colorTextureMapper.getTexstureFromEnum(player.getColor())));
 
             batch.draw(new TextureRegion(texture),
                     (float) player.getPositionX(),
