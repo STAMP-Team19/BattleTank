@@ -60,6 +60,8 @@ public class JoinScreen implements Screen, ILobbyListener {
 
     private String IP = "0.0.0.0";
 
+    private Boolean playgame = false;
+
     ImageButton joinbtn;
     ImageButton playButton;
     ImageButton createButton;
@@ -167,6 +169,10 @@ public class JoinScreen implements Screen, ILobbyListener {
     @Override
     public void render(float delta) {
 
+        if(playgame){
+            game.setScreen(new GameScreen(0, IP, player.getName()));
+        }
+
         name = createInputListener.getLastoutput();
 
 
@@ -195,12 +201,12 @@ public class JoinScreen implements Screen, ILobbyListener {
         if(name == ""){
             joinbtn.setDisabled(true);
             createButton.setDisabled(true);
-            LobbyProvider provider = new LobbyProvider();
-            provider.createLobby(name, 4, new GameRules());
         }
         else {
             joinbtn.setDisabled(false);
             createButton.setDisabled(false);
+            LobbyProvider provider = new LobbyProvider();
+            provider.createLobby(name, 4, new GameRules());
         }
 
         // clear the screen with a dark blue color. The
@@ -281,7 +287,12 @@ public class JoinScreen implements Screen, ILobbyListener {
     @Override
     public void startGame() {
         System.out.println("hej nu spiller du");
-        game.setScreen(new GameScreen(0, IP, player.getName()));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        playgame = true;
     }
 
     @Override
