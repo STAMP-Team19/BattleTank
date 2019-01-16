@@ -8,9 +8,10 @@ import java.io.IOException;
 
 public class ActionSender implements IActionSender {
 
+    //TODO: Make this variable
     private final String uri = "tcp://127.0.0.1:9001/actions?keep";
 
-    //TODO: Make this variable
+
     private String playerName;
     private RemoteSpace commands;
 

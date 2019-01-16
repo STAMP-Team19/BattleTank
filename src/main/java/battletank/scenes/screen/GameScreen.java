@@ -1,13 +1,13 @@
 package battletank.scenes.screen;
 
 import battletank.controls.ActionListener;
-import battletank.controls.ActionSenderOffline;
 import battletank.world.DeltaTime;
 import battletank.world.Game;
+import battletank.world.MapLoader;
 import battletank.world.WorldSimulator;
 import battletank.world.gameobjects.GameObject;
 import battletank.world.gameobjects.Player;
-import battletank.world.gameobjects.PlayerColors;
+import battletank.world.gameobjects.PlayerColor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
@@ -39,7 +39,7 @@ public class GameScreen implements Screen {
 
     WorldSimulator worldSimulator;
 
-	static Player player = new Player("Troels", 0,0, 134/4,249/4, 0,0,0,100, PlayerColors.PLAYERCOLOR.Blue);
+	static Player player = new Player("Troels", 0,0, 134/4,249/4, 0,0,0,100, PlayerColor.Blue);
     private DeltaTime deltaTime;
 
     public static Player getPlayer() {
@@ -81,7 +81,7 @@ public class GameScreen implements Screen {
 
 	private void setupOnlineGame(){
         HashMap<String, Player> players = new HashMap<>();
-        Player player =new Player("Troels", 100,100, 134/4,249/4, 90,50,90,100, PlayerColors.PLAYERCOLOR.Blue);
+        Player player =new Player("Troels", 96,416, 134/4,249/4, 90,50,90,100, PlayerColor.Blue);
         players.put(player.getName(), player);
         GameHost host = new GameHost(new Game(players) {
         });
@@ -130,19 +130,9 @@ public class GameScreen implements Screen {
                     (float) player.getHeight(),
                     1,
                     1,
-                    (float)player.getRotation()-90);
-            Rectangle playerbody = player.getBody();
+                    (float)player.getRotation()-90
+            );
 
-            // there are several other types, Rectangle is probably the most common one
-            for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-
-                Rectangle rectangle = rectangleObject.getRectangle();
-                if (Intersector.overlaps(rectangle, playerbody)) {
-                    // collision happened
-                    //System.out.println("Col with wall");
-
-                }
-            }
         /*
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);
@@ -167,36 +157,14 @@ public class GameScreen implements Screen {
     }
 
 
-    private void loadMap(int Level){
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
+    private void loadMap(int level){
+        MapLoader mapLoader = new MapLoader();
+        mapLoader.loadMap(level);
+        camera=mapLoader.getCamera();
+        tiledMap = mapLoader.getTiledMap();
+        tiledMapRenderer = mapLoader.getTiledMapRenderer();
+        objects = mapLoader.getObjects();
 
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false,w,h);
-        camera.update();
-
-        switch (level){
-            case 0:
-                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/desertmap2/desertmap1new.tmx");
-                break;
-            case 1:
-                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/maps/desertmap2new.tmx");
-                break;
-            default:
-                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/maps/desertmap1new.tmx");
-                break;
-        }
-
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-
-        int objectLayerId = tiledMap.getLayers().getIndex("Collidables");
-
-        MapLayer collisionObjectLayer = tiledMap.getLayers().get(objectLayerId);
-        objects = collisionObjectLayer.getObjects();
-
-        String name = collisionObjectLayer.getName();
-        float opacity = collisionObjectLayer.getOpacity();
-        boolean isVisible = collisionObjectLayer.isVisible();
 
         //System.out.println("obj til col: " + objects.getCount() + "  name: " + name + "op: " + opacity + "isvis: " + isVisible);
 
