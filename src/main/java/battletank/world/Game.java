@@ -33,6 +33,7 @@ public class Game implements IGame {
 
     public Game(GameRules rules, ArrayList<PlayerInfo> playersinfo){
         this.playersinfo = playersinfo;
+        worldSimulator = new WorldSimulator(new DeltaTime());
 
         int index = 0;
         double[] xCoord = {96,672,416,416};

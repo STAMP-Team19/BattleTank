@@ -20,7 +20,7 @@ public class LobbyCommandsListenerSender implements ILobbyCommandsSender {
     private RemoteSpace lobbyspace;
 
     public LobbyCommandsListenerSender(String username, ILobbyListener listener){
-        String uri = "tcp://0.0.0.0:9001/lobby?keep";
+        String uri = "tcp://0.0.0.0:9002/lobby?keep";
         try {
             lobbyspace = new RemoteSpace(uri);
 

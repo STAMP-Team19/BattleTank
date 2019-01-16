@@ -7,7 +7,7 @@ import org.jspace.SpaceRepository;
 
 public class LobbyProvider {
 
-    private final String uri = "tcp://0.0.0.0:9001/?keep";
+    private final String uri = "tcp://0.0.0.0:9002/?keep";
     private SpaceRepository spaceRepository;
     private Lobby lobby;
 
