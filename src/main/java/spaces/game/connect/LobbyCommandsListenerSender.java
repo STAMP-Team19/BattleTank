@@ -2,12 +2,17 @@ package spaces.game.connect;
 
 import battletank.lobby.LOBBYCOMMANDS;
 import battletank.lobby.PlayerInfo;
+import battletank.world.gameobjects.Player;
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 
 import javax.swing.text.StyledEditorKit;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LobbyCommandsListenerSender implements ILobbyCommandsSender {
@@ -62,13 +67,14 @@ class LobbyObserver implements Runnable{
 
     @Override
     public void run() {
+        Gson gson = new Gson();
         loop: while(true){
             try {
                 Object[] information = lobbyspace.get(new ActualField(username),
-                        new FormalField(HashMap.class),
+                        new FormalField(String.class),
                         new FormalField(LOBBYCOMMANDS.class));
 
-                HashMap<String, PlayerInfo> playerinfo = (HashMap<String, PlayerInfo>) information[1];
+                ArrayList<PlayerInfo> playerinfo = gson.fromJson((String)information[1], new TypeToken<ArrayList<PlayerInfo>>(){}.getType());
                 LOBBYCOMMANDS command = (LOBBYCOMMANDS) information[2];
 
                 System.out.println(playerinfo+" "+command.toString());

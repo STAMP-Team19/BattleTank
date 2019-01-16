@@ -1,12 +1,12 @@
-package battletank.lobby;
+package spaces.game.hosting;
 
+import battletank.lobby.PlayerInfo;
 import spaces.game.connect.ILobbyListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class LobbyClientTest implements ILobbyListener {
+public class LobbyClient implements ILobbyListener {
 
     @Override
     public void notifyLobby(ArrayList<PlayerInfo> playersList) {

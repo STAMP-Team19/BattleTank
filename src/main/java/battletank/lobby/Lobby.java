@@ -2,12 +2,14 @@ package battletank.lobby;
 
 import battletank.world.Game;
 import battletank.world.GameRules;
+import com.google.gson.Gson;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
 import org.jspace.SpaceRepository;
 import spaces.game.hosting.GameHost;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Lobby {
@@ -23,7 +25,7 @@ public class Lobby {
         this.hostname = hostname;
         this.lobbyspace = lobbyspace;
 
-        new Thread(new CommandsListener(lobbyspace, numberOfMaxPlayers, rules, spaceRepository)).start();
+        new Thread(new CommandsListener(lobbyspace, numberOfMaxPlayers, rules, spaceRepository, hostname)).start();
     }
 
     public int getNumberOfMaxPlayers() {
@@ -42,9 +44,10 @@ public class Lobby {
 
 class CommandsListener implements Runnable{
 
+    String hostname;
     GameRules rules;
     SequentialSpace lobbyspace;
-    HashMap<String, PlayerInfo> info;
+    ArrayList<PlayerInfo> info;
     int numberOfMaxPlayers;
     int numberOfActualPlayers;
 
@@ -52,14 +55,15 @@ class CommandsListener implements Runnable{
 
     SpaceRepository spaceRepository;
 
-    CommandsListener(SequentialSpace lobbyspace, int numberOfMaxPlayers, GameRules rules, SpaceRepository spaceRepository){
+    CommandsListener(SequentialSpace lobbyspace, int numberOfMaxPlayers, GameRules rules, SpaceRepository spaceRepository, String hostname){
+        this.hostname = hostname;
         this.lobbyspace = lobbyspace;
         this.numberOfMaxPlayers = numberOfMaxPlayers;
         this.rules = rules;
         this.spaceRepository = spaceRepository;
         numberOfActualPlayers = 0;
 
-        info = new HashMap<>();
+        info = new ArrayList<>();
         isOpen = false;
     }
 
@@ -73,6 +77,8 @@ class CommandsListener implements Runnable{
         }
 
         loop: while(true){
+            Gson gson = new Gson();
+            String playerinfodata;
             try {
                 Object[] command = lobbyspace.get(new FormalField(PlayerInfo.class), new FormalField(LOBBYCOMMANDS.class));
                 PlayerInfo playerInfo = (PlayerInfo) command[0];
@@ -80,10 +86,13 @@ class CommandsListener implements Runnable{
 
                 switch(com){
                     case JOIN:
-                        if(numberOfActualPlayers<numberOfMaxPlayers && isOpen) {
-                            info.put(playerInfo.getName(), playerInfo);
-                            for (PlayerInfo player : info.values()) {
-                                lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.REFRESH);
+                        if(numberOfActualPlayers<numberOfMaxPlayers
+                                && isOpen
+                                && !info.contains(playerInfo)) {
+                            info.add(playerInfo);
+                            playerinfodata = gson.toJson(info);
+                            for (PlayerInfo player : info) {
+                                lobbyspace.put(player.getName(), playerinfodata, LOBBYCOMMANDS.REFRESH);
                             }
                             ++numberOfActualPlayers;
                         }
@@ -98,9 +107,10 @@ class CommandsListener implements Runnable{
                         break;
 
                     case LEAVE:
-                        info.remove(playerInfo.getName());
-                        for (PlayerInfo player : info.values()) {
-                            lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.REFRESH);
+                        info.remove(playerInfo);
+                        playerinfodata = gson.toJson(info);
+                        for (PlayerInfo player : info) {
+                            lobbyspace.put(player.getName(), playerinfodata, LOBBYCOMMANDS.REFRESH);
                         }
                         --numberOfActualPlayers;
                         break;
@@ -112,19 +122,22 @@ class CommandsListener implements Runnable{
                         isOpen = false;
 
                         lobbyspace.put("STATUS", isOpen);
-
-                        for (PlayerInfo player : info.values()) {
-                            lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.DELETELOBBY);
+                        playerinfodata = gson.toJson(info);
+                        for (PlayerInfo player : info) {
+                            lobbyspace.put(player.getName(), playerinfodata, LOBBYCOMMANDS.DELETELOBBY);
                         }
-                        info = new HashMap<>();
+                        info = new ArrayList<>();
                         System.out.println("The lobby has been closed.");
 
                         break;
 
                     case STARTGAME:
-                        if(numberOfActualPlayers==numberOfMaxPlayers && isOpen){
-                            for (PlayerInfo player : info.values()) {
-                                lobbyspace.put(player.getName(), info, LOBBYCOMMANDS.STARTGAME);
+                        if(numberOfActualPlayers==numberOfMaxPlayers
+                                && isOpen
+                                && playerInfo.getName().equals(hostname)){
+                            playerinfodata = gson.toJson(info);
+                            for (PlayerInfo player : info) {
+                                lobbyspace.put(player.getName(), playerinfodata, LOBBYCOMMANDS.STARTGAME);
                             }
 
                             GameHost gameHost = new GameHost(new Game(rules, info));
