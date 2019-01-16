@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -42,6 +44,7 @@ public class JoinScreen implements Screen, ILobbyListener {
     Texture playbtn;
     Texture serverbtnTexture;
     Texture createserverbtnTexture;
+    Texture leavebtnTexture;
     Sound dropSound;
     Music music;
     OrthographicCamera camera;
@@ -61,9 +64,14 @@ public class JoinScreen implements Screen, ILobbyListener {
 
     private Boolean playgame = false;
 
+    private String ShowIp = "";
+
+    private LobbyProvider provider;
+
     ImageButton joinbtn;
     ImageButton playButton;
     ImageButton createButton;
+    ImageButton leaveBtn;
 
     static LobbyCommandsListenerSender controller;
 
@@ -76,6 +84,7 @@ public class JoinScreen implements Screen, ILobbyListener {
         playbtn = new Texture(Gdx.files.internal("src/main/resources/assets/img/playbtn.png"));
         serverbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/editserverbtn.png"));
         createserverbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/createserverbtn.png"));
+        leavebtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/Leave.png"));
 
         // load the drop sound effect and the rain background "music"
         //dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
@@ -132,6 +141,26 @@ public class JoinScreen implements Screen, ILobbyListener {
                     e.printStackTrace();
                 }
                 controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.JOIN);
+
+                try {
+                    InetAddress inetAddress = InetAddress.getLocalHost();
+                    ShowIp = inetAddress.getHostAddress();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+
+        Drawable leaveDrawable = new TextureRegionDrawable(new TextureRegion(serverbtnTexture));
+        leaveBtn = new ImageButton(leaveDrawable);
+
+        leaveBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                System.out.println("Leave!");
+                controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.LEAVE);
             }
         });
 
@@ -139,6 +168,7 @@ public class JoinScreen implements Screen, ILobbyListener {
         joinbtn.setPosition(400-(joinbtn.getWidth()/2), 50);
         playButton.setPosition(400-(playButton.getWidth()/2), 100);
         createButton.setPosition(400-(createButton.getWidth()/2), 150);
+        leaveBtn.setPosition(400-(leaveBtn.getWidth()/2), 0);
 
 
         // add to stage
@@ -146,6 +176,7 @@ public class JoinScreen implements Screen, ILobbyListener {
         stage.addActor(joinbtn);
         stage.addActor(createButton);
         stage.addActor(playButton); //Add the button to the stage to perform rendering and take input.
+        stage.addActor(leaveBtn);
         Gdx.input.setInputProcessor(stage); //Start taking input from the ui
 
 
@@ -204,8 +235,10 @@ public class JoinScreen implements Screen, ILobbyListener {
         else {
             joinbtn.setDisabled(false);
             createButton.setDisabled(false);
-            LobbyProvider provider = new LobbyProvider();
-            provider.createLobby(name, 4, new GameRules());
+            if(provider == null){
+                provider = new LobbyProvider();
+                provider.createLobby(name, 4, new GameRules());
+            }
         }
 
         // clear the screen with a dark blue color. The
@@ -225,8 +258,9 @@ public class JoinScreen implements Screen, ILobbyListener {
         // begin a new batch and draw the bucket and
         // all drops
         game.batch.begin();
-        game.font.draw(game.batch, name, 800/2, 450);
-        game.font.draw(game.batch, msg, 800/2, 470);
+        game.font.draw(game.batch, name, 800/2-(name.length()*3), 450);
+        game.font.draw(game.batch, msg, 800/2-(msg.length()*3), 465);
+        game.font.draw(game.batch, ShowIp, 800/2-(ShowIp.length()*3), 475);
 
         if(joinedPlayersList != null) {
             for (int i = 0; i < joinedPlayersList.size(); i++) {
