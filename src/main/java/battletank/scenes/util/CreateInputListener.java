@@ -4,36 +4,33 @@ import battletank.scenes.screen.MainMenuScreen;
 import battletank.scenes.screen.MyGame;
 import com.badlogic.gdx.Input;
 
-public class IPInputListener implements Input.TextInputListener {
+public class CreateInputListener implements Input.TextInputListener {
 
     private String lastoutput = "";
-    private Boolean inputGiven = false;
+    private String type = "";
 
-    public IPInputListener() {
-        inputGiven = false;
+    public CreateInputListener() {
     }
 
     @Override
     public void input (String text) {
         System.out.println("input: " + text);
         lastoutput = text;
-        inputGiven = true;
     }
 
     @Override
     public void canceled () {
-        MyGame.getInstance().setScreen(new MainMenuScreen(MyGame.getInstance()));
     }
 
     public String getLastoutput() {
         return lastoutput;
     }
 
-    public Boolean getInputGiven() {
-        return inputGiven;
+    public String getType() {
+        return type;
     }
 
-    public void setInputGiven(Boolean inputGiven) {
-        this.inputGiven = inputGiven;
+    public void setType(String type) {
+        this.type = type;
     }
 }

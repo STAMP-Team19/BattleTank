@@ -2,9 +2,9 @@ package battletank.scenes.screen;
 
 import battletank.lobby.LOBBYCOMMANDS;
 import battletank.lobby.PlayerInfo;
-import battletank.scenes.util.IPInputListener;
+import battletank.scenes.util.CreateInputListener;
+import battletank.scenes.util.JoinInputListener;
 import battletank.world.GameRules;
-import battletank.world.WorldSimulator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -31,9 +31,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import spaces.game.connect.ILobbyListener;
 import spaces.game.connect.LobbyCommandsListenerSender;
-import spaces.game.connect.WorldEventsListener;
 import spaces.game.hosting.LobbyProvider;
-import spaces.game.hosting.WorldGateway;
 
 import static battletank.scenes.screen.GameScreen.player;
 
@@ -52,9 +50,11 @@ public class JoinScreen implements Screen, ILobbyListener {
     Array<Rectangle> raindrops;
     long lastDropTime;
     int dropsGathered;
-    IPInputListener listener;
+    CreateInputListener createInputListener;
+    JoinInputListener joinInputListener;
     ArrayList<PlayerInfo> joinedPlayersList;
     Stage stage;
+    private String name = "";
 
     ImageButton joinbtn;
     ImageButton playButton;
@@ -65,16 +65,6 @@ public class JoinScreen implements Screen, ILobbyListener {
 
     public JoinScreen(final MyGame game) {
         this.game = game;
-
-        joinedPlayersList = new ArrayList<PlayerInfo>();
-
-        // dummy joins
-        /*
-        joinedPlayersList.add("Mads");
-        joinedPlayersList.add("Peter");
-        joinedPlayersList.add("Troels");
-        */
-
 
         // load the images for the droplet and the bucket, 64x64 pixels each
         tankImage = new Texture(Gdx.files.internal("src/main/resources/assets/img/Tank.png"));
@@ -107,8 +97,9 @@ public class JoinScreen implements Screen, ILobbyListener {
 
 
         // all input for screen
-        listener = new IPInputListener();
-        //Gdx.input.getTextInput(listener, "Write IP of server", "", "IP");
+        createInputListener = new CreateInputListener();
+
+        Gdx.input.getTextInput(createInputListener, "Write player name", "", "Name of player");
 
         Drawable newurl = new TextureRegionDrawable(new TextureRegion(serverbtnTexture));
         joinbtn = new ImageButton(newurl);
@@ -117,32 +108,10 @@ public class JoinScreen implements Screen, ILobbyListener {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
                 System.out.println("Enter new server");
-                Gdx.input.getTextInput(listener, "Write IP of server", "", "IP");
-
-                while (!listener.getInputGiven()){
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
+                //Gdx.input.getTextInput(joinInputListener, "Write IP of server", "", "IP");
                 lobby();
-
-                listener.setInputGiven(false);
-
                 System.out.println("Lobby Open: "+controller.isLobbyOpen());
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                controller.sendCommand(new PlayerInfo(player.getName()), LOBBYCOMMANDS.JOIN);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.JOIN);
             }
         });
 
@@ -165,31 +134,24 @@ public class JoinScreen implements Screen, ILobbyListener {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
                 System.out.println("create server");
-                Gdx.input.getTextInput(listener, "Enter name of server", "", "server name");
+                //Gdx.input.getTextInput(createInputListener, "Enter name of server", "", "server name");
+
                 LobbyProvider provider = new LobbyProvider();
 
-                while (!listener.getInputGiven()){
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                provider.createLobby(listener.getLastoutput(), 4, new GameRules());
-                listener.setInputGiven(false);
+                provider.createLobby(name, 4, new GameRules());
                 try {
-                    Thread.sleep(1200);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 lobby();
-                controller.sendCommand(new PlayerInfo(player.getName()), LOBBYCOMMANDS.OPEN);
+                controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.OPEN);
                 try {
-                    Thread.sleep(1200);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                controller.sendCommand(new PlayerInfo(player.getName()), LOBBYCOMMANDS.JOIN);
+                controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.JOIN);
             }
         });
 
@@ -210,7 +172,7 @@ public class JoinScreen implements Screen, ILobbyListener {
     }
 
     public void lobby(){
-        controller = new LobbyCommandsListenerSender(listener.getLastoutput(),this);
+        controller = new LobbyCommandsListenerSender(name,this);
     }
 
     private void spawnRaindrop() {
@@ -226,23 +188,28 @@ public class JoinScreen implements Screen, ILobbyListener {
     @Override
     public void render(float delta) {
 
+        name = createInputListener.getLastoutput();
+
         // activate and deaktivate buttons.
-        /*
-        if(listener.getLastoutput() == ""){
+
+        if(name == ""){
             joinbtn.setDisabled(true);
+            createButton.setDisabled(true);
         }
         else {
             joinbtn.setDisabled(false);
+            createButton.setDisabled(false);
         }
-        */
+
         /*
         if(joinedPlayersList.size() < 2){
-            joinbtn.setDisabled(true);
+
         }
         else {
             joinbtn.setDisabled(false);
         }
         */
+
 
         // clear the screen with a dark blue color. The
         // arguments to glClearColor are the red, green
@@ -261,7 +228,7 @@ public class JoinScreen implements Screen, ILobbyListener {
         // begin a new batch and draw the bucket and
         // all drops
         game.batch.begin();
-        game.font.draw(game.batch, listener.getLastoutput(), 800/2, 450);
+        game.font.draw(game.batch, name, 800/2, 450);
 
         //game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, 480);
         //game.batch.draw(playbtn, bucket.x, bucket.y, bucket.width*2, bucket.height);
@@ -270,10 +237,29 @@ public class JoinScreen implements Screen, ILobbyListener {
             game.batch.draw(tankImage, raindrop.x, raindrop.y);
         }
 
-        for (int i = 0; i < joinedPlayersList.size(); i++) {
-            String name = joinedPlayersList.get(i).getName();
-            game.font.draw(game.batch, joinedPlayersList.get(i).getName().toString(), 800/2-(joinedPlayersList.get(i).getName().toString().length()*3), i*20+330);
+        if(joinedPlayersList != null) {
+            for (int i = 0; i < joinedPlayersList.size(); i++) {
+                game.font.draw(game.batch, joinedPlayersList.get(i).getName(), 800 / 2 - (joinedPlayersList.get(i).getName().length() * 3), i * 20 + 330);
+            }
         }
+
+
+        /*
+        int i = 0;
+        for (PlayerInfo info : joinedPlayersList) {
+            game.font.draw(game.batch, info.toString(), 800/2-(info.toString().length()*3), i*20+330);
+            i++;
+        }
+        */
+        /*
+        if (joinedPlayersList != null) {
+            for (Map.Entry<String, PlayerInfo> entry : joinedPlayersList.entrySet()) {
+                System.out.println(entry.getKey() + "/" + entry.getValue().getName());
+                game.font.draw(game.batch, entry.getValue().getName(), 800 / 2 - (entry.getValue().getName().length() * 3), i * 20 + 330);
+                i++;
+            }
+        }
+        */
 
         game.batch.end();
 
@@ -335,14 +321,11 @@ public class JoinScreen implements Screen, ILobbyListener {
 
     @Override
     public void notifyLobby(ArrayList<PlayerInfo> playersList) {
-        joinedPlayersList.clear();
-        joinedPlayersList.addAll(playersList);
-        joinedPlayersList.toString();
+        joinedPlayersList = playersList;
         System.out.println("###########  players joined ############");
         System.out.println(playersList);
         System.out.println("########################################");
     }
-
 
     @Override
     public void startGame() {
