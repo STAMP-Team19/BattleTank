@@ -26,7 +26,7 @@ public class CollisionChecker {
         if (Intersector.overlaps(collider, subject)) {
             boolean collisionRight = collider.x<subject.x+subject.width;
             boolean collisionLeft  = collider.x+collider.width> subject.x;
-
+            
 
 
             return new Collision();
