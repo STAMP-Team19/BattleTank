@@ -9,16 +9,12 @@ import battletank.world.events.rotations.StopRotation;
 import battletank.world.events.transitions.StartTransition;
 import battletank.world.events.transitions.StopTransition;
 import battletank.world.gameobjects.GameObject;
-import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class WorldSimulator  implements EventVisitor,Runnable{
@@ -32,7 +28,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         updateTime=dt;
         simulatedEvents = new ConcurrentHashMap<>();
         MapLoader maploader=new MapLoader();
-        maploader.loadMap(0);
+        maploader.loadMapNoUI(0);
         objects=maploader.getObjects();
     }
 

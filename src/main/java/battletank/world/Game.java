@@ -16,7 +16,7 @@ public class Game implements IGame {
     private WorldGateway worldGateway;
     private WorldSimulator worldSimulator;
 
-    private HashMap<String, Player> players;
+    private HashMap<String, Player> players=new HashMap<>();
     private ArrayList<PlayerInfo> playersinfo;
 
     public Game(HashMap<String,Player> players){
@@ -51,7 +51,7 @@ public class Game implements IGame {
                     90,
                     100,
                     colors[index]);
-
+            players.put(player.getName(),player);
 
             worldSimulator.addGameObject(player);
             index++;

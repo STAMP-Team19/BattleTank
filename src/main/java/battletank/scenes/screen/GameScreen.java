@@ -33,12 +33,8 @@ public class GameScreen implements Screen {
 
     WorldSimulator worldSimulator;
 
-	static Player player = new Player("Troels", 0,0, 134/4,249/4, 0,0,0,100, PlayerColor.Blue);
     private DeltaTime deltaTime;
 
-    public static Player getPlayer() {
-        return player;
-    }
 
     private static ActionListener input = null;
 
@@ -67,7 +63,6 @@ public class GameScreen implements Screen {
 
         shapeRenderer = new ShapeRenderer();
         setupOnlineGame();
-        Gdx.input.setInputProcessor(input);
 
         this.Ip = IP;
 
@@ -77,6 +72,8 @@ public class GameScreen implements Screen {
         worldSimulator = new WorldSimulator(deltaTime);
         new WorldEventsListener(playerName,worldSimulator,IP);
         input=new ActionListener(playerName, new ActionSender(playerName, IP));
+
+        Gdx.input.setInputProcessor(input);
 	}
 
 	private void setupOnlineGame(){
@@ -133,7 +130,6 @@ public class GameScreen implements Screen {
         */
         }
         batch.end();
-
 
     }
 

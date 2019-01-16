@@ -33,7 +33,6 @@ import spaces.game.connect.ILobbyListener;
 import spaces.game.connect.LobbyCommandsListenerSender;
 import spaces.game.hosting.LobbyProvider;
 
-import static battletank.scenes.screen.GameScreen.player;
 
 public class JoinScreen implements Screen, ILobbyListener {
 
@@ -170,7 +169,7 @@ public class JoinScreen implements Screen, ILobbyListener {
     public void render(float delta) {
 
         if(playgame){
-            game.setScreen(new GameScreen(0, IP, player.getName()));
+            game.setScreen(new GameScreen(0, IP, name));
         }
 
         name = createInputListener.getLastoutput();

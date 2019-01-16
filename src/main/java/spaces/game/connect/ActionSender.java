@@ -40,6 +40,7 @@ public class ActionSender implements IActionSender {
 
     public void notifyAction(Action action) {
         try {
+
             commands.put(new ActionInfo(action, playerName));
         } catch (InterruptedException e) {
             e.printStackTrace();

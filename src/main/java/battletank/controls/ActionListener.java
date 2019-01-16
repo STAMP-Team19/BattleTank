@@ -24,7 +24,6 @@ public class ActionListener extends ApplicationAdapter implements InputProcessor
 
     @Override
     public boolean keyDown(int i) {
-
         String userInput = Input.Keys.toString(i) + "_p";
         Action userAction = controlMapping.get(userInput);
 
