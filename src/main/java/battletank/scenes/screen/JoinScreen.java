@@ -57,6 +57,7 @@ public class JoinScreen implements Screen, ILobbyListener {
     private Texture stopbtnTextureDown;
 
     private Music music;
+    private Music ready;
     private OrthographicCamera camera;
     private long lastDropTime;
     private CreateInputListener createInputListener;
@@ -85,7 +86,7 @@ public class JoinScreen implements Screen, ILobbyListener {
 
     private ArrayList<ImageButton> maplist;
 
-    private int chosenMap;
+    private int chosenMap = -1;
 
     private static Texture backgroundTexture;
     private static Sprite backgroundSprite;
@@ -95,16 +96,20 @@ public class JoinScreen implements Screen, ILobbyListener {
 
         loadTextures();
         setupButtons();
-
-        // load music
-        music = Gdx.audio.newMusic(Gdx.files.internal("src/main/resources/assets/music/music.mp3"));
-        music.setLooping(true);
+        setupSound();
 
         // create the camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
 
         Gdx.input.setInputProcessor(stage); //Start taking input from the ui
+    }
+
+    private void setupSound(){
+        // load music
+        music = Gdx.audio.newMusic(Gdx.files.internal("src/main/resources/assets/music/music.mp3"));
+        music.setLooping(true);
+        ready = Gdx.audio.newMusic(Gdx.files.internal("src/main/resources/assets/music/ready.mp3"));
     }
 
     private void setupButtons(){
@@ -145,9 +150,13 @@ public class JoinScreen implements Screen, ILobbyListener {
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
-                System.out.println("play!" + name);
+                if(chosenMap != -1) {
+                    System.out.println("play!" + name);
 
-                controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.STARTGAME);
+                    controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.STARTGAME);
+                }else {
+                    msg = "You need to choose a map.";
+                }
             }
         });
 
@@ -239,13 +248,14 @@ public class JoinScreen implements Screen, ILobbyListener {
                     for (ImageButton btn: maplist) {
                         btn.setHeight(normalSize);
                         btn.setWidth(normalSize+60);
+                        chosenMap = -1;
                     }
                     if(btn.isChecked()) {
                         btn.setHeight(160);
                         btn.setWidth(160);
                         chosenMap = maplist.indexOf(btn);
-                        System.out.println("map: " + chosenMap);
                     }
+                    System.out.println("map: " + chosenMap);
                 }
             });
         }
@@ -284,7 +294,7 @@ public class JoinScreen implements Screen, ILobbyListener {
     public void render(float delta) {
 
         if(playgame){
-            game.setScreen(new GameScreen(0, IP, name));
+            game.setScreen(new GameScreen(chosenMap, IP, name));
         }
 
         name = createInputListener.getLastoutput();
@@ -354,7 +364,7 @@ public class JoinScreen implements Screen, ILobbyListener {
         game.batch.begin();
         backgroundSprite.draw(game.batch);
         game.font.draw(game.batch, name, 800/2-(name.length()*3), 450);
-        game.font.draw(game.batch, msg, 800/2-(msg.length()*3), 465);
+        game.font.draw(game.batch, msg, 800/2-(msg.length()*3), 400);
         game.font.draw(game.batch, ShowIp, 800/2-(ShowIp.length()*3), 475);
 
         if(joinedPlayersList != null) {
@@ -362,8 +372,6 @@ public class JoinScreen implements Screen, ILobbyListener {
                 game.font.draw(game.batch, joinedPlayersList.get(i).getName(), 800 / 2 - (joinedPlayersList.get(i).getName().length() * 3), i * 20 + 330);
             }
         }
-
-
 
         game.batch.end();
 
@@ -408,14 +416,18 @@ public class JoinScreen implements Screen, ILobbyListener {
     @Override
     public void notifyLobby(ArrayList<PlayerInfo> playersList) {
         joinedPlayersList = playersList;
+        /*
         System.out.println("###########  players joined ############");
         System.out.println(playersList);
         System.out.println("########################################");
+        */
     }
 
     @Override
     public void startGame() {
-        System.out.println("hej nu spiller du");
+        //System.out.println("hej nu spiller du");
+        ready.play();
+        msg = "Starting game....";
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {

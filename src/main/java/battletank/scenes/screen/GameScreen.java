@@ -11,6 +11,7 @@ import battletank.world.gameobjects.Player;
 import battletank.world.gameobjects.PlayerColor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -31,6 +32,8 @@ public class GameScreen implements Screen {
 	SpriteBatch batch;
 	float elapsed;
     MapObjects objects;
+
+    private Music music;
 
     WorldSimulator worldSimulator;
 
@@ -61,6 +64,10 @@ public class GameScreen implements Screen {
 
         batch = new SpriteBatch();
 
+        // load music
+        music = Gdx.audio.newMusic(Gdx.files.internal("src/main/resources/assets/music/music.mp3"));
+        music.setLooping(true);
+
         shapeRenderer = new ShapeRenderer();
         setupOnlineGame();
 
@@ -82,7 +89,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
+        music.play();
     }
 
     @Override
@@ -137,14 +144,16 @@ public class GameScreen implements Screen {
     }
 
     public void pause () {
+	    music.pause();
     }
 
     public void resume () {
+	    music.play();
     }
 
     @Override
     public void hide() {
-
+        music.pause();
     }
 
 
@@ -174,6 +183,7 @@ public class GameScreen implements Screen {
 		txtrBg.dispose();
 		txtrBack.dispose();
 		txtrLevelImage.dispose();
+		music.dispose();
 	}
 
 }
