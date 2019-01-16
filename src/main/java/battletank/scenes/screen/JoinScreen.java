@@ -41,11 +41,18 @@ public class JoinScreen implements Screen, ILobbyListener {
     final MyGame game;
 
     private Texture tankImage;
+
     private Texture playbtn;
     private Texture serverbtnTexture;
     private Texture createserverbtnTexture;
     private Texture leavebtnTexture;
     private Texture stopbtnTexture;
+
+    private Texture playbtnDown;
+    private Texture serverbtnTextureDown;
+    private Texture createserverbtnTextureDown;
+    private Texture leavebtnTextureDown;
+    private Texture stopbtnTextureDown;
 
     private Music music;
     private OrthographicCamera camera;
@@ -75,12 +82,18 @@ public class JoinScreen implements Screen, ILobbyListener {
         this.game = game;
 
         // load the images for the droplet and the bucket, 64x64 pixels each
-        tankImage = new Texture(Gdx.files.internal("src/main/resources/assets/img/Tank.png"));
+        //tankImage = new Texture(Gdx.files.internal("src/main/resources/assets/img/Tank.png"));
         playbtn = new Texture(Gdx.files.internal("src/main/resources/assets/img/playbtn.png"));
         serverbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/editserverbtn.png"));
         createserverbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/createserverbtn.png"));
         leavebtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/Leave.png"));
         stopbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/Stopserverbtn.png"));
+
+        playbtnDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/playbtnDown.png"));
+        serverbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/editserverbtnDown.png"));
+        createserverbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/createserverbtnDown.png"));
+        leavebtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/LeaveDOwn.png"));
+        stopbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/StopserverbtnDown.png"));
 
 
         // load the drop sound effect and the rain background "music"
@@ -99,7 +112,8 @@ public class JoinScreen implements Screen, ILobbyListener {
         Gdx.input.getTextInput(createInputListener, "Write player name", "", "Name of player");
 
         Drawable newurl = new TextureRegionDrawable(new TextureRegion(serverbtnTexture));
-        joinbtn = new ImageButton(newurl);
+        Drawable newurlDown = new TextureRegionDrawable(new TextureRegion(serverbtnTextureDown));
+        joinbtn = new ImageButton(newurl, newurlDown);
 
         joinbtn.addListener(new ChangeListener() {
             @Override
@@ -111,7 +125,8 @@ public class JoinScreen implements Screen, ILobbyListener {
         });
 
         Drawable drawable = new TextureRegionDrawable(new TextureRegion(playbtn));
-        playButton = new ImageButton(drawable);
+        Drawable drawableDown = new TextureRegionDrawable(new TextureRegion(playbtnDown));
+        playButton = new ImageButton(drawable, drawableDown);
 
         playButton.addListener(new ChangeListener() {
             @Override
@@ -123,7 +138,8 @@ public class JoinScreen implements Screen, ILobbyListener {
         });
 
         Drawable drawcreateserver = new TextureRegionDrawable(new TextureRegion(createserverbtnTexture));
-        createButton = new ImageButton(drawcreateserver);
+        Drawable drawcreateserverDown = new TextureRegionDrawable(new TextureRegion(createserverbtnTextureDown));
+        createButton = new ImageButton(drawcreateserver, drawcreateserverDown);
 
         Drawable stopdrawable = new TextureRegionDrawable(new TextureRegion(stopbtnTexture));
 
@@ -163,7 +179,8 @@ public class JoinScreen implements Screen, ILobbyListener {
 
 
         Drawable leaveDrawable = new TextureRegionDrawable(new TextureRegion(leavebtnTexture));
-        leaveBtn = new ImageButton(leaveDrawable);
+        Drawable leaveDrawableDown = new TextureRegionDrawable(new TextureRegion(leavebtnTextureDown));
+        leaveBtn = new ImageButton(leaveDrawable, leaveDrawableDown);
 
         leaveBtn.addListener(new ChangeListener() {
             @Override
