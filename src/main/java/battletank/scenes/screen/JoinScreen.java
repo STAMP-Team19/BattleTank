@@ -19,6 +19,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -86,36 +87,27 @@ public class JoinScreen implements Screen, ILobbyListener {
 
     private int chosenMap;
 
+    private static Texture backgroundTexture;
+    private static Sprite backgroundSprite;
+
     public JoinScreen(final MyGame game) {
         this.game = game;
 
-        // load the images for the droplet and the bucket, 64x64 pixels each
-        //tankImage = new Texture(Gdx.files.internal("src/main/resources/assets/img/Tank.png"));
-        playbtn = new Texture(Gdx.files.internal("src/main/resources/assets/img/playbtn.png"));
-        serverbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/editserverbtn.png"));
-        createserverbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/createserverbtn.png"));
-        leavebtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/Leave.png"));
-        stopbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/Stopserverbtn.png"));
+        loadTextures();
+        setupButtons();
 
-        playbtnDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/playbtnDown.png"));
-        serverbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/editserverbtnDown.png"));
-        createserverbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/createserverbtnDown.png"));
-        leavebtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/LeaveDOwn.png"));
-        stopbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/StopserverbtnDown.png"));
-
-        map1 = new Texture(Gdx.files.internal("src/main/resources/assets/maps/maps/desertmap1new.png"));
-        map2 = new Texture(Gdx.files.internal("src/main/resources/assets/maps/maps/desertmap2new.png"));
-        map3 = new Texture(Gdx.files.internal("src/main/resources/assets/maps/maps/desertmap3new.png"));
-
-        // load the drop sound effect and the rain background "music"
-        //dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
+        // load music
         music = Gdx.audio.newMusic(Gdx.files.internal("src/main/resources/assets/music/music.mp3"));
         music.setLooping(true);
 
-        // create the camera and the SpriteBatch
+        // create the camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
 
+        Gdx.input.setInputProcessor(stage); //Start taking input from the ui
+    }
+
+    private void setupButtons(){
         // all input for screen
         createInputListener = new CreateInputListener();
         joinInputListener = new JoinInputListener();
@@ -171,16 +163,16 @@ public class JoinScreen implements Screen, ILobbyListener {
                 if(!startupDone){return;}
                 joined = true;
                 if(!creater) {
-                System.out.println("create server");
-                //Gdx.input.getTextInput(createInputListener, "Enter name of server", "", "server name");
-                lobby();
-                controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.OPEN);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.JOIN);
+                    System.out.println("create server");
+                    //Gdx.input.getTextInput(createInputListener, "Enter name of server", "", "server name");
+                    lobby();
+                    controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.OPEN);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.JOIN);
 
                     try {
                         InetAddress inetAddress = InetAddress.getLocalHost();
@@ -257,24 +249,35 @@ public class JoinScreen implements Screen, ILobbyListener {
                 }
             });
         }
+    }
 
-        Gdx.input.setInputProcessor(stage); //Start taking input from the ui
+    private void loadTextures() {
+        // load the images for the droplet and the bucket, 64x64 pixels each
+        //tankImage = new Texture(Gdx.files.internal("src/main/resources/assets/img/Tank.png"));
+        playbtn = new Texture(Gdx.files.internal("src/main/resources/assets/img/playbtn.png"));
+        serverbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/editserverbtn.png"));
+        createserverbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/createserverbtn.png"));
+        leavebtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/Leave.png"));
+        stopbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/Stopserverbtn.png"));
 
+        playbtnDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/playbtnDown.png"));
+        serverbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/editserverbtnDown.png"));
+        createserverbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/createserverbtnDown.png"));
+        leavebtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/LeaveDOwn.png"));
+        stopbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/StopserverbtnDown.png"));
+
+        map1 = new Texture(Gdx.files.internal("src/main/resources/assets/maps/maps/desertmap1new.png"));
+        map2 = new Texture(Gdx.files.internal("src/main/resources/assets/maps/maps/desertmap2new.png"));
+        map3 = new Texture(Gdx.files.internal("src/main/resources/assets/maps/maps/desertmap3new.png"));
+
+        backgroundTexture = new Texture("src/main/resources/assets/img/bg.png");
+        backgroundSprite = new Sprite(backgroundTexture);
     }
 
     public void lobby(){
         if(controller==null) {
             controller = new LobbyCommandsListenerSender(name, IP, this);
         }
-    }
-
-    private void spawnRaindrop() {
-        Rectangle drivingTanks = new Rectangle();
-        drivingTanks.x = MathUtils.random(0, 800 - 64);
-        drivingTanks.y = 480;
-        drivingTanks.width = 64;
-        drivingTanks.height = 64;
-        lastDropTime = TimeUtils.nanoTime();
     }
 
     @Override
@@ -349,6 +352,7 @@ public class JoinScreen implements Screen, ILobbyListener {
         // begin a new batch and draw the bucket and
         // all drops
         game.batch.begin();
+        backgroundSprite.draw(game.batch);
         game.font.draw(game.batch, name, 800/2-(name.length()*3), 450);
         game.font.draw(game.batch, msg, 800/2-(msg.length()*3), 465);
         game.font.draw(game.batch, ShowIp, 800/2-(ShowIp.length()*3), 475);
@@ -358,6 +362,8 @@ public class JoinScreen implements Screen, ILobbyListener {
                 game.font.draw(game.batch, joinedPlayersList.get(i).getName(), 800 / 2 - (joinedPlayersList.get(i).getName().length() * 3), i * 20 + 330);
             }
         }
+
+
 
         game.batch.end();
 
