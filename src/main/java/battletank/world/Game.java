@@ -8,6 +8,7 @@ import battletank.world.gameobjects.Player;
 import battletank.world.gameobjects.PlayerColor;
 import spaces.game.hosting.WorldGateway;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ public class Game implements IGame {
     private WorldSimulator worldSimulator;
 
     private HashMap<String, Player> players;
-    private HashMap<String, PlayerInfo> playersinfo;
+    private ArrayList<PlayerInfo> playersinfo;
 
     public Game(HashMap<String,Player> players){
         this.players=players;
@@ -30,7 +31,7 @@ public class Game implements IGame {
         new Thread(worldSimulator).start();
     }
 
-    public Game(GameRules rules, HashMap<String,PlayerInfo> playersinfo){
+    public Game(GameRules rules, ArrayList<PlayerInfo> playersinfo){
         this.playersinfo = playersinfo;
 
         int index = 0;
@@ -38,8 +39,8 @@ public class Game implements IGame {
         double[] yCoord = {416,416,672,96};
         PlayerColor[] colors = PlayerColor.values();
 
-        for(String playerName : playersinfo.keySet()){
-            Player player = new Player(playerName,
+        for(PlayerInfo playerInfo : playersinfo){
+            Player player = new Player(playerInfo.getName(),
                     (int)xCoord[index],
                     (int)yCoord[index],
                     134/4,
