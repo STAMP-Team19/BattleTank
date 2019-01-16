@@ -81,7 +81,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         }
         for (GameObject subject : simulatedEvents.keySet()) {
             if(subject==gameObject){
-                break;
+                continue;
             }
             if (collisionChecker.checkCollision(gameObject,subject)!=null) {
                 // collision happened
