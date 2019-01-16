@@ -9,6 +9,11 @@ import battletank.world.events.rotations.StopRotation;
 import battletank.world.events.transitions.StartTransition;
 import battletank.world.events.transitions.StopTransition;
 import battletank.world.gameobjects.GameObject;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +26,14 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     private Map<GameObject, Map<String, Event>> simulatedEvents;
 
     private DeltaTime updateTime;
+    private MapObjects objects;
 
     public WorldSimulator(DeltaTime dt){
         updateTime=dt;
         simulatedEvents = new ConcurrentHashMap<>();
+        MapLoader maploader=new MapLoader();
+        maploader.loadMap(0);
+        objects=maploader.getObjects();
     }
 
     @Override
@@ -52,15 +61,40 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public void handle(GameObject gameObject, StartTransition transition){
+        double oldX = gameObject.getPositionX();
+        double oldY = gameObject.getPositionY();
         double timeSeconds = updateTime.last()/1000;
         double aRadians = gameObject.getRotation()*Math.PI/180;
 
         double newX = gameObject.getPositionX()+ timeSeconds *transition.getTransitionSpeed()*Math.cos(aRadians);
         double newY = gameObject.getPositionY()+ timeSeconds *transition.getTransitionSpeed()*Math.sin(aRadians);
-        //TODO: Check collision
 
         gameObject.setPositionX(newX);
         gameObject.setPositionY(newY);
+
+        CollisionChecker collisionChecker= new CollisionChecker();
+
+        // there are several other types, Rectangle is probably the most common one
+        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+
+            if (collisionChecker.checkCollision(gameObject,rectangleObject)!=null) {
+                // collision happened
+                gameObject.setPositionX(oldX);
+                gameObject.setPositionY(oldY);
+            }
+        }
+        for (GameObject subject : simulatedEvents.keySet()) {
+            if(subject==gameObject){
+                break;
+            }
+            if (collisionChecker.checkCollision(gameObject,subject)!=null) {
+                // collision happened
+                gameObject.setPositionX(oldX);
+                gameObject.setPositionY(oldY);
+            }
+        }
+
+
 
     }
 
