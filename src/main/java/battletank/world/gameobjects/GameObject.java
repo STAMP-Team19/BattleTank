@@ -1,5 +1,7 @@
 package battletank.world.gameobjects;
 
+import com.badlogic.gdx.math.Rectangle;
+
 public abstract class GameObject {
 
     String name;
@@ -13,10 +15,11 @@ public abstract class GameObject {
     double rotation;
     double rotationSpeed;
     int healthpoints;
+    PlayerColor color;
 
     boolean hidden;
 
-    public GameObject(String name, int positionX, int positionY, int width, int height, int rotation, int speed, int rotationSpeed, int healthpoints) {
+    public GameObject(String name, int positionX, int positionY, int width, int height, int rotation, int speed, int rotationSpeed, int healthpoints, PlayerColor color) {
         this.name = name;
         this.positionX = positionX;
         this.positionY = positionY;
@@ -27,6 +30,7 @@ public abstract class GameObject {
         this.rotationSpeed = rotationSpeed;
         this.healthpoints = healthpoints;
         this.hidden = false;
+        this.color = color;
     }
 
     public boolean isHidden() {
@@ -116,6 +120,21 @@ public abstract class GameObject {
     public int getHealthpoints() {
         return healthpoints;
     }
+
+    public Rectangle getBody() {
+        //System.out.println("x: " + positionX + " + y: " + positionY);
+        float collisionWidth = (float)Math.min(width,height);
+
+        return new Rectangle((float)(positionX+getOriginX()-collisionWidth/2), (float)(positionY+getOriginY()-collisionWidth/2), collisionWidth,collisionWidth);
+    }
+    public double getOriginX(){
+        return getWidth()/2;
+    }
+
+    public double getOriginY(){
+        return (getHeight()*(1-(0.36/2.11)))/2;
+    }
+
 
 
 

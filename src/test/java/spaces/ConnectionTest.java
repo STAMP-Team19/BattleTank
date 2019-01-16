@@ -5,6 +5,7 @@ import battletank.world.DeltaTime;
 import battletank.world.Game;
 import battletank.world.WorldSimulator;
 import battletank.world.gameobjects.Player;
+import battletank.world.gameobjects.PlayerColor;
 import spaces.game.connect.ActionSender;
 import spaces.game.connect.WorldEventsListener;
 import spaces.game.hosting.GameHost;
@@ -15,7 +16,7 @@ public class ConnectionTest {
 
     public static void main(String[] args) {
         HashMap<String, Player> players = new HashMap<>();
-        players.put("name", new Player("name", 1, 1, 0, 0, 1, 10, 10,1));
+        players.put("name", new Player("name", 1, 1, 0, 0, 1, 10, 10,1, PlayerColor.Blue));
         GameHost host = new GameHost(new Game(players) {
         });
         new WorldEventsListener("name",new WorldSimulator(new DeltaTime()));

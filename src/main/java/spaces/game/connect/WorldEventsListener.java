@@ -45,12 +45,11 @@ class WorldObserver implements Runnable{
                 Object[] event = world.get(new ActualField(username),
                         new FormalField(GameObject.class),
                         new FormalField(Event.class));
-
+                if(event==null){
+                    continue;
+                }
                 GameObject target = (GameObject) event[1];
                 Event targetEvent = (Event) event[2];
-
-                System.out.println(target.getName()+": "+targetEvent.getClass().getSimpleName());
-                System.out.println("x: "+ target.getPositionX()+" y: "+target.getPositionY());
 
                 worldSimulator.setGameObject(target);
                 worldSimulator.addEvent(target,targetEvent);
