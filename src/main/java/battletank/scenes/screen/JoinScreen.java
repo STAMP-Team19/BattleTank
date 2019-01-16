@@ -78,6 +78,13 @@ public class JoinScreen implements Screen, ILobbyListener {
 
     static LobbyCommandsListenerSender controller;
 
+    private Texture map1;
+    private Texture map2;
+    private Texture map3;
+
+    private ArrayList<ImageButton> maplist;
+
+    private int chosenMap;
 
     public JoinScreen(final MyGame game) {
         this.game = game;
@@ -96,6 +103,9 @@ public class JoinScreen implements Screen, ILobbyListener {
         leavebtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/LeaveDOwn.png"));
         stopbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/StopserverbtnDown.png"));
 
+        map1 = new Texture(Gdx.files.internal("src/main/resources/assets/maps/maps/desertmap1new.png"));
+        map2 = new Texture(Gdx.files.internal("src/main/resources/assets/maps/maps/desertmap2new.png"));
+        map3 = new Texture(Gdx.files.internal("src/main/resources/assets/maps/maps/desertmap3new.png"));
 
         // load the drop sound effect and the rain background "music"
         //dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
@@ -111,6 +121,17 @@ public class JoinScreen implements Screen, ILobbyListener {
         joinInputListener = new JoinInputListener();
 
         Gdx.input.getTextInput(createInputListener, "Write player name", "", "Name of player");
+
+        Drawable map1Draw = new TextureRegionDrawable(new TextureRegion(map1));
+        Drawable map2Draw = new TextureRegionDrawable(new TextureRegion(map2));
+        Drawable map3Draw = new TextureRegionDrawable(new TextureRegion(map3));
+
+        maplist = new ArrayList<>();
+
+        maplist.add(new ImageButton(map1Draw));
+        maplist.add(new ImageButton(map2Draw));
+        maplist.add(new ImageButton(map3Draw));
+
 
         Drawable newurl = new TextureRegionDrawable(new TextureRegion(serverbtnTexture));
         Drawable newurlDown = new TextureRegionDrawable(new TextureRegion(serverbtnTextureDown));
@@ -207,6 +228,36 @@ public class JoinScreen implements Screen, ILobbyListener {
         stage.addActor(createButton);
         stage.addActor(playButton); //Add the button to the stage to perform rendering and take input.
         stage.addActor(leaveBtn);
+
+        int x = 163;
+        int y = 240;
+        int f = 1;
+        int normalSize = 90;
+
+        for (ImageButton btn: maplist){
+            btn.setHeight(normalSize);
+            btn.setWidth(normalSize+60);
+            btn.setPosition(x*f, y);
+            stage.addActor(btn);
+            f++;
+
+            btn.addListener(new ChangeListener(){
+                @Override
+                public void changed(ChangeEvent changeEvent, Actor actor) {
+                    for (ImageButton btn: maplist) {
+                        btn.setHeight(normalSize);
+                        btn.setWidth(normalSize+60);
+                    }
+                    if(btn.isChecked()) {
+                        btn.setHeight(160);
+                        btn.setWidth(160);
+                        chosenMap = maplist.indexOf(btn);
+                        System.out.println("map: " + chosenMap);
+                    }
+                }
+            });
+        }
+
         Gdx.input.setInputProcessor(stage); //Start taking input from the ui
 
     }
