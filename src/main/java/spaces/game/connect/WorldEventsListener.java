@@ -45,9 +45,7 @@ class WorldObserver implements Runnable{
                 Object[] event = world.get(new ActualField(username),
                         new FormalField(GameObject.class),
                         new FormalField(Event.class));
-                if(event==null){
-                    continue;
-                }
+
                 GameObject target = (GameObject) event[1];
                 Event targetEvent = (Event) event[2];
 

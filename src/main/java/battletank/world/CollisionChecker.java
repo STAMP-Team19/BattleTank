@@ -27,6 +27,8 @@ public class CollisionChecker {
             boolean collisionRight = collider.x<subject.x+subject.width;
             boolean collisionLeft  = collider.x+collider.width> subject.x;
 
+
+
             System.out.println("VALUE"+collider.x);
 
             return new Collision();
