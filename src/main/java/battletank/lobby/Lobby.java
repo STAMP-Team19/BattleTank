@@ -25,7 +25,7 @@ public class Lobby {
         this.hostname = hostname;
         this.lobbyspace = lobbyspace;
 
-        new Thread(new CommandsListener(lobbyspace, numberOfMaxPlayers, rules, spaceRepository)).start();
+        new Thread(new CommandsListener(lobbyspace, numberOfMaxPlayers, rules, spaceRepository, hostname)).start();
     }
 
     public int getNumberOfMaxPlayers() {
@@ -44,6 +44,7 @@ public class Lobby {
 
 class CommandsListener implements Runnable{
 
+    String hostname;
     GameRules rules;
     SequentialSpace lobbyspace;
     ArrayList<PlayerInfo> info;
@@ -54,7 +55,8 @@ class CommandsListener implements Runnable{
 
     SpaceRepository spaceRepository;
 
-    CommandsListener(SequentialSpace lobbyspace, int numberOfMaxPlayers, GameRules rules, SpaceRepository spaceRepository){
+    CommandsListener(SequentialSpace lobbyspace, int numberOfMaxPlayers, GameRules rules, SpaceRepository spaceRepository, String hostname){
+        this.hostname = hostname;
         this.lobbyspace = lobbyspace;
         this.numberOfMaxPlayers = numberOfMaxPlayers;
         this.rules = rules;
@@ -84,7 +86,9 @@ class CommandsListener implements Runnable{
 
                 switch(com){
                     case JOIN:
-                        if(numberOfActualPlayers<numberOfMaxPlayers && isOpen) {
+                        if(numberOfActualPlayers<numberOfMaxPlayers
+                                && isOpen
+                                && !info.contains(playerInfo)) {
                             info.add(playerInfo);
                             playerinfodata = gson.toJson(info);
                             for (PlayerInfo player : info) {
@@ -103,7 +107,7 @@ class CommandsListener implements Runnable{
                         break;
 
                     case LEAVE:
-                        info.remove(playerInfo.getName());
+                        info.remove(playerInfo);
                         playerinfodata = gson.toJson(info);
                         for (PlayerInfo player : info) {
                             lobbyspace.put(player.getName(), playerinfodata, LOBBYCOMMANDS.REFRESH);
@@ -128,7 +132,9 @@ class CommandsListener implements Runnable{
                         break;
 
                     case STARTGAME:
-                        if(numberOfActualPlayers==numberOfMaxPlayers && isOpen){
+                        if(numberOfActualPlayers==numberOfMaxPlayers
+                                && isOpen
+                                && playerInfo.getName().equals(hostname)){
                             playerinfodata = gson.toJson(info);
                             for (PlayerInfo player : info) {
                                 lobbyspace.put(player.getName(), playerinfodata, LOBBYCOMMANDS.STARTGAME);
