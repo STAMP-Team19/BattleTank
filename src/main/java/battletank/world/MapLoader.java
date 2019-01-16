@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 public class MapLoader {
 
+    private Boolean loaded = false;
 
     private OrthographicCamera camera;
 
@@ -20,29 +21,45 @@ public class MapLoader {
 
     public void loadMap(int level){
 
-        switch (level){
-            case 0:
-                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/desertmap2/desertmap1new.tmx");
-                break;
-            case 1:
-                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/maps/desertmap2new.tmx");
-                break;
-            default:
-                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/maps/desertmap1new.tmx");
-                break;
+        Gdx.app.postRunnable(() -> {
+
+            System.out.println(this);
+
+            System.out.println("POSTrun");
+
+            switch (level){
+                case 0:
+                    tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/desertmap2/desertmap1new.tmx");
+                    break;
+                case 1:
+                    tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/maps/desertmap2new.tmx");
+                    break;
+                default:
+                    tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/maps/desertmap1new.tmx");
+                    break;
+            }
+
+            tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+
+            int objectLayerId = tiledMap.getLayers().getIndex("Collidables");
+
+            MapLayer collisionObjectLayer = tiledMap.getLayers().get(objectLayerId);
+            objects = collisionObjectLayer.getObjects();
+
+            loaded = true;
+            System.out.println("POST DONE : " + loaded);
+        });
+
+        System.out.println(this);
+
+        while(!loaded){
+            try {
+                System.out.println("NOT loaded : " + loaded);
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-
-        int objectLayerId = tiledMap.getLayers().getIndex("Collidables");
-
-        MapLayer collisionObjectLayer = tiledMap.getLayers().get(objectLayerId);
-        objects = collisionObjectLayer.getObjects();
-
-        String name = collisionObjectLayer.getName();
-        float opacity = collisionObjectLayer.getOpacity();
-        boolean isVisible = collisionObjectLayer.isVisible();
-
         //System.out.println("obj til col: " + objects.getCount() + "  name: " + name + "op: " + opacity + "isvis: " + isVisible);
 
     }
