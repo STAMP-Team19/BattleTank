@@ -58,6 +58,8 @@ public class JoinScreen implements Screen, ILobbyListener {
 
     private String msg = "";
 
+    private String IP = "0.0.0.0";
+
     ImageButton joinbtn;
     ImageButton playButton;
     ImageButton createButton;
@@ -83,23 +85,9 @@ public class JoinScreen implements Screen, ILobbyListener {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
 
-        // create a Rectangle to logically represent the bucket
-        bucket = new Rectangle();
-        bucket.x = 800 / 2 - 64 / 2; // center the bucket horizontally
-        bucket.y = 20; // bottom left corner of the bucket is 20 pixels above
-        // the bottom screen edge
-        bucket.width = 64;
-        bucket.height = 64;
-
-
-
-        // create the raindrops array and spawn the first raindrop
-        raindrops = new Array<Rectangle>();
-        spawnRaindrop();
-
-
         // all input for screen
         createInputListener = new CreateInputListener();
+        joinInputListener = new JoinInputListener();
 
         Gdx.input.getTextInput(createInputListener, "Write player name", "", "Name of player");
 
@@ -110,14 +98,7 @@ public class JoinScreen implements Screen, ILobbyListener {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
                 System.out.println("Enter new server");
-                //Gdx.input.getTextInput(joinInputListener, "Write IP of server", "", "IP");
-                lobby();
-                System.out.println("Lobby Open: "+controller.isLobbyOpen());
-                if (controller.isLobbyOpen()) {
-                    controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.JOIN);
-                }else {
-                    msg ="There is no server running to join";
-                }
+                Gdx.input.getTextInput(joinInputListener, "Write IP of server", "", "IP");
             }
         });
 
@@ -141,11 +122,6 @@ public class JoinScreen implements Screen, ILobbyListener {
             public void changed (ChangeEvent event, Actor actor) {
                 System.out.println("create server");
                 //Gdx.input.getTextInput(createInputListener, "Enter name of server", "", "server name");
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 lobby();
                 controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.OPEN);
                 try {
@@ -174,7 +150,7 @@ public class JoinScreen implements Screen, ILobbyListener {
     }
 
     public void lobby(){
-        controller = new LobbyCommandsListenerSender(name,"IP",this);
+        controller = new LobbyCommandsListenerSender(name,IP,this);
     }
 
     private void spawnRaindrop() {
@@ -192,6 +168,27 @@ public class JoinScreen implements Screen, ILobbyListener {
 
         name = createInputListener.getLastoutput();
 
+
+        if(joinInputListener.getInputgiven()){
+            IP = joinInputListener.getLastoutput();
+            try {
+            lobby();
+            System.out.println("Lobby Open: "+controller.isLobbyOpen());
+            if (controller.isLobbyOpen()) {
+
+                    controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.JOIN);
+
+            }else {
+                msg ="There is no server running to join";
+            }
+            joinInputListener.setInputgiven(false);
+            }
+            catch (Exception e){
+                msg ="Host unreachable";
+            }
+        }
+
+
         // activate and deaktivate buttons.
 
         if(name == ""){
@@ -204,16 +201,6 @@ public class JoinScreen implements Screen, ILobbyListener {
             joinbtn.setDisabled(false);
             createButton.setDisabled(false);
         }
-
-        /*
-        if(joinedPlayersList.size() < 2){
-
-        }
-        else {
-            joinbtn.setDisabled(false);
-        }
-        */
-
 
         // clear the screen with a dark blue color. The
         // arguments to glClearColor are the red, green
@@ -233,15 +220,7 @@ public class JoinScreen implements Screen, ILobbyListener {
         // all drops
         game.batch.begin();
         game.font.draw(game.batch, name, 800/2, 450);
-
         game.font.draw(game.batch, msg, 800/2, 470);
-
-        //game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, 480);
-        //game.batch.draw(playbtn, bucket.x, bucket.y, bucket.width*2, bucket.height);
-
-        for (Rectangle raindrop : raindrops) {
-            game.batch.draw(tankImage, raindrop.x, raindrop.y);
-        }
 
         if(joinedPlayersList != null) {
             for (int i = 0; i < joinedPlayersList.size(); i++) {
@@ -249,45 +228,7 @@ public class JoinScreen implements Screen, ILobbyListener {
             }
         }
 
-
-        /*
-        int i = 0;
-        for (PlayerInfo info : joinedPlayersList) {
-            game.font.draw(game.batch, info.toString(), 800/2-(info.toString().length()*3), i*20+330);
-            i++;
-        }
-        */
-        /*
-        if (joinedPlayersList != null) {
-            for (Map.Entry<String, PlayerInfo> entry : joinedPlayersList.entrySet()) {
-                System.out.println(entry.getKey() + "/" + entry.getValue().getName());
-                game.font.draw(game.batch, entry.getValue().getName(), 800 / 2 - (entry.getValue().getName().length() * 3), i * 20 + 330);
-                i++;
-            }
-        }
-        */
-
         game.batch.end();
-
-        // check if we need to create a new raindrop
-        if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
-            spawnRaindrop();
-
-        // move the raindrops, remove any that are beneath the bottom edge of
-        // the screen or that hit the bucket. In the later case we increase the
-        // value our drops counter and add a sound effect.
-        Iterator<Rectangle> iter = raindrops.iterator();
-        while (iter.hasNext()) {
-            Rectangle raindrop = iter.next();
-            raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
-            if (raindrop.y + 64 < 0)
-                iter.remove();
-            if (raindrop.overlaps(bucket)) {
-                dropsGathered++;
-              //  dropSound.play();
-                iter.remove();
-            }
-        }
 
         stage.act(Gdx.graphics.getDeltaTime()); //Perform ui logic
         stage.draw(); //Draw the ui
@@ -307,14 +248,17 @@ public class JoinScreen implements Screen, ILobbyListener {
 
     @Override
     public void hide() {
+        music.pause();
     }
 
     @Override
     public void pause() {
+        music.pause();
     }
 
     @Override
     public void resume() {
+        music.play();
     }
 
     @Override
