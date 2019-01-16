@@ -144,8 +144,7 @@ class CommandsListener implements Runnable{
                         break;
 
                     case STARTGAME:
-                        if(numberOfActualPlayers==numberOfMaxPlayers
-                                && isOpen
+                        if(isOpen
                                 && playerInfo.getName().equals(hostname)){
                             playerinfodata = gson.toJson(info);
                             for (PlayerInfo player : info) {

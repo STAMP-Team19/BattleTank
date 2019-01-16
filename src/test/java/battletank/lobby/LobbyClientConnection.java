@@ -40,7 +40,7 @@ public class LobbyClientConnection{
         Thread.sleep(1000);
         controller.sendCommand(new PlayerInfo("Mads"), LOBBYCOMMANDS.JOIN);
         Thread.sleep(1000);
-        controller.sendCommand(new PlayerInfo("Peter"), LOBBYCOMMANDS.DELETELOBBY);
+        controller.sendCommand(new PlayerInfo("Peter"), LOBBYCOMMANDS.STARTGAME);
 
         System.out.println("Lobby Open: "+controller.isLobbyOpen());
 
