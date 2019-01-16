@@ -38,6 +38,7 @@ import spaces.game.hosting.LobbyProvider;
 
 public class JoinScreen implements Screen, ILobbyListener {
 
+    boolean startupDone= false;
     final MyGame game;
 
     Texture tankImage;
@@ -131,6 +132,7 @@ public class JoinScreen implements Screen, ILobbyListener {
         createButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
+                if(!startupDone){return;}
                 System.out.println("create server");
                 //Gdx.input.getTextInput(createInputListener, "Enter name of server", "", "server name");
                 lobby();
@@ -179,11 +181,12 @@ public class JoinScreen implements Screen, ILobbyListener {
         stage.addActor(leaveBtn);
         Gdx.input.setInputProcessor(stage); //Start taking input from the ui
 
-
     }
 
     public void lobby(){
-        controller = new LobbyCommandsListenerSender(name,IP,this);
+        if(controller==null) {
+            controller = new LobbyCommandsListenerSender(name, IP, this);
+        }
     }
 
     private void spawnRaindrop() {
@@ -206,7 +209,7 @@ public class JoinScreen implements Screen, ILobbyListener {
         name = createInputListener.getLastoutput();
 
 
-        if(joinInputListener.getInputgiven()){
+        if(joinInputListener.getInputgiven()&&startupDone){
             IP = joinInputListener.getLastoutput();
             try {
             lobby();
@@ -238,6 +241,10 @@ public class JoinScreen implements Screen, ILobbyListener {
             if(provider == null){
                 provider = new LobbyProvider();
                 provider.createLobby(name, 4, new GameRules());
+            }
+
+            if(provider.isDone()){
+                startupDone=true;
             }
         }
 

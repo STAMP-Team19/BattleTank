@@ -32,4 +32,8 @@ public class LobbyProvider {
     private void openGates(){
         spaceRepository.addGate(uri);
     }
+
+    public boolean isDone() {
+        return lobby.isDone();
+    }
 }

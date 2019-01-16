@@ -24,7 +24,6 @@ public class LobbyCommandsListenerSender implements ILobbyCommandsSender {
         String uri = "tcp://"+ip+":9002/lobby?keep";
         try {
             lobbyspace = new RemoteSpace(uri);
-
             new Thread(new LobbyObserver(lobbyspace, username, listener)).start();
         } catch (IOException e) {
             e.printStackTrace();

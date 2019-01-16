@@ -14,6 +14,8 @@ import java.util.HashMap;
 
 public class Lobby {
 
+    public static boolean isReady=false;
+
     private int numberOfMaxPlayers;
     private String hostname;
     private Game game;
@@ -40,6 +42,9 @@ public class Lobby {
         return game;
     }
 
+    public boolean isDone() {
+        return isReady;
+    }
 }
 
 class CommandsListener implements Runnable{
@@ -85,7 +90,7 @@ class CommandsListener implements Runnable{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        Lobby.isReady = true;
         loop: while(true){
             Gson gson = new Gson();
             String playerinfodata;
