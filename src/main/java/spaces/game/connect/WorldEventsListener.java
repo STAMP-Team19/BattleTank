@@ -23,6 +23,18 @@ public class WorldEventsListener {
             e.printStackTrace();
         }
     }
+
+
+    public WorldEventsListener(String username, WorldSimulator worldSimulator, String ip){
+        String uri = "tcp://" + ip + ":9001/world?keep";
+        try {
+            world = new RemoteSpace(uri);
+
+            new Thread(new WorldObserver(world, username,worldSimulator)).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 class WorldObserver implements Runnable{

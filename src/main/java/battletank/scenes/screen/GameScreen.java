@@ -14,15 +14,9 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Rectangle;
 import spaces.game.connect.ActionSender;
 import spaces.game.connect.WorldEventsListener;
 import spaces.game.hosting.GameHost;
@@ -56,11 +50,12 @@ public class GameScreen implements Screen {
 	private Texture txtrBack;
 	private Texture txtrLevelImage;
 	private ShapeRenderer shapeRenderer;
+	private String Ip;
 
 	// Current level
 	private int level;
 
-	public GameScreen(Integer level) {
+	public GameScreen(Integer level, String IP, String playerName) {
 		super();
         this.level = level.intValue();
         camera = new OrthographicCamera();
@@ -74,21 +69,18 @@ public class GameScreen implements Screen {
         setupOnlineGame();
         Gdx.input.setInputProcessor(input);
 
-
+        this.Ip = IP;
 
         loadMap(level);
+
+        deltaTime=new DeltaTime();
+        worldSimulator = new WorldSimulator(deltaTime);
+        new WorldEventsListener(playerName,worldSimulator,IP);
+        input=new ActionListener(playerName, new ActionSender(playerName, IP));
 	}
 
 	private void setupOnlineGame(){
-        HashMap<String, Player> players = new HashMap<>();
-        Player player =new Player("Troels", 96,416, 134/4,249/4, 90,50,90,100, PlayerColor.Blue);
-        players.put(player.getName(), player);
-        GameHost host = new GameHost(new Game(players) {
-        });
-        deltaTime=new DeltaTime();
-        worldSimulator = new WorldSimulator(deltaTime);
-        new WorldEventsListener(player.getName(),worldSimulator);
-        input=new ActionListener(player.getName(), new ActionSender(player.getName()));
+
     }
 
     @Override

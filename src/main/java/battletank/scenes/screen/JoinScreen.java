@@ -108,8 +108,9 @@ public class JoinScreen implements Screen, ILobbyListener {
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
-                System.out.println("play!");
-                game.setScreen(new GameScreen(0));
+                System.out.println("play!" + name);
+
+                controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.STARTGAME);
             }
         });
 
@@ -279,7 +280,8 @@ public class JoinScreen implements Screen, ILobbyListener {
 
     @Override
     public void startGame() {
-
+        System.out.println("hej nu spiller du");
+        game.setScreen(new GameScreen(0, IP, player.getName()));
     }
 
     @Override
