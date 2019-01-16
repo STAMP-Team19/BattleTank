@@ -18,7 +18,7 @@ public class LobbyClientConnection{
         Thread.sleep(1000);
 
         LobbyCommandsListenerSender controller =
-                new LobbyCommandsListenerSender("Peter", new LobbyClientTest());
+                new LobbyCommandsListenerSender("Peter","0.0.0.0", new LobbyClientTest());
 
         System.out.println("Lobby Open: "+controller.isLobbyOpen());
 

@@ -174,7 +174,7 @@ public class JoinScreen implements Screen, ILobbyListener {
     }
 
     public void lobby(){
-        controller = new LobbyCommandsListenerSender(name,this);
+        controller = new LobbyCommandsListenerSender(name,"IP",this);
     }
 
     private void spawnRaindrop() {
