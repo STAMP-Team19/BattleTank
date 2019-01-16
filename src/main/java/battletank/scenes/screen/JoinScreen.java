@@ -56,6 +56,8 @@ public class JoinScreen implements Screen, ILobbyListener {
     Stage stage;
     private String name = "";
 
+    private String msg = "";
+
     ImageButton joinbtn;
     ImageButton playButton;
     ImageButton createButton;
@@ -111,7 +113,11 @@ public class JoinScreen implements Screen, ILobbyListener {
                 //Gdx.input.getTextInput(joinInputListener, "Write IP of server", "", "IP");
                 lobby();
                 System.out.println("Lobby Open: "+controller.isLobbyOpen());
-                controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.JOIN);
+                if (controller.isLobbyOpen()) {
+                    controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.JOIN);
+                }else {
+                    msg ="There is no server running to join";
+                }
             }
         });
 
@@ -135,10 +141,6 @@ public class JoinScreen implements Screen, ILobbyListener {
             public void changed (ChangeEvent event, Actor actor) {
                 System.out.println("create server");
                 //Gdx.input.getTextInput(createInputListener, "Enter name of server", "", "server name");
-
-                LobbyProvider provider = new LobbyProvider();
-
-                provider.createLobby(name, 4, new GameRules());
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -195,6 +197,8 @@ public class JoinScreen implements Screen, ILobbyListener {
         if(name == ""){
             joinbtn.setDisabled(true);
             createButton.setDisabled(true);
+            LobbyProvider provider = new LobbyProvider();
+            provider.createLobby(name, 4, new GameRules());
         }
         else {
             joinbtn.setDisabled(false);
@@ -229,6 +233,8 @@ public class JoinScreen implements Screen, ILobbyListener {
         // all drops
         game.batch.begin();
         game.font.draw(game.batch, name, 800/2, 450);
+
+        game.font.draw(game.batch, msg, 800/2, 470);
 
         //game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, 480);
         //game.batch.draw(playbtn, bucket.x, bucket.y, bucket.width*2, bucket.height);
