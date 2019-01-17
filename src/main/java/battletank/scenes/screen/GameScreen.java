@@ -54,6 +54,8 @@ public class GameScreen implements Screen {
 	private ShapeRenderer shapeRenderer;
 	private String Ip;
 
+	private TextureRegion textureRegion = new TextureRegion();
+
 	private ColorTextureMapper colorTextureMapper = new ColorTextureMapper();
 
 	Map<PlayerColor, Texture> textureMap = new EnumMap<PlayerColor, Texture>(PlayerColor.class);
@@ -131,7 +133,9 @@ public class GameScreen implements Screen {
                 textureMap.put(player.getColor(), texture);
             }
 
-            batch.draw(new TextureRegion(texture),
+            textureRegion.setRegion(texture);
+
+            batch.draw(textureRegion,
                     (float) player.getPositionX(),
                     (float) player.getPositionY(),
                     (float) player.getOriginX(),
