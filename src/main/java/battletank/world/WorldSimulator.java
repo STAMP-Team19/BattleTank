@@ -25,7 +25,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     private Map<GameObject,Long> lastShot;
 
-    private Set<Player> deadPlayers =new HashSet<>();
+    private Set<GameObject> deadPlayers =new HashSet<>();
 
     private DeltaTime updateTime;
     private MapObjects objects;
@@ -105,6 +105,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
                 }
             }
         }
+
         for (GameObject subject : simulatedEvents.keySet()) {
 
             if(subject.equals(gameObject)){
@@ -165,7 +166,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     @Override
     public void handle(GameObject gameObject, DestroyGameObject destroyGameObject) {
         if(gameObject instanceof Player){
-            deadPlayers.add((Player)gameObject);
+            deadPlayers.add(gameObject);
         }
         simulatedEvents.remove(gameObject);
     }
@@ -228,7 +229,13 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     }
 
     public List<GameObject> getGameObjects(){
-        return new ArrayList<>(simulatedEvents.keySet());
+
+        Set<GameObject> objects =simulatedEvents.keySet();
+        for(GameObject deadPlayer: deadPlayers){
+            objects.remove(deadPlayer);
+        }
+
+        return new ArrayList<>(objects);
     }
 
     public void setGameObject(GameObject target) {
