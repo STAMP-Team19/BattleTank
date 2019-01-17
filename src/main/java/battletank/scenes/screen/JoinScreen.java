@@ -145,7 +145,6 @@ public class JoinScreen implements Screen, ILobbyListener {
                 System.out.println("Enter new server");
                 Gdx.input.getTextInput(joinInputListener, "Write IP of server", "", "IP");
                 joined = true;
-                throw new MadsException();
             }
         });
 
