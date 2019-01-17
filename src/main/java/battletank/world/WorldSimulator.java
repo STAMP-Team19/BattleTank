@@ -104,9 +104,6 @@ public class WorldSimulator  implements EventVisitor,Runnable{
                 gameObject.setPositionY(oldY);
 
                 if(gameObject instanceof Projectile){
-                    System.out.println("Object collection");
-                    System.out.println(gameObject+ " " + subject);
-                    System.out.println(gameObject.getName()+ " "+subject.getName());
                     Event subjectDestroyer = new DestroyGameObject(0);
                     Event colliderDestroyer= new DestroyGameObject(0);
                     subjectDestroyer.accept(subject,this);
