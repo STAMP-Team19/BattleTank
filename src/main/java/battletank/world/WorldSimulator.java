@@ -110,10 +110,20 @@ public class WorldSimulator  implements EventVisitor,Runnable{
             if(subject.equals(gameObject)){
                 continue;
             }
-            if (collisionChecker.checkCollision(gameObject,subject)!=null) {
+
+            Collision collision=collisionChecker.checkCollision(gameObject,subject);
+            if (collision!=null) {
                 // collision happened
-                gameObject.setPositionX(oldX);
-                gameObject.setPositionY(oldY);
+                if(collision.collisionHorisontal)
+                {
+                    gameObject.setPositionX(oldX);
+
+                }
+                if (collision.collisionVertical)
+                {
+                    gameObject.setPositionY(oldY);
+                }
+
 
                 if(gameObject instanceof Projectile){
                     Event subjectDestroyer = new DestroyGameObject(0);
