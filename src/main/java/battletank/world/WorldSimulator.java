@@ -210,7 +210,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         }
     }
 
-    public void addEvent(GameObject go, Event event) {
+    public synchronized void addEvent(GameObject go, Event event) {
         if(deadPlayers.contains(go)){
             return;
         }
