@@ -2,8 +2,6 @@ package battletank.world;
 
 import battletank.lobby.PlayerInfo;
 import battletank.world.events.Event;
-import battletank.world.events.rotations.StopRotation;
-import battletank.world.events.transitions.StopTransition;
 import battletank.world.gameobjects.Player;
 import battletank.world.gameobjects.PlayerColor;
 import spaces.game.hosting.WorldGateway;
@@ -36,8 +34,9 @@ public class Game implements IGame {
         worldSimulator = new WorldSimulator(new DeltaTime());
 
         int index = 0;
-        double[] xCoord = {96,672,416,416};
-        double[] yCoord = {416,416,672,96};
+        double[] xCoord = {96,672,352,352};
+        double[] yCoord = {352,352,672,96};
+        int[] rotation = {0,180,270,90};
         PlayerColor[] colors = PlayerColor.values();
 
         for(PlayerInfo playerInfo : playersinfo){
@@ -46,7 +45,7 @@ public class Game implements IGame {
                     (int)yCoord[index],
                     134/4,
                     249/4,
-                    90,
+                    rotation[index],
                     50,
                     90,
                     100,
@@ -69,6 +68,7 @@ public class Game implements IGame {
 
     public void setWorldGateway(WorldGateway worldGateway){
         this.worldGateway = worldGateway;
+        worldSimulator.setGateway(worldGateway);
     }
 
     @Override

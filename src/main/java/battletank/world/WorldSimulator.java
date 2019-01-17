@@ -11,6 +11,7 @@ import battletank.world.events.transitions.StopTransition;
 import battletank.world.gameobjects.GameObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import spaces.game.hosting.WorldGateway;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     private DeltaTime updateTime;
     private MapObjects objects;
+    private WorldGateway gateway;
 
     public WorldSimulator(DeltaTime dt){
         updateTime=dt;
@@ -48,7 +50,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         }
         updateTime.update();
         try {
-            Thread.sleep(1);
+            Thread.sleep(10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -130,6 +132,9 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     public void addGameObject(GameObject go) {
         simulatedEvents.put(go,new ConcurrentHashMap<>());
+        if(gateway!=null) {
+            gateway.update(go, new StopTransition());
+        }
     }
 
     public void addEvent(GameObject go, Event event) {
@@ -141,6 +146,9 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         events.put(event.getClass().getSimpleName(),event);
         simulatedEvents.put(go,events);
 
+        if(gateway!=null) {
+            gateway.update(go, event);
+        }
     }
 
     public List<GameObject> getGameObjects(){
@@ -154,5 +162,12 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
         }
         simulatedEvents.put(target,events);
+    }
+
+    public void setGateway(WorldGateway gateway){
+        this.gateway=gateway;
+        for(GameObject go: simulatedEvents.keySet()){
+            gateway.update(go,new StopTransition());
+        }
     }
 }
