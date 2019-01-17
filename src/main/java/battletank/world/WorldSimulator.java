@@ -50,7 +50,9 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     public void handleTick(){
         for(GameObject currentObject : simulatedEvents.keySet()){
-
+            if(deadPlayers.contains(currentObject)){
+                continue;
+            }
             Map<String,Event> map =simulatedEvents.get(currentObject);
             if(map!=null) {
                 for (Event event : map.values()) {
