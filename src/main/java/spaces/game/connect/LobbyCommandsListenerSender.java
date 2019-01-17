@@ -37,6 +37,9 @@ public class LobbyCommandsListenerSender implements ILobbyCommandsSender {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        catch (IllegalStateException e){
+            sendCommand(playerInfo,command);
+        }
     }
 
     @Override
@@ -95,6 +98,12 @@ class LobbyObserver implements Runnable{
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            catch (NullPointerException e){
+
+            }
+            catch (IllegalStateException e){
+
             }
         }
     }

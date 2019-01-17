@@ -5,10 +5,7 @@ import battletank.world.DeltaTime;
 import battletank.world.Game;
 import battletank.world.MapLoader;
 import battletank.world.WorldSimulator;
-import battletank.world.gameobjects.ColorTextureMapper;
-import battletank.world.gameobjects.GameObject;
-import battletank.world.gameobjects.Player;
-import battletank.world.gameobjects.PlayerColor;
+import battletank.world.gameobjects.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -29,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GameScreen implements Screen {
-
+    Projectile pro=null;
 	Texture texture;
 	SpriteBatch batch;
 	float elapsed;
@@ -120,7 +117,7 @@ public class GameScreen implements Screen {
         batch.begin();
         List<GameObject> gameObjects =worldSimulator.getGameObjects();
         for(GameObject go : gameObjects) {
-            Player player = (Player) go;
+            GameObject player = go;
             //batch.draw(texture, (int) player.getPositionX(), (int) player.getPositionY(), (int) player.getWidth(), (int) player.getHeight());
 
             if(textureMap.containsKey(player.getColor())){

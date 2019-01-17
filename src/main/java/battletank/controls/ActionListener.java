@@ -27,7 +27,6 @@ public class ActionListener extends ApplicationAdapter implements InputProcessor
         String userInput = Input.Keys.toString(i) + "_p";
         Action userAction = controlMapping.get(userInput);
 
-
         if(userAction!=null) {
             actionSender.notifyAction(userAction);
         }

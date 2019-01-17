@@ -6,5 +6,5 @@ public enum Action {
     MOVE_STOP,
     ROTATE_LEFT,
     ROTATE_RIGHT,
-    ROTATE_STOP
+    SHOOT, ROTATE_STOP
 }

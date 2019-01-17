@@ -1,7 +1,7 @@
 package battletank.world;
 
 import battletank.world.events.Event;
-import battletank.world.events.go.CreateGameObject;
+import battletank.world.events.go.CreateProjectile;
 import battletank.world.events.go.DestroyGameObject;
 import battletank.world.events.go.UpdateGameObject;
 import battletank.world.events.rotations.StartRotation;
@@ -9,26 +9,31 @@ import battletank.world.events.rotations.StopRotation;
 import battletank.world.events.transitions.StartTransition;
 import battletank.world.events.transitions.StopTransition;
 import battletank.world.gameobjects.GameObject;
+import battletank.world.gameobjects.Player;
+import battletank.world.gameobjects.PlayerColor;
+import battletank.world.gameobjects.Projectile;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import spaces.game.hosting.WorldGateway;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class WorldSimulator  implements EventVisitor,Runnable{
 
     private Map<GameObject, Map<String, Event>> simulatedEvents;
 
+    private Map<GameObject,Long> lastShot;
+
     private DeltaTime updateTime;
     private MapObjects objects;
     private WorldGateway gateway;
+    private int projectileNum = 0;
 
     public WorldSimulator(DeltaTime dt){
         updateTime=dt;
         simulatedEvents = new ConcurrentHashMap<>();
+        lastShot=new ConcurrentHashMap<>();
         MapLoader maploader=new MapLoader();
         maploader.loadMapNoUI(0);
         objects=maploader.getObjects();
@@ -42,10 +47,13 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     }
 
     public void handleTick(){
-
         for(GameObject currentObject : simulatedEvents.keySet()){
-            for(Event event : simulatedEvents.get(currentObject).values()) {
-                event.accept(currentObject,this);
+
+            Map<String,Event> map =simulatedEvents.get(currentObject);
+            if(map!=null) {
+                for (Event event : map.values()) {
+                    event.accept(currentObject, this);
+                }
             }
         }
         updateTime.update();
@@ -58,7 +66,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
 
     @Override
-    public void handle(GameObject gameObject, StartTransition transition){
+    public synchronized void handle(GameObject gameObject, StartTransition transition){
         double oldX = gameObject.getPositionX();
         double oldY = gameObject.getPositionY();
         double timeSeconds = updateTime.last()/1000;
@@ -79,19 +87,45 @@ public class WorldSimulator  implements EventVisitor,Runnable{
                 // collision happened
                 gameObject.setPositionX(oldX);
                 gameObject.setPositionY(oldY);
+                if(gameObject instanceof Projectile){
+                    Event colliderDestroyer= new DestroyGameObject(0);
+                    colliderDestroyer.accept(gameObject,this);
+                }
             }
         }
         for (GameObject subject : simulatedEvents.keySet()) {
-            if(subject==gameObject){
+
+            if(subject.equals(gameObject)){
                 continue;
             }
             if (collisionChecker.checkCollision(gameObject,subject)!=null) {
                 // collision happened
                 gameObject.setPositionX(oldX);
                 gameObject.setPositionY(oldY);
+
+                if(gameObject instanceof Projectile){
+                    System.out.println("Object collection");
+                    System.out.println(gameObject+ " " + subject);
+                    System.out.println(gameObject.getName()+ " "+subject.getName());
+                    Event subjectDestroyer = new DestroyGameObject(0);
+                    Event colliderDestroyer= new DestroyGameObject(0);
+                    subjectDestroyer.accept(subject,this);
+                    colliderDestroyer.accept(gameObject,this);
+                }
             }
         }
 
+        /*
+        double initialRotation = projectile.getRotation();
+        int totRotation = 180;
+
+        //Calculate sigma, since (sigma - projectileRotation = 90 degrees)
+        double sigma = (totRotation / 2) - initialRotation;
+
+        //Using the formula: initialRotation + 2*sigma + resultRotation = 180 degrees, we get:
+        double resRotation = initialRotation + (2 * sigma);
+
+        projectile.setRotation(resRotation);*/
 
 
     }
@@ -121,12 +155,36 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public void handle(GameObject gameObject, DestroyGameObject destroyGameObject) {
-
+        simulatedEvents.remove(gameObject);
     }
 
     @Override
-    public void handle(GameObject gameObject, CreateGameObject createGameObject) {
+    public synchronized void handle(GameObject gameObject, CreateProjectile createProjectile) {
+        Player player = (Player)gameObject;
 
+        Long last = lastShot.get(player);
+        if (last != null) {
+            if (last + 1000L > System.currentTimeMillis()) {
+                simulatedEvents.get(gameObject).remove(createProjectile.getClass().getSimpleName());
+                return;
+            }
+        }
+
+        double startingDistanceFromOri = player.getHeight();
+        double aRadians = player.getRotation() * Math.PI / 180;
+        double projectileX = player.getPositionX() + player.getOriginX() + startingDistanceFromOri * Math.cos(aRadians);
+        double projectileY = player.getPositionY() + player.getOriginY() + startingDistanceFromOri * Math.sin(aRadians);
+
+        Projectile projectile = new Projectile(projectileNum++,(int) projectileX, (int) projectileY, 4, 4, (int) player.getRotation(), 150, 0, 10, 100, PlayerColor.purple);
+        Event event = new StartTransition(projectile.getSpeed());
+
+        if (gateway != null) {
+            gateway.update(projectile, event);
+        }
+        event.accept(projectile, this);
+        simulatedEvents.get(gameObject).remove(createProjectile.getClass().getSimpleName());
+
+        lastShot.put(player, System.currentTimeMillis());
     }
 
 

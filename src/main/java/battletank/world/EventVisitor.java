@@ -1,7 +1,6 @@
 package battletank.world;
 
-import battletank.world.events.Event;
-import battletank.world.events.go.CreateGameObject;
+import battletank.world.events.go.CreateProjectile;
 import battletank.world.events.go.DestroyGameObject;
 import battletank.world.events.go.UpdateGameObject;
 import battletank.world.events.rotations.StartRotation;
@@ -22,5 +21,5 @@ public interface EventVisitor {
 
     void handle(GameObject gameObject, DestroyGameObject destroyGameObject);
 
-    void handle(GameObject gameObject, CreateGameObject createGameObject);
+    void handle(GameObject gameObject, CreateProjectile createProjectile);
 }
