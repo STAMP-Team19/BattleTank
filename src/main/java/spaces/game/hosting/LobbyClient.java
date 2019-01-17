@@ -22,4 +22,9 @@ public class LobbyClient implements ILobbyListener {
     public void deleteLobby() {
         System.out.println("DELETELOBBY");
     }
+
+    @Override
+    public void notifyLobbymap(int level) {
+
+    }
 }

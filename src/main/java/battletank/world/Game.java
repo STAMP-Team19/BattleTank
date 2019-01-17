@@ -2,6 +2,8 @@ package battletank.world;
 
 import battletank.lobby.PlayerInfo;
 import battletank.world.events.Event;
+import battletank.world.events.rotations.StopRotation;
+import battletank.world.events.transitions.StopTransition;
 import battletank.world.gameobjects.Player;
 import battletank.world.gameobjects.PlayerColor;
 import spaces.game.hosting.WorldGateway;
@@ -17,9 +19,9 @@ public class Game implements IGame {
     private HashMap<String, Player> players=new HashMap<>();
     private ArrayList<PlayerInfo> playersinfo;
 
-    public Game(HashMap<String,Player> players){
+    public Game(HashMap<String,Player> players, int level){
         this.players=players;
-        worldSimulator = new WorldSimulator(new DeltaTime());
+        worldSimulator = new WorldSimulator(new DeltaTime(), level);
 
         for(Player p :players.values()) {
             worldSimulator.addGameObject(p);
@@ -29,13 +31,13 @@ public class Game implements IGame {
         new Thread(worldSimulator).start();
     }
 
-    public Game(GameRules rules, ArrayList<PlayerInfo> playersinfo){
+    public Game(GameRules rules, ArrayList<PlayerInfo> playersinfo, int level){
         this.playersinfo = playersinfo;
-        worldSimulator = new WorldSimulator(new DeltaTime());
+        worldSimulator = new WorldSimulator(new DeltaTime(), level);
 
         int index = 0;
-        double[] xCoord = {96,672,352,352};
-        double[] yCoord = {352,352,672,96};
+        double[] xCoord = {80,700,416,416};
+        double[] yCoord = {416,416,700,80};
         int[] rotation = {0,180,270,90};
         PlayerColor[] colors = PlayerColor.values();
 

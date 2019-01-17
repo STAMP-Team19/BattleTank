@@ -43,6 +43,15 @@ public class LobbyCommandsListenerSender implements ILobbyCommandsSender {
     }
 
     @Override
+    public void sendMAPCommand(int level, LOBBYCOMMANDS command) {
+        try {
+            lobbyspace.put(level, command);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public boolean isLobbyOpen() {
         try {
             Object[] informations = lobbyspace.queryp(
@@ -77,10 +86,20 @@ class LobbyObserver implements Runnable{
                         new FormalField(String.class),
                         new FormalField(LOBBYCOMMANDS.class));
 
-                ArrayList<PlayerInfo> playerinfo = gson.fromJson((String)information[1], new TypeToken<ArrayList<PlayerInfo>>(){}.getType());
                 LOBBYCOMMANDS command = (LOBBYCOMMANDS) information[2];
+                ArrayList<PlayerInfo> playerinfo = null;
 
-                System.out.println(playerinfo+" "+command.toString());
+                int maplevel = -1;
+
+                if(command == LOBBYCOMMANDS.SETMAP){
+                    maplevel = Integer.parseInt((String) information[1]);
+                }
+                else {
+                    playerinfo = gson.fromJson((String) information[1], new TypeToken<ArrayList<PlayerInfo>>() {
+                    }.getType());
+                    System.out.println(playerinfo+" "+command.toString());
+                }
+
 
                 switch(command){
                     case REFRESH:
@@ -94,6 +113,9 @@ class LobbyObserver implements Runnable{
                     case DELETELOBBY:
                         listener.deleteLobby();
                         break loop;
+                    case SETMAP:
+                        listener.notifyLobbymap(maplevel);
+                        break;
                 }
 
             } catch (InterruptedException e) {
