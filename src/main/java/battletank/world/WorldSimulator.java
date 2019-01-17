@@ -25,7 +25,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     private Map<GameObject,Long> lastShot;
 
-    private Set<GameObject> deadPlayers =new HashSet<>();
+    private Set<GameObject> deadPlayers =ConcurrentHashMap.newKeySet();
 
     private DeltaTime updateTime;
     private MapObjects objects;
