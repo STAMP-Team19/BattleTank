@@ -85,10 +85,20 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         // there are several other types, Rectangle is probably the most common one
         for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
 
-            if (collisionChecker.checkCollision(gameObject,rectangleObject)!=null) {
+            Collision collision=collisionChecker.checkCollision(gameObject,rectangleObject);
+            if (collision!=null) {
                 // collision happened
-                gameObject.setPositionX(oldX);
-                gameObject.setPositionY(oldY);
+                if(collision.collisionHorisontal)
+                {
+                    gameObject.setPositionX(oldX);
+
+                }
+                if (collision.collisionVertical)
+                {
+                    gameObject.setPositionY(oldY);
+                }
+
+
                 if(gameObject instanceof Projectile){
                     Event colliderDestroyer= new DestroyGameObject(0);
                     colliderDestroyer.accept(gameObject,this);

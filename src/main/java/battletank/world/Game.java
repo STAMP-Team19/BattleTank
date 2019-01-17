@@ -37,7 +37,7 @@ public class Game implements IGame {
 
         int index = 0;
         double[] xCoord = {80,700,416,416};
-        double[] yCoord = {416,416,700,80};
+        double[] yCoord = {416,416,700,40};
         int[] rotation = {0,180,270,90};
         PlayerColor[] colors = PlayerColor.values();
 
