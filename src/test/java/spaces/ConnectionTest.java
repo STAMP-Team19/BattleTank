@@ -17,9 +17,9 @@ public class ConnectionTest {
     public static void main(String[] args) {
         HashMap<String, Player> players = new HashMap<>();
         players.put("name", new Player("name", 1, 1, 0, 0, 1, 10, 10,1, PlayerColor.Blue));
-        GameHost host = new GameHost(new Game(players) {
+        GameHost host = new GameHost(new Game(players, 0) {
         });
-        new WorldEventsListener("name",new WorldSimulator(new DeltaTime()));
+        new WorldEventsListener("name",new WorldSimulator(new DeltaTime(), 0));
         ActionSender sender = new ActionSender("name");
         for (int i = 0; i < 100; i++) {
             System.out.println("Sending action " + (i + 1));

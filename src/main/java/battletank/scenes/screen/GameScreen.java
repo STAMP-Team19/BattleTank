@@ -84,7 +84,7 @@ public class GameScreen implements Screen {
         loadMap(level);
 
         deltaTime=new DeltaTime();
-        worldSimulator = new WorldSimulator(deltaTime);
+        worldSimulator = new WorldSimulator(deltaTime, level);
         new WorldEventsListener(playerName,worldSimulator,IP);
         input=new ActionListener(playerName, new ActionSender(playerName, IP));
 

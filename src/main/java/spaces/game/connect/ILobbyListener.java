@@ -9,4 +9,5 @@ public interface ILobbyListener {
     void notifyLobby(ArrayList<PlayerInfo> playersList);
     void startGame();
     void deleteLobby();
+    void notifyLobbymap(int level);
 }

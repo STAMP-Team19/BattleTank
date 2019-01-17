@@ -26,11 +26,11 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     private MapObjects objects;
     private WorldGateway gateway;
 
-    public WorldSimulator(DeltaTime dt){
+    public WorldSimulator(DeltaTime dt, int level){
         updateTime=dt;
         simulatedEvents = new ConcurrentHashMap<>();
         MapLoader maploader=new MapLoader();
-        maploader.loadMapNoUI(0);
+        maploader.loadMapNoUI(level);
         objects=maploader.getObjects();
     }
 

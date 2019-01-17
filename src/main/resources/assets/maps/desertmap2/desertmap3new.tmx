@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="25" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="1">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="25" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="6">
  <tileset firstgid="1" source="desertmap.tsx"/>
  <layer id="1" name="Ground" width="25" height="25">
   <data encoding="csv">
@@ -146,4 +146,11 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="6" name="Collidables">
+  <object id="1" name="Coll1" x="270" y="268" width="263" height="265"/>
+  <object id="2" name="Coll2" x="783.333" y="14" width="16.6667" height="768"/>
+  <object id="3" name="Coll3" x="0" y="18" width="15.6667" height="766"/>
+  <object id="4" name="Coll4" x="0" y="0.333333" width="800" height="16.3333"/>
+  <object id="5" x="-4" y="783.333" width="804" height="17"/>
+ </objectgroup>
 </map>

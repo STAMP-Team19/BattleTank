@@ -12,7 +12,7 @@ public class EventsTest {
     public static void main(String[] args){
         HashMap<String, Player> players = new HashMap<>();
         players.put("name",new Player("name",0,0,0,0,0,0,0,1, PlayerColor.Blue));
-        GameHost gameHost = new GameHost(new Game(players));
+        GameHost gameHost = new GameHost(new Game(players,0));
 
         System.out.println("Init connection and starting to listen...");
         WorldEventsListener eventsListener = new WorldEventsListener("name",null);
