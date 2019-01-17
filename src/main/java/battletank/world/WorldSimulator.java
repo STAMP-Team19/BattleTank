@@ -51,7 +51,6 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     public void handleTick(){
         for(GameObject currentObject : simulatedEvents.keySet()){
             if(deadPlayers.contains(currentObject)){
-                simulatedEvents.remove(currentObject);
                 continue;
             }
             Map<String,Event> map =simulatedEvents.get(currentObject);
@@ -107,7 +106,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
                 if(gameObject instanceof Projectile){
                     Event colliderDestroyer= new DestroyGameObject(0);
-                    colliderDestroyer.accept(gameObject,this);
+                    this.addEvent(gameObject,colliderDestroyer);
                 }
             }
         }
@@ -134,9 +133,10 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
                 if(gameObject instanceof Projectile){
                     Event subjectDestroyer = new DestroyGameObject(0);
-                    Event colliderDestroyer= new DestroyGameObject(0);
-                    subjectDestroyer.accept(subject,this);
-                    colliderDestroyer.accept(gameObject,this);
+                    Event projectileDestroyer= new DestroyGameObject(0);
+                    this.addEvent(subject,subjectDestroyer);
+                    this.addEvent(gameObject,projectileDestroyer);
+
                 }
             }
         }
@@ -187,9 +187,6 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public void handle(GameObject gameObject, DestroyGameObject destroyGameObject) {
-        if(deadPlayers.contains(gameObject)){
-            return;
-        }
         if(gameObject instanceof Player){
             deadPlayers.add(gameObject);
         }
@@ -201,6 +198,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         if(deadPlayers.contains(gameObject)){
             return;
         }
+
         Player player = (Player)gameObject;
 
         Long last = lastShot.get(player);
@@ -241,9 +239,14 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     public synchronized void addEvent(GameObject go, Event event) {
         if(deadPlayers.contains(go)){
-            System.out.println(go.getName()+", you cant do stuff you are dead.");
+
+            System.out.println(go.getName()+", you cant shoot when you are dead.");
+            System.out.println(deadPlayers);
             return;
         }
+
+        System.out.println(go.getName()+", you are not dead so you can shoot.");
+        System.out.println(deadPlayers);
 
         Map<String,Event> events = simulatedEvents.get(go);
         if(events==null){
