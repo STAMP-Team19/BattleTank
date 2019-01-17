@@ -223,6 +223,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     public synchronized void addEvent(GameObject go, Event event) {
         if(deadPlayers.contains(go)){
+            System.out.println(go.getName()+", you cant do stuff you are dead.");
             return;
         }
         Map<String,Event> events = simulatedEvents.get(go);
