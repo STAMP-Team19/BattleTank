@@ -5,6 +5,7 @@ import battletank.lobby.PlayerInfo;
 import battletank.scenes.util.CreateInputListener;
 import battletank.scenes.util.JoinInputListener;
 import battletank.world.GameRules;
+import battletank.world.MapLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -49,12 +50,14 @@ public class JoinScreen implements Screen, ILobbyListener {
     private Texture createserverbtnTexture;
     private Texture leavebtnTexture;
     private Texture stopbtnTexture;
+    private Texture launchbtnTexture;
 
     private Texture playbtnDown;
     private Texture serverbtnTextureDown;
     private Texture createserverbtnTextureDown;
     private Texture leavebtnTextureDown;
     private Texture stopbtnTextureDown;
+    private Texture launchbtnTextureDown;
 
     private Music music;
     private Music ready;
@@ -77,6 +80,7 @@ public class JoinScreen implements Screen, ILobbyListener {
     private ImageButton playButton;
     private ImageButton createButton;
     private ImageButton leaveBtn;
+    private ImageButton launchBtn;
 
     static LobbyCommandsListenerSender controller;
 
@@ -134,6 +138,7 @@ public class JoinScreen implements Screen, ILobbyListener {
         Drawable newurlDown = new TextureRegionDrawable(new TextureRegion(serverbtnTextureDown));
         joinbtn = new ImageButton(newurl, newurlDown);
 
+
         joinbtn.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
@@ -151,6 +156,13 @@ public class JoinScreen implements Screen, ILobbyListener {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
                 if(chosenMap != -1) {
+                    controller.sendMAPCommand(chosenMap, LOBBYCOMMANDS.SETMAP);
+                    msg="Loading Map...";
+                    try {
+                        Thread.sleep(800);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     System.out.println("play!" + name);
 
                     controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.STARTGAME);
@@ -159,6 +171,55 @@ public class JoinScreen implements Screen, ILobbyListener {
                 }
             }
         });
+
+        Drawable Launchserver = new TextureRegionDrawable(new TextureRegion(launchbtnTexture));
+        Drawable LaunchserverDown = new TextureRegionDrawable(new TextureRegion(launchbtnTextureDown));
+        launchBtn = new ImageButton(Launchserver, LaunchserverDown);
+        launchBtn.setVisible(false);
+
+        launchBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+
+                if(provider == null){
+                    provider = new LobbyProvider();
+                    provider.createLobby(name, 4, new GameRules(), chosenMap);
+                    try {
+                        Thread.sleep(800);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    lobby();
+                }
+
+                try {
+                    Thread.sleep(800);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                System.out.println("create server");
+                controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.OPEN);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.JOIN);
+
+                try {
+                    InetAddress inetAddress = InetAddress.getLocalHost();
+                    ShowIp = inetAddress.getHostAddress();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+
+                controller.sendMAPCommand(chosenMap, LOBBYCOMMANDS.SETMAP);
+
+            }
+        });
+
 
         Drawable drawcreateserver = new TextureRegionDrawable(new TextureRegion(createserverbtnTexture));
         Drawable drawcreateserverDown = new TextureRegionDrawable(new TextureRegion(createserverbtnTextureDown));
@@ -169,32 +230,25 @@ public class JoinScreen implements Screen, ILobbyListener {
         createButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
-                if(!startupDone){return;}
                 joined = true;
                 if(!creater) {
-                    System.out.println("create server");
+                    msg = "Pick a map!";
                     //Gdx.input.getTextInput(createInputListener, "Enter name of server", "", "server name");
-                    lobby();
-                    controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.OPEN);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.JOIN);
-
-                    try {
-                        InetAddress inetAddress = InetAddress.getLocalHost();
-                        ShowIp = inetAddress.getHostAddress();
-                    } catch (UnknownHostException e) {
-                        e.printStackTrace();
-                    }
+                    //lobby();
                     creater = true;
                     createButton.setBackground(stopdrawable);
+                    for (ImageButton btn: maplist) {
+                        btn.setVisible(creater);
+                    }
+                    launchBtn.setVisible(creater);
+
                 } else {
                     creater = false;
                     createButton.setBackground(drawcreateserver);
-                    controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.DELETELOBBY);
+                    for (ImageButton btn: maplist) {
+                        btn.setVisible(creater);
+                    }
+                    launchBtn.setVisible(creater);
                 }
 
             }
@@ -216,7 +270,7 @@ public class JoinScreen implements Screen, ILobbyListener {
             }
         });
 
-
+        launchBtn.setPosition(400-(leaveBtn.getWidth()/2), 200);
         joinbtn.setPosition(400-(joinbtn.getWidth()/2), 50);
         playButton.setPosition(400-(playButton.getWidth()/2), 100);
         createButton.setPosition(400-(createButton.getWidth()/2), 150);
@@ -229,36 +283,38 @@ public class JoinScreen implements Screen, ILobbyListener {
         stage.addActor(createButton);
         stage.addActor(playButton); //Add the button to the stage to perform rendering and take input.
         stage.addActor(leaveBtn);
+        stage.addActor(launchBtn);
 
-        int x = 163;
-        int y = 240;
-        int f = 1;
-        int normalSize = 90;
+            int x = 163;
+            int y = 240;
+            int f = 1;
+            int normalSize = 90;
 
-        for (ImageButton btn: maplist){
-            btn.setHeight(normalSize);
-            btn.setWidth(normalSize+60);
-            btn.setPosition(x*f, y);
-            stage.addActor(btn);
-            f++;
+            for (ImageButton btn : maplist) {
+                btn.setHeight(normalSize);
+                btn.setWidth(normalSize + 60);
+                btn.setPosition(x * f, y);
+                stage.addActor(btn);
+                f++;
+                btn.setVisible(false);
 
-            btn.addListener(new ChangeListener(){
-                @Override
-                public void changed(ChangeEvent changeEvent, Actor actor) {
-                    for (ImageButton btn: maplist) {
-                        btn.setHeight(normalSize);
-                        btn.setWidth(normalSize+60);
-                        chosenMap = -1;
+                btn.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent changeEvent, Actor actor) {
+                        for (ImageButton btn : maplist) {
+                            btn.setHeight(normalSize);
+                            btn.setWidth(normalSize + 60);
+                            chosenMap = -1;
+                        }
+                        if (btn.isChecked()) {
+                            btn.setHeight(160);
+                            btn.setWidth(160);
+                            chosenMap = maplist.indexOf(btn);
+                        }
+                        System.out.println("map: " + chosenMap);
                     }
-                    if(btn.isChecked()) {
-                        btn.setHeight(160);
-                        btn.setWidth(160);
-                        chosenMap = maplist.indexOf(btn);
-                    }
-                    System.out.println("map: " + chosenMap);
-                }
-            });
-        }
+                });
+            }
     }
 
     private void loadTextures() {
@@ -269,12 +325,14 @@ public class JoinScreen implements Screen, ILobbyListener {
         createserverbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/createserverbtn.png"));
         leavebtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/Leave.png"));
         stopbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/Stopserverbtn.png"));
+        launchbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/launch.png"));
 
         playbtnDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/playbtnDown.png"));
         serverbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/editserverbtnDown.png"));
         createserverbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/createserverbtnDown.png"));
         leavebtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/LeaveDOwn.png"));
         stopbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/StopserverbtnDown.png"));
+        launchbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/launchDown.png"));
 
         map1 = new Texture(Gdx.files.internal("src/main/resources/assets/maps/maps/desertmap1new.png"));
         map2 = new Texture(Gdx.files.internal("src/main/resources/assets/maps/maps/desertmap2new.png"));
@@ -293,18 +351,24 @@ public class JoinScreen implements Screen, ILobbyListener {
 
     @Override
     public void render(float delta) {
-
+        
         if(playgame){
             game.setScreen(new GameScreen(chosenMap, IP, name));
         }
 
+
+
         name = createInputListener.getLastoutput();
 
 
-        if(joinInputListener.getInputgiven()&&startupDone){
+        if(joined && joinInputListener.getLastoutput() != ""){
             IP = joinInputListener.getLastoutput();
-            try {
+
             lobby();
+
+            //controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.OPEN);
+
+            try {
             System.out.println("Lobby Open: "+controller.isLobbyOpen());
             if (controller.isLobbyOpen()) {
 
@@ -330,21 +394,9 @@ public class JoinScreen implements Screen, ILobbyListener {
         else {
             joinbtn.setDisabled(false);
             createButton.setDisabled(false);
-            if(provider == null){
-                provider = new LobbyProvider();
-                provider.createLobby(name, 4, new GameRules());
-            }
-
-            if(provider.isDone()){
-                startupDone=true;
-            }
         }
 
-        if(!joined){
-            joinbtn.setDisabled(false);
-        }else {
-            joinbtn.setDisabled(true);
-        }
+
 
         // clear the screen with a dark blue color. The
         // arguments to glClearColor are the red, green
@@ -440,5 +492,10 @@ public class JoinScreen implements Screen, ILobbyListener {
     @Override
     public void deleteLobby() {
 
+    }
+
+    @Override
+    public void notifyLobbymap(int level) {
+        chosenMap = level;
     }
 }

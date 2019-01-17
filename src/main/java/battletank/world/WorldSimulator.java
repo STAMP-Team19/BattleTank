@@ -30,12 +30,12 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     private WorldGateway gateway;
     private int projectileNum = 0;
 
-    public WorldSimulator(DeltaTime dt){
+    public WorldSimulator(DeltaTime dt, int level){
         updateTime=dt;
         simulatedEvents = new ConcurrentHashMap<>();
         lastShot=new ConcurrentHashMap<>();
         MapLoader maploader=new MapLoader();
-        maploader.loadMapNoUI(0);
+        maploader.loadMapNoUI(level);
         objects=maploader.getObjects();
     }
 

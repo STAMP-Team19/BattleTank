@@ -22,12 +22,12 @@ public class Lobby {
 
     private SequentialSpace lobbyspace;
 
-    public Lobby(String hostname, int numberOfMaxPlayers, GameRules rules, SequentialSpace lobbyspace, SpaceRepository spaceRepository){
+    public Lobby(String hostname, int numberOfMaxPlayers, GameRules rules, SequentialSpace lobbyspace, SpaceRepository spaceRepository, int level){
         this.numberOfMaxPlayers = numberOfMaxPlayers;
         this.hostname = hostname;
         this.lobbyspace = lobbyspace;
 
-        new Thread(new CommandsListener(lobbyspace, numberOfMaxPlayers, rules, spaceRepository, hostname)).start();
+        new Thread(new CommandsListener(lobbyspace, numberOfMaxPlayers, rules, spaceRepository, hostname, level)).start();
     }
 
     public int getNumberOfMaxPlayers() {
@@ -55,18 +55,20 @@ class CommandsListener implements Runnable{
     ArrayList<PlayerInfo> info;
     int numberOfMaxPlayers;
     int numberOfActualPlayers;
+    int level;
 
     boolean isOpen;
 
     SpaceRepository spaceRepository;
 
-    CommandsListener(SequentialSpace lobbyspace, int numberOfMaxPlayers, GameRules rules, SpaceRepository spaceRepository, String hostname){
+    CommandsListener(SequentialSpace lobbyspace, int numberOfMaxPlayers, GameRules rules, SpaceRepository spaceRepository, String hostname, int level){
         this.hostname = hostname;
         this.lobbyspace = lobbyspace;
         this.numberOfMaxPlayers = numberOfMaxPlayers;
         this.rules = rules;
         this.spaceRepository = spaceRepository;
         numberOfActualPlayers = 0;
+        this.level = level;
 
         info = new ArrayList<>();
         isOpen = false;
@@ -100,6 +102,7 @@ class CommandsListener implements Runnable{
                             playerinfodata = gson.toJson(info);
                             for (PlayerInfo player : info) {
                                 lobbyspace.put(player.getName(), playerinfodata, LOBBYCOMMANDS.REFRESH);
+                                lobbyspace.put(player.getName(), level+"", LOBBYCOMMANDS.SETMAP);
                             }
                             ++numberOfActualPlayers;
                         }
@@ -146,7 +149,14 @@ class CommandsListener implements Runnable{
                                 lobbyspace.put(player.getName(), playerinfodata, LOBBYCOMMANDS.STARTGAME);
                             }
 
-                            GameHost gameHost = new GameHost(new Game(rules, info));
+                            GameHost gameHost = new GameHost(new Game(rules, info, level));
+                        }
+                        break;
+                    case SETMAP:
+                        if(isOpen && playerInfo.getName().equals(hostname)){
+                            for (PlayerInfo player : info) {
+                                lobbyspace.put(player.getName(),""+level, LOBBYCOMMANDS.SETMAP);
+                            }
                         }
                         break;
                 }

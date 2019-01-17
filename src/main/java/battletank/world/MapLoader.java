@@ -48,7 +48,7 @@ public class MapLoader {
                 tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/desertmap2/desertmap3new.tmx");
                 break;
             default:
-                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/maps/desertmap1new.tmx");
+                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/desertmap2/desertmap1new.tmx");
                 break;
         }
 

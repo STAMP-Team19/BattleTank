@@ -13,7 +13,7 @@ public class LobbyClientConnection{
 
         try {
         LobbyProvider provider = new LobbyProvider();
-        provider.createLobby("Peter", 3, new GameRules());
+        provider.createLobby("Peter", 3, new GameRules(),0);
 
         Thread.sleep(1000);
 

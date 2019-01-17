@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="25" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="1">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="25" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="17">
  <tileset firstgid="1" source="desertmap.tsx"/>
  <layer id="1" name="Ground" width="25" height="25">
   <data encoding="csv">
@@ -146,4 +146,22 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="6" name="Collidables">
+  <object id="1" name="Coll2" x="240.333" y="128.333" width="319" height="63.6667"/>
+  <object id="2" name="Coll1" x="559.5" y="143.375" width="16.25" height="33.375"/>
+  <object id="3" name="Coll3" x="224" y="143.667" width="15" height="33.3333"/>
+  <object id="4" name="Coll4" x="144" y="256" width="31.5" height="15.5"/>
+  <object id="5" name="Coll5" x="144" y="560.5" width="32" height="16"/>
+  <object id="6" name="Coll6" x="128" y="272" width="64" height="288.667"/>
+  <object id="7" name="Coll7" x="224.667" y="655.333" width="16.6667" height="34"/>
+  <object id="8" name="Coll8" x="238.667" y="640.667" width="320.667" height="62.6667"/>
+  <object id="9" name="Coll9" x="559.333" y="656" width="16" height="34"/>
+  <object id="10" name="Coll10" x="624.667" y="560" width="30.6667" height="14.6667"/>
+  <object id="11" name="Coll11" x="624" y="256.667" width="31.3333" height="16.6667"/>
+  <object id="12" name="Coll12" x="607.333" y="271.333" width="64.6667" height="290"/>
+  <object id="13" name="Coll13" x="0" y="-0.666667" width="800" height="17.3333"/>
+  <object id="14" name="Coll14" x="783.333" y="16" width="17.3333" height="767.333"/>
+  <object id="15" name="Coll15" x="-0.666667" y="16" width="16.6667" height="766"/>
+  <object id="16" name="Coll16" x="-0.666667" y="784" width="802.667" height="18"/>
+ </objectgroup>
 </map>
