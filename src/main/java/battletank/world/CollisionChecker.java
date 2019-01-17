@@ -4,6 +4,11 @@ import battletank.world.gameobjects.GameObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
+import java.util.HashMap;
+import java.util.Map;
+
+import static battletank.world.Collision.CollisionDirection.*;
+
 
 
 public class CollisionChecker {
@@ -24,14 +29,28 @@ public class CollisionChecker {
 
     private Collision checkCollision(Rectangle collider, Rectangle subject){
         if (Intersector.overlaps(collider, subject)) {
-            boolean collisionRight = collider.x<subject.x+subject.width;
-            boolean collisionLeft  = collider.x+collider.width> subject.x;
+            HashMap<Float,Collision.CollisionDirection> collisionMap = new HashMap();
 
+            float temp=(subject.x+subject.width)-collider.x;
+            collisionMap.put(temp,left);
+            collisionMap.put(subject.x-(collider.x+collider.width),right);
+            collisionMap.put((subject.y+subject.height)-collider.y,down);
+            collisionMap.put(subject.y-(collider.y+collider.height),up);
 
+            float absNum = Math.abs(temp);
+            for(Map.Entry<Float, Collision.CollisionDirection> entry : collisionMap.entrySet()) {
+                float newAbs = Math.abs(entry.getKey());
+                if(newAbs < absNum) {
+                    absNum = newAbs;
+                    temp = entry.getKey();
+                }
+            }
 
-            System.out.println("VALUE"+collider.x);
+            return new Collision(
+                    collisionMap.get(temp)==up||collisionMap.get(temp)==down,
+                    collisionMap.get(temp)==left||collisionMap.get(temp)==right
+                    ,collisionMap.get(temp));
 
-            return new Collision();
         }
         return null;
     }
