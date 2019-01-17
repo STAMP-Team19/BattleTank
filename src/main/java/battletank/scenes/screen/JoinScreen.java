@@ -351,18 +351,24 @@ public class JoinScreen implements Screen, ILobbyListener {
 
     @Override
     public void render(float delta) {
-
+        
         if(playgame){
             game.setScreen(new GameScreen(chosenMap, IP, name));
         }
 
+
+
         name = createInputListener.getLastoutput();
 
 
-        if(joinInputListener.getInputgiven()&&startupDone){
+        if(joined && joinInputListener.getLastoutput() != ""){
             IP = joinInputListener.getLastoutput();
-            try {
+
             lobby();
+
+            //controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.OPEN);
+
+            try {
             System.out.println("Lobby Open: "+controller.isLobbyOpen());
             if (controller.isLobbyOpen()) {
 
@@ -390,11 +396,7 @@ public class JoinScreen implements Screen, ILobbyListener {
             createButton.setDisabled(false);
         }
 
-        if(!joined){
-            joinbtn.setDisabled(false);
-        }else {
-            joinbtn.setDisabled(true);
-        }
+
 
         // clear the screen with a dark blue color. The
         // arguments to glClearColor are the red, green
@@ -495,7 +497,5 @@ public class JoinScreen implements Screen, ILobbyListener {
     @Override
     public void notifyLobbymap(int level) {
         chosenMap = level;
-        MapLoader mapLoader = new MapLoader();
-        mapLoader.loadMap(level);
     }
 }
