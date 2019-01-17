@@ -72,6 +72,9 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public synchronized void handle(GameObject gameObject, StartTransition transition){
+        if(deadPlayers.contains(gameObject)){
+            return;
+        }
         double oldX = gameObject.getPositionX();
         double oldY = gameObject.getPositionY();
         double timeSeconds = updateTime.last()/1000;
@@ -161,6 +164,9 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public void handle(GameObject gameObject, StartRotation rotation){
+        if(deadPlayers.contains(gameObject)){
+            return;
+        }
         double timeSeconds = updateTime.last()/1000;
         gameObject.setRotation(gameObject.getRotation()+rotation.getRotationSpeed()*timeSeconds);
     }
@@ -173,11 +179,17 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public void handle(GameObject gameObject, UpdateGameObject updateGameObject) {
+        if(deadPlayers.contains(gameObject)){
+            return;
+        }
 
     }
 
     @Override
     public void handle(GameObject gameObject, DestroyGameObject destroyGameObject) {
+        if(deadPlayers.contains(gameObject)){
+            return;
+        }
         if(gameObject instanceof Player){
             deadPlayers.add(gameObject);
         }
@@ -186,6 +198,9 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public synchronized void handle(GameObject gameObject, CreateProjectile createProjectile) {
+        if(deadPlayers.contains(gameObject)){
+            return;
+        }
         Player player = (Player)gameObject;
 
         Long last = lastShot.get(player);
@@ -229,6 +244,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
             System.out.println(go.getName()+", you cant do stuff you are dead.");
             return;
         }
+
         Map<String,Event> events = simulatedEvents.get(go);
         if(events==null){
             events=new ConcurrentHashMap<>();
