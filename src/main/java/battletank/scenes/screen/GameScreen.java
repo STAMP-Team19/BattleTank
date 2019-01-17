@@ -10,15 +10,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import spaces.game.connect.ActionSender;
 import spaces.game.connect.WorldEventsListener;
-import spaces.game.hosting.GameHost;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -51,13 +53,27 @@ public class GameScreen implements Screen {
 	private ShapeRenderer shapeRenderer;
 	private String Ip;
 
+	private Texture healthCon;
+    private Texture healthbar;
+
 	private TextureRegion textureRegion = new TextureRegion();
 
 	private ColorTextureMapper colorTextureMapper = new ColorTextureMapper();
 
 	Map<PlayerColor, Texture> textureMap = new EnumMap<PlayerColor, Texture>(PlayerColor.class);
 
-	// Current level
+	private Pixmap pixmap = new Pixmap(50, 10, Pixmap.Format.RGBA8888);
+	private TextureRegionDrawable drawable = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+
+	// healthbar
+	private int totalBarWidth = 50;
+	private NinePatch health;
+    private NinePatch container;
+    // name of player text
+    BitmapFont playerNamefont;
+
+
+    // Current level
 	private int level;
 
 	public GameScreen(Integer level, String IP, String playerName) {
@@ -66,6 +82,14 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
 		txtrBg   = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
 		txtrBack = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
+
+        healthCon = new Texture( Gdx.files.internal("src/main/resources/assets/img/container.png"));
+        healthbar = new Texture( Gdx.files.internal("src/main/resources/assets/img/bar.png"));
+
+        health = new NinePatch(healthbar, 0, 0, 0, 0);
+        container = new NinePatch(healthCon, 5, 5, 2, 2);
+
+        playerNamefont = new BitmapFont();
 
         batch = new SpriteBatch();
 
@@ -100,6 +124,8 @@ public class GameScreen implements Screen {
     @Override
     public void resize (int width, int height) {
     }
+
+
 
     @Override
     public void render (float v) {
@@ -144,12 +170,26 @@ public class GameScreen implements Screen {
                     (float)player.getRotation()-90
             );
 
-        /*
+        /* shape of colider box
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.rect(playerbody.x, playerbody.y, playerbody.getWidth(), playerbody.getHeight());
         shapeRenderer.end();
         */
+
+        // healthbar
+            if(go instanceof Player) {
+
+                int width = player.getHealthpoints() / 100 * totalBarWidth;
+
+                health.draw(batch, 10, 10, width, healthbar.getHeight());
+
+                //Offset it by the dynamic bar, let's say the gradient is 4 high.
+                container.draw(batch, (float) player.getPositionX() - 10, (float) player.getPositionY() + 70, totalBarWidth + 4, 9);
+                health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+
+                playerNamefont.draw(batch, player.getName(), (float) player.getPositionX() - 10, (float) player.getPositionY() + 100);
+            }
         }
         batch.end();
 

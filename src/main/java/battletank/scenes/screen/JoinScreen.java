@@ -352,6 +352,12 @@ public class JoinScreen implements Screen, ILobbyListener {
     @Override
     public void render(float delta) {
 
+        if(chosenMap == -1){
+            launchBtn.setDisabled(true);
+        }else{
+            launchBtn.setDisabled(false);
+        }
+
         if(playgame){
             game.setScreen(new GameScreen(chosenMap, IP, name));
         }
