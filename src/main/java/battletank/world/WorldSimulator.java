@@ -164,7 +164,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
         Long last = lastShot.get(player);
         if (last != null) {
-            if (last + 1000L > System.currentTimeMillis()) {
+            if (last + 500L > System.currentTimeMillis()) {
                 simulatedEvents.get(gameObject).remove(createProjectile.getClass().getSimpleName());
                 return;
             }
@@ -181,9 +181,12 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         if (gateway != null) {
             gateway.update(projectile, event);
         }
-        event.accept(projectile, this);
-        simulatedEvents.get(gameObject).remove(createProjectile.getClass().getSimpleName());
+        try {
+            event.accept(projectile, this);
+            simulatedEvents.get(gameObject).remove(createProjectile.getClass().getSimpleName());
+        }catch(NullPointerException e){
 
+        }
         lastShot.put(player, System.currentTimeMillis());
     }
 
