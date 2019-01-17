@@ -243,6 +243,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         Set<GameObject> objects =simulatedEvents.keySet();
         for(GameObject deadPlayer: deadPlayers){
             objects.remove(deadPlayer);
+            simulatedEvents.remove(deadPlayer);
         }
 
         return new ArrayList<>(objects);
