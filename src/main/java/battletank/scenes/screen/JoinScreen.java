@@ -242,6 +242,13 @@ public class JoinScreen implements Screen, ILobbyListener {
                     }
                     launchBtn.setVisible(creater);
 
+                    joinbtn.setDisabled(true);
+                    joinbtn.setVisible(!creater);
+                    createButton.setDisabled(true);
+                    createButton.setVisible(!creater);
+                    leaveBtn.setDisabled(true);
+                    leaveBtn.setVisible(!creater);
+
                 } else {
                     creater = false;
                     createButton.setBackground(drawcreateserver);
@@ -249,8 +256,14 @@ public class JoinScreen implements Screen, ILobbyListener {
                         btn.setVisible(creater);
                     }
                     launchBtn.setVisible(creater);
-                }
 
+                    joinbtn.setDisabled(false);
+                    createButton.setDisabled(false);
+                    leaveBtn.setDisabled(false);
+                    joinbtn.setVisible(creater);
+                    createButton.setVisible(creater);
+                    leaveBtn.setVisible(creater);
+                }
             }
         });
 
@@ -399,6 +412,8 @@ public class JoinScreen implements Screen, ILobbyListener {
             joinbtn.setDisabled(false);
             createButton.setDisabled(false);
         }
+
+
 
 
 

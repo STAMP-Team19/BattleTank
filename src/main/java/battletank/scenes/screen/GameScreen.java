@@ -205,23 +205,18 @@ public class GameScreen implements Screen {
                 container.draw(batch, (float) player.getPositionX() - 10, (float) player.getPositionY() + 70, totalBarWidth + 4, 9);
 
                 if(player.getHealthpoints() >= 100) {
-                    health.draw(batch, 10, 10, width, healthbar.getHeight());
                     health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
                 }
                 else if(player.getHealthpoints() <= 99 && player.getHealthpoints() >= 60){
-                    health90.draw(batch, 10, 10, width, healthbar.getHeight());
                     health90.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
                 }
                 else if(player.getHealthpoints() <= 59 && player.getHealthpoints() >= 30){
-                    health50.draw(batch, 10, 10, width, healthbar.getHeight());
                     health50.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
                 }
                 else if(player.getHealthpoints() <= 29 && player.getHealthpoints() >= 0){
-                    health10.draw(batch, 10, 10, width, healthbar.getHeight());
                     health10.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
                 }
                 else {
-                    health.draw(batch, 10, 10, width, healthbar.getHeight());
                     health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
                 }
                 playerNamefont.draw(batch, player.getName(), (float) player.getPositionX() - 10, (float) player.getPositionY() + 100);
