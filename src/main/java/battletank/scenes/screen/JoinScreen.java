@@ -462,7 +462,7 @@ public class JoinScreen implements Screen, ILobbyListener {
 
         if(joinedPlayersList != null) {
             for (int i = 0; i < joinedPlayersList.size(); i++) {
-                game.font.draw(game.batch, joinedPlayersList.get(i).getName(), 800 / 2 - (joinedPlayersList.get(i).getName().length() * 3), i * 20 + 330);
+                game.font.draw(game.batch, joinedPlayersList.get(i).getName(), 800 / 2 - (joinedPlayersList.get(i).getName().length() * 3), i * 20 + 250);
             }
         }
 
