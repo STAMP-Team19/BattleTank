@@ -70,7 +70,7 @@ public class JoinScreen implements Screen, ILobbyListener {
     private Stage stage;
     private String name = "";
     private String msg = "";
-    private String IP = "0.0.0.0";
+    private static String IP = "0.0.0.0";
     private Boolean playgame = false;
     private String ShowIp = "";
     private LobbyProvider provider;
@@ -108,6 +108,7 @@ public class JoinScreen implements Screen, ILobbyListener {
         // create the camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
+
 
         Gdx.input.setInputProcessor(stage); //Start taking input from the ui
     }
@@ -219,7 +220,6 @@ public class JoinScreen implements Screen, ILobbyListener {
                 }
 
                 controller.sendMAPCommand(chosenMap, LOBBYCOMMANDS.SETMAP);
-
             }
         });
 
@@ -363,6 +363,13 @@ public class JoinScreen implements Screen, ILobbyListener {
         if(controller==null) {
             controller = new LobbyCommandsListenerSender(name, IP, this);
         }
+
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            public void run() {
+                LobbyCommandsListenerSender controller = new LobbyCommandsListenerSender("shutdown", IP, new JoinScreen(MyGame.getInstance()));
+                controller.sendCommand(new PlayerInfo("shutdown"), LOBBYCOMMANDS.ENDGAME);
+            }
+        }, "Shutdown-thread"));
     }
 
     @Override

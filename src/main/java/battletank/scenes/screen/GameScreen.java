@@ -18,7 +18,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import spaces.game.connect.ActionSender;
 import spaces.game.connect.WorldEventsListener;
 
@@ -52,6 +56,7 @@ public class GameScreen implements Screen {
 	private Texture txtrLevelImage;
 	private ShapeRenderer shapeRenderer;
 	private String Ip;
+    private Stage stage;
 
     private Texture bullet;
 
@@ -164,6 +169,7 @@ public class GameScreen implements Screen {
         tiledMapRenderer.render();
 
         batch.begin();
+
         List<GameObject> gameObjects = worldSimulator.getGameObjects();
         for (GameObject go : gameObjects) {
             GameObject player = go;
