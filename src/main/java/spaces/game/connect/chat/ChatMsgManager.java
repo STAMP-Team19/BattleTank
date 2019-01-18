@@ -2,6 +2,8 @@ package spaces.game.connect.chat;
 
 import battletank.lobby.PlayerInfo;
 import com.google.gson.Gson;
+import org.jspace.ActualField;
+import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 
 import java.io.IOException;
@@ -47,6 +49,40 @@ public class ChatMsgManager implements IChatMsgManager {
             chatspace.put("UPDATE", new Gson().toJson(players));
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+}
+
+class ChatObserver implements Runnable{
+
+    RemoteSpace chatspace;
+    IChatListener listener;
+    String username;
+
+    ArrayList<PlayerInfo> players;
+
+    public ChatObserver(String username, RemoteSpace chatspace, IChatListener listener) {
+        this.chatspace = chatspace;
+        this.listener = listener;
+        this.username = username;
+    }
+
+    @Override
+    public void run() {
+        while(true){
+            try {
+                Object[] chatmessage = chatspace.get(new ActualField(username),
+                        new FormalField(String.class),
+                        new FormalField(String.class));
+
+                String author = (String) chatmessage[1];
+                String message = (String) chatmessage[2];
+
+                listener.notifyNewMessage(author, message);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
