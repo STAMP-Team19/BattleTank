@@ -87,7 +87,6 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         gameObject.setPositionY(newY);
 
         CollisionChecker collisionChecker= new CollisionChecker();
-
         // there are several other types, Rectangle is probably the most common one
         for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
 
@@ -236,7 +235,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
         Projectile projectile = new Projectile(projectileNum++,(int) projectileX, (int) projectileY, 4, 4, (int) player.getRotation(), 150, 0, 10, 10, PlayerColor.purple);
         Event event = new StartTransition(projectile.getSpeed());
-        addEvent(projectile,event);
+        addLocalEvent(projectile,event);
 
         lastShot.put(player, System.currentTimeMillis());
     }
@@ -249,7 +248,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         }
     }
 
-    public synchronized void addEvent(GameObject go, Event event) {
+    public synchronized void addLocalEvent(GameObject go, Event event){
         if(deadPlayers.contains(go)){
             return;
         }
@@ -261,7 +260,11 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         }
         events.put(event.getClass().getSimpleName(),event);
         simulatedEvents.put(go,events);
+    }
 
+    public synchronized void addEvent(GameObject go, Event event) {
+
+        addLocalEvent(go,event);
         if(gateway!=null) {
             gateway.update(go, event);
         }
@@ -279,14 +282,9 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     }
 
     public void setGameObject(GameObject target) {
-
-        Optional<GameObject> oldTarget = simulatedEvents.keySet().stream().filter(x->x.equals(target)).findFirst();
         Map<String, Event> events =simulatedEvents.remove(target);
         if(events==null){
             events=new ConcurrentHashMap<>();
-        }
-        if(oldTarget.isPresent()){
-            target.setHealthpoints(Math.min(oldTarget.get().getHealthpoints(), target.getHealthpoints()));
         }
         simulatedEvents.put(target,events);
     }
