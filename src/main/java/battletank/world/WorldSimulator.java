@@ -249,8 +249,10 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     }
 
     public synchronized void addLocalEvent(GameObject go, Event event){
-        if(deadPlayers.contains(go)){
-            return;
+        if(gateway!=null) {
+            if (deadPlayers.contains(go)) {
+                return;
+            }
         }
 
         Map<String,Event> events = simulatedEvents.get(go);
