@@ -58,6 +58,7 @@ public class ChatMsgManager implements IChatMsgManager {
     public void addPlayer(PlayerInfo player) {
         try {
             chatspace.put("UPDATE_ONCE", new Gson().toJson(player));
+            chatspace.put("[SERVER]", player.getName()+" has joined the chat.");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
