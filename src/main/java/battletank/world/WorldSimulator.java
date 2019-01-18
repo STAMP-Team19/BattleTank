@@ -228,17 +228,13 @@ public class WorldSimulator  implements EventVisitor,Runnable{
             }
         }
 
-        double startingDistanceFromOri = player.getHeight();
+        double startingDistanceFromOri = player.getHeight()/2+1;
         double aRadians = player.getRotation() * Math.PI / 180;
         double projectileX = player.getPositionX() + player.getOriginX() + startingDistanceFromOri * Math.cos(aRadians);
         double projectileY = player.getPositionY() + player.getOriginY() + startingDistanceFromOri * Math.sin(aRadians);
 
         Projectile projectile = new Projectile(projectileNum++,(int) projectileX, (int) projectileY, 4, 4, (int) player.getRotation(), 150, 0, 10, 10, PlayerColor.purple);
         Event event = new StartTransition(projectile.getSpeed());
-
-        //if (gateway != null) {
-        //    gateway.update(projectile, event);
-        //}
         addEvent(projectile,event);
 
         lastShot.put(player, System.currentTimeMillis());
