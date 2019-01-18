@@ -142,6 +142,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
                     }
 
                 }
+
             }
         }
 
@@ -235,10 +236,10 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         Projectile projectile = new Projectile(projectileNum++,(int) projectileX, (int) projectileY, 4, 4, (int) player.getRotation(), 150, 0, 10, 10, PlayerColor.purple);
         Event event = new StartTransition(projectile.getSpeed());
 
-        if (gateway != null) {
-            gateway.update(projectile, event);
-        }
-        //addEvent(projectile,event);
+        //if (gateway != null) {
+        //    gateway.update(projectile, event);
+        //}
+        addEvent(projectile,event);
 
         lastShot.put(player, System.currentTimeMillis());
     }
