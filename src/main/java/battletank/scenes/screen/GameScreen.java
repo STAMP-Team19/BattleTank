@@ -38,7 +38,7 @@ public class GameScreen implements Screen, ILobbyListener {
     MapObjects objects;
 
     private Music music;
-    private Boolean serverClosed_ENDGAME = false;
+    //private Boolean serverClosed_ENDGAME = false;
 
     WorldSimulator worldSimulator;
 
@@ -243,7 +243,7 @@ public class GameScreen implements Screen, ILobbyListener {
             }
 
             }
-            servercheck();
+            //servercheck();
             batch.end();
         }
 
@@ -312,9 +312,10 @@ public class GameScreen implements Screen, ILobbyListener {
 
     @Override
     public void endGame() {
-        serverClosed_ENDGAME = true;
+        //serverClosed_ENDGAME = true;
     }
 
+    /*
     private void servercheck(){
         if(serverClosed_ENDGAME){
             playerNamefont.draw(batch, "Server is down!", 400, 400);
@@ -328,4 +329,5 @@ public class GameScreen implements Screen, ILobbyListener {
             System.exit(0);
         }
     }
+    */
 }
