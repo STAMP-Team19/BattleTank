@@ -200,7 +200,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
                 destroyGameObject.setDamageApplied(true);
             }
             if(p.getHealthpoints()<=0) {
-
+                addEvent(gameObject,new DeadPlayerEvent());
                 simulatedEvents.remove(gameObject);
             }
             else{
@@ -261,7 +261,6 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         GameObject oldTarget = getOldTarget(go);
 
         if(oldTarget!=null) {
-
             go.setHealthpoints(Math.max(oldTarget.getHealthpoints(), go.getHealthpoints()));
         }
 
