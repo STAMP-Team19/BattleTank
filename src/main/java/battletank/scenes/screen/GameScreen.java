@@ -180,7 +180,7 @@ public class GameScreen implements Screen {
         // healthbar
             if(go instanceof Player) {
 
-                int width = player.getHealthpoints() / 100 * totalBarWidth;
+                int width =(int)( player.getHealthpoints() / 100.0 * totalBarWidth);
 
                 health.draw(batch, 10, 10, width, healthbar.getHeight());
 
