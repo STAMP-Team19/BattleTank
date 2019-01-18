@@ -38,7 +38,7 @@ public class GameScreen implements Screen, ILobbyListener {
     MapObjects objects;
 
     private Music music;
-    private Boolean serverClosed_ENDGAME;
+    private Boolean serverClosed_ENDGAME = false;
 
     WorldSimulator worldSimulator;
 
