@@ -55,6 +55,9 @@ public class GameScreen implements Screen {
 
 	private Texture healthCon;
     private Texture healthbar;
+    private Texture healthbar90;
+    private Texture healthbar50;
+    private Texture healthbar10;
 
 	private TextureRegion textureRegion = new TextureRegion();
 
@@ -68,10 +71,13 @@ public class GameScreen implements Screen {
 	// healthbar
 	private int totalBarWidth = 50;
 	private NinePatch health;
+    private NinePatch health90;
+    private NinePatch health50;
+    private NinePatch health10;
     private NinePatch container;
+
     // name of player text
     BitmapFont playerNamefont;
-
 
     // Current level
 	private int level;
@@ -84,9 +90,17 @@ public class GameScreen implements Screen {
 		txtrBack = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
 
         healthCon = new Texture( Gdx.files.internal("src/main/resources/assets/img/container.png"));
+
         healthbar = new Texture( Gdx.files.internal("src/main/resources/assets/img/bar.png"));
+        healthbar90 = new Texture( Gdx.files.internal("src/main/resources/assets/img/90bar.png"));
+        healthbar50 = new Texture( Gdx.files.internal("src/main/resources/assets/img/50bar.png"));
+        healthbar10 = new Texture( Gdx.files.internal("src/main/resources/assets/img/10bar.png"));
 
         health = new NinePatch(healthbar, 0, 0, 0, 0);
+        health90 = new NinePatch(healthbar90, 0, 0, 0, 0);
+        health50 = new NinePatch(healthbar50, 0, 0, 0, 0);
+        health10 = new NinePatch(healthbar10, 0, 0, 0, 0);
+
         container = new NinePatch(healthCon, 5, 5, 2, 2);
 
         playerNamefont = new BitmapFont();
@@ -129,8 +143,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void render (float v) {
-	    deltaTime.setTime((long) ((1000)*Gdx.graphics.getDeltaTime()));
-	    worldSimulator.handleTick();
+        deltaTime.setTime((long) ((1000) * Gdx.graphics.getDeltaTime()));
+        worldSimulator.handleTick();
         elapsed += Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
@@ -143,15 +157,14 @@ public class GameScreen implements Screen {
         tiledMapRenderer.render();
 
         batch.begin();
-        List<GameObject> gameObjects =worldSimulator.getGameObjects();
-        for(GameObject go : gameObjects) {
+        List<GameObject> gameObjects = worldSimulator.getGameObjects();
+        for (GameObject go : gameObjects) {
             GameObject player = go;
             //batch.draw(texture, (int) player.getPositionX(), (int) player.getPositionY(), (int) player.getWidth(), (int) player.getHeight());
 
-            if(textureMap.containsKey(player.getColor())){
+            if (textureMap.containsKey(player.getColor())) {
                 texture = textureMap.get(player.getColor());
-            }
-            else{
+            } else {
                 texture = new Texture(Gdx.files.internal(colorTextureMapper.getTexstureFromEnum(player.getColor())));
                 textureMap.put(player.getColor(), texture);
             }
@@ -167,7 +180,7 @@ public class GameScreen implements Screen {
                     (float) player.getHeight(),
                     1,
                     1,
-                    (float)player.getRotation()-90
+                    (float) player.getRotation() - 90
             );
 
         /* shape of colider box
@@ -177,23 +190,45 @@ public class GameScreen implements Screen {
         shapeRenderer.end();
         */
 
-        // healthbar
-            if(go instanceof Player) {
+            // healthbar
+            if (go instanceof Player) {
+
+                player.setHealthpoints(100);
 
                 int width =(int)( player.getHealthpoints() / 100.0 * totalBarWidth);
 
-                health.draw(batch, 10, 10, width, healthbar.getHeight());
+                //health.draw(batch, 10, 10, width, healthbar.getHeight());
 
                 //Offset it by the dynamic bar, let's say the gradient is 4 high.
                 container.draw(batch, (float) player.getPositionX() - 10, (float) player.getPositionY() + 70, totalBarWidth + 4, 9);
-                health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+
+                //health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+
+                if(player.getHealthpoints() >= 100) {
+                    health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+                }
+                else if(player.getHealthpoints() <= 99 && player.getHealthpoints() >= 60){
+                    health90.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+                }
+                else if(player.getHealthpoints() <= 59 && player.getHealthpoints() >= 30){
+                    health50.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+                }
+                else if(player.getHealthpoints() <= 29 && player.getHealthpoints() >= 0){
+                    health10.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+                }
+                else {
+                    health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+                }
 
                 playerNamefont.draw(batch, player.getName(), (float) player.getPositionX() - 10, (float) player.getPositionY() + 100);
             }
-        }
-        batch.end();
 
-    }
+
+
+                batch.end();
+
+            }
+        }
 
     public void pause () {
 	    music.pause();
