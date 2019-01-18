@@ -44,5 +44,6 @@ public class chatwindow implements IChatListener, Runnable {
         frame.setVisible(true);
 
         manager = new ChatMsgManager(username, this, ip);
+        manager.sendMessage(username, "Hey");
     }
 }
