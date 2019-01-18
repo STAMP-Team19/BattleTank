@@ -18,6 +18,8 @@ public class ChatMsgManager implements IChatMsgManager {
 
         try {
             chatspace = new RemoteSpace(uri);
+
+            new Thread(new ChatObserver(username, chatspace, listener)).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,8 +60,6 @@ class ChatObserver implements Runnable{
     RemoteSpace chatspace;
     IChatListener listener;
     String username;
-
-    ArrayList<PlayerInfo> players;
 
     public ChatObserver(String username, RemoteSpace chatspace, IChatListener listener) {
         this.chatspace = chatspace;

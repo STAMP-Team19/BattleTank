@@ -12,6 +12,9 @@ public class ChatProvider {
     public void createChat(){
         SequentialSpace chatspace = new SequentialSpace();
         spaceRepository.add("chat", chatspace);
+
+        chat = new Chat(chatspace);
+        openGates();
     }
 
     private void openGates(){
