@@ -222,12 +222,8 @@ public class GameScreen implements Screen {
 
                 playerNamefont.draw(batch, player.getName(), (float) player.getPositionX() - 10, (float) player.getPositionY() + 100);
             }
-
-
-
-                batch.end();
-
             }
+            batch.end();
         }
 
     public void pause () {
