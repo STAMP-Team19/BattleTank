@@ -13,7 +13,6 @@ public class ProjectileController extends ActionController {
     //TODO: Add functionality to remove project if projectile healthpoints reaches 0.
     public ProjectileController(IGame game, ActionInfo action) {
         Player player = game.getPlayer(action.getUserIdentifier());
-
         game.addPlayerEvent(player,new CreateProjectile(player.getName(),0));
 
     }

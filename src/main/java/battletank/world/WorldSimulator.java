@@ -135,11 +135,16 @@ public class WorldSimulator  implements EventVisitor,Runnable{
                 if(gameObject instanceof Projectile){
                     Projectile projectile = (Projectile) gameObject;
                     if(!projectile.damageApplied()) {
-                        ((Projectile) gameObject).setDamageApplied(true);
-                        Event subjectDestroyer = new DestroyGameObject(0, ((Projectile) gameObject).getDamage());
-                        Event projectileDestroyer = new DestroyGameObject(0, ((Projectile) gameObject).getDamage());
-                        this.addEvent(subject, subjectDestroyer);
-                        this.addEvent(gameObject, projectileDestroyer);
+                        if(subject instanceof Projectile){
+                            Event subjectDestroyer = new DestroyGameObject(0, ((Projectile) gameObject).getDamage());
+                            this.addEvent(subject, subjectDestroyer);
+                        }else {
+                            ((Projectile) gameObject).setDamageApplied(true);
+                            Event subjectDestroyer = new DestroyGameObject(0, ((Projectile) gameObject).getDamage());
+                            Event projectileDestroyer = new DestroyGameObject(0, ((Projectile) gameObject).getDamage());
+                            this.addEvent(subject, subjectDestroyer);
+                            this.addEvent(gameObject, projectileDestroyer);
+                        }
                     }
 
                 }
@@ -229,6 +234,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
             }
         }
 
+
         double startingDistanceFromOri = player.getHeight()/2+1;
         double aRadians = player.getRotation() * Math.PI / 180;
         double projectileX = player.getPositionX() + player.getOriginX() + startingDistanceFromOri * Math.cos(aRadians);
@@ -311,6 +317,5 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     private void printStatus(String status){
         System.out.println(Thread.currentThread().getName()+": "+status);
-        System.out.println("Dead players: " + deadPlayers);
     }
 }
