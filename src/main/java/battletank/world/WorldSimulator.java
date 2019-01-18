@@ -281,12 +281,20 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         return new ArrayList<>(objects);
     }
 
-    public void setGameObject(GameObject target) {
+    public void setGameObject(GameObject target, boolean overwriteHealth) {
+        Optional<GameObject> oldTarget = simulatedEvents.keySet().stream().filter(x->target.equals(x)).findFirst();
+
         Map<String, Event> events =simulatedEvents.remove(target);
         if(events==null){
             events=new ConcurrentHashMap<>();
         }
-        simulatedEvents.put(target,events);
+        if(overwriteHealth&&oldTarget.isPresent()){
+            simulatedEvents.put(target, events);
+        }else {
+
+            target.setHealthpoints(oldTarget.get().getHealthpoints());
+            simulatedEvents.put(target, events);
+        }
     }
 
     public void setGateway(WorldGateway gateway){

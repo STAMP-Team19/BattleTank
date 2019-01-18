@@ -2,7 +2,9 @@ package spaces.game.connect;
 
 import battletank.world.WorldSimulator;
 import battletank.world.events.Event;
+import battletank.world.events.go.DestroyGameObject;
 import battletank.world.gameobjects.GameObject;
+import battletank.world.gameobjects.Player;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
@@ -60,8 +62,13 @@ class WorldObserver implements Runnable{
 
                 GameObject target = (GameObject) event[1];
                 Event targetEvent = (Event) event[2];
-
-                worldSimulator.setGameObject(target);
+                if(target instanceof Player){
+                    if(targetEvent instanceof DestroyGameObject)
+                        worldSimulator.setGameObject(target,true);
+                }
+                else {
+                    worldSimulator.setGameObject(target, false);
+                }
                 worldSimulator.addEvent(target,targetEvent);
 
             } catch (InterruptedException e) {
