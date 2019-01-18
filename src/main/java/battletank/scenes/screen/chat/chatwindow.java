@@ -1,17 +1,18 @@
 package battletank.scenes.screen.chat;
 
 import battletank.lobby.PlayerInfo;
-import battletank.world.gameobjects.Player;
 import spaces.game.connect.chat.ChatMsgManager;
 import spaces.game.connect.chat.IChatListener;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 
 public class chatwindow implements IChatListener, Runnable, KeyListener {
     private JTextField textFieldInput;
@@ -23,7 +24,7 @@ public class chatwindow implements IChatListener, Runnable, KeyListener {
     private ChatMsgManager manager;
     Dimension border = new Dimension(500, 400);
 
-    private void addChatUser(String username){
+    private void addChatUser(String username) {
         manager.addPlayer(new PlayerInfo(username));
     }
 
@@ -31,7 +32,7 @@ public class chatwindow implements IChatListener, Runnable, KeyListener {
         this.name = name;
         this.ip = ip;
 
-        if(manager==null)
+        if (manager == null)
             manager = new ChatMsgManager(name, this, ip);
 
         addChatUser(name);
@@ -59,13 +60,23 @@ public class chatwindow implements IChatListener, Runnable, KeyListener {
 
     @Override
     public void run() {
+        JPanel middlePanel = new JPanel();
+        middlePanel.setBorder(new TitledBorder(new EtchedBorder(), "Chat room"));
+
+        JScrollPane jScrollPane = new JScrollPane();
+        jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        DefaultCaret caret = (DefaultCaret) textAreaChat.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        middlePanel.add(jScrollPane);
+
+
         JFrame frame = new JFrame("chatwindow");
         frame.setContentPane(this.JPanelMain);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(border);
 
-
         frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         //manager.sendMessage(username, "Test message: Chat started correctly.");
     }
