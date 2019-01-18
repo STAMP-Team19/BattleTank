@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class WorldSimulator  implements EventVisitor,Runnable{
 
+
     private Map<GameObject, Map<String, Event>> simulatedEvents;
 
     private Map<GameObject,Long> lastShot;
@@ -66,6 +67,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
             e.printStackTrace();
         }
         updateTime.update();
+        System.out.println(getWinner());
     }
 
 
@@ -293,6 +295,19 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         }
     }
 
+    public Player getWinner(){
+        Player player=null;
+        for(GameObject go : simulatedEvents.keySet()){
+            if(go instanceof  Player){
+                if(player!=null){
+                    return null;
+                }
+                player=(Player)go;
+
+            }
+        }
+        return player;
+    }
 
 
     private void printStatus(String status){
