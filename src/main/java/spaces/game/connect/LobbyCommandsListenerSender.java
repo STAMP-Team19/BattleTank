@@ -116,6 +116,9 @@ class LobbyObserver implements Runnable{
                     case SETMAP:
                         listener.notifyLobbymap(maplevel);
                         break;
+                    case ENDGAME:
+                        listener.endGame();
+
                 }
 
             } catch (InterruptedException e) {

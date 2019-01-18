@@ -33,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import org.lwjgl.Sys;
 import spaces.game.connect.ILobbyListener;
 import spaces.game.connect.LobbyCommandsListenerSender;
 import spaces.game.hosting.LobbyProvider;
@@ -91,6 +92,8 @@ public class JoinScreen implements Screen, ILobbyListener {
     private ArrayList<ImageButton> maplist;
 
     private int chosenMap = -1;
+
+    private Boolean serverClosed_ENDGAME = false;
 
     private static Texture backgroundTexture;
     private static Sprite backgroundSprite;
@@ -445,11 +448,27 @@ public class JoinScreen implements Screen, ILobbyListener {
             }
         }
 
+
+        servercheck();
         game.batch.end();
 
         stage.act(Gdx.graphics.getDeltaTime()); //Perform ui logic
         stage.draw(); //Draw the ui
 
+    }
+
+    private void servercheck(){
+        if(serverClosed_ENDGAME){
+            game.font.draw(game.batch, "The server has shut down!", 800/2-(name.length()*3), 400);
+
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            System.exit(0);
+        }
     }
 
     @Override
@@ -516,5 +535,10 @@ public class JoinScreen implements Screen, ILobbyListener {
     @Override
     public void notifyLobbymap(int level) {
         chosenMap = level;
+    }
+
+    @Override
+    public void endGame() {
+        serverClosed_ENDGAME = true;
     }
 }

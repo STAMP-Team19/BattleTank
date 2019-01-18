@@ -10,4 +10,5 @@ public interface ILobbyListener {
     void startGame();
     void deleteLobby();
     void notifyLobbymap(int level);
+    void endGame();
 }
