@@ -256,7 +256,8 @@ public class GameScreen implements Screen, ILobbyListener {
     private void DrawWin(){
 	    if(worldSimulator.getWinner() != null) {
             WinnerNamefont.getData().setScale(3);
-            WinnerNamefont.draw(batch,  worldSimulator.getWinner().getName() + " is the winner!", 130, 380);
+            container.draw(batch, 0, 800/2-100, 800, 200);
+            WinnerNamefont.draw(batch,  worldSimulator.getWinner().getName() + " is the winner!", 130, 400);
         }
     }
 
