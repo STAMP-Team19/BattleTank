@@ -164,6 +164,9 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public void handle(GameObject gameObject, StopTransition transition){
+        if(deadPlayers.contains(gameObject)){
+            return;
+        }
         simulatedEvents.get(gameObject).remove(StartTransition.class.getSimpleName());
         simulatedEvents.get(gameObject).remove(transition.getClass().getSimpleName());
     }
@@ -179,6 +182,9 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public void handle(GameObject gameObject, StopRotation rotation){
+        if(deadPlayers.contains(gameObject)){
+            return;
+        }
         simulatedEvents.get(gameObject).remove(StartRotation.class.getSimpleName());
         simulatedEvents.get(gameObject).remove(rotation.getClass().getSimpleName());
     }
@@ -201,7 +207,6 @@ public class WorldSimulator  implements EventVisitor,Runnable{
             }
             if(p.getHealthpoints()<=0) {
                 addEvent(gameObject,new DeadPlayerEvent());
-                simulatedEvents.remove(gameObject);
             }
             else{
                 simulatedEvents.get(gameObject).remove(destroyGameObject.getClass().getSimpleName());
@@ -244,6 +249,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     public void handle(GameObject gameObject, DeadPlayerEvent deadPlayerEvent) {
         deadPlayers.add(gameObject);
         ((Player)gameObject).setDead(true);
+        simulatedEvents.remove(gameObject);
     }
 
 
