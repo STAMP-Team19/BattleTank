@@ -238,7 +238,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         if (gateway != null) {
             gateway.update(projectile, event);
         }
-        addEvent(projectile,event);
+        //addEvent(projectile,event);
 
         lastShot.put(player, System.currentTimeMillis());
     }
