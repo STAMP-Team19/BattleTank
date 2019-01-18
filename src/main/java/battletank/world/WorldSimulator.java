@@ -288,11 +288,12 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         if(events==null){
             events=new ConcurrentHashMap<>();
         }
-        if(overwriteHealth&&oldTarget.isPresent()){
+        if(overwriteHealth){
             simulatedEvents.put(target, events);
         }else {
-
-            target.setHealthpoints(oldTarget.get().getHealthpoints());
+            if(oldTarget.isPresent()) {
+                target.setHealthpoints(oldTarget.get().getHealthpoints());
+            }
             simulatedEvents.put(target, events);
         }
     }
