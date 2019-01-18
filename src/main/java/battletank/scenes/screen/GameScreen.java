@@ -86,6 +86,7 @@ public class GameScreen implements Screen, ILobbyListener {
 
     // name of player text
     BitmapFont playerNamefont;
+    BitmapFont WinnerNamefont;
 
     // Current level
 	private int level;
@@ -114,6 +115,9 @@ public class GameScreen implements Screen, ILobbyListener {
         playerNamefont = new BitmapFont();
 
         bullet = new Texture( Gdx.files.internal("src/main/resources/assets/img/bullet.png"));
+
+        WinnerNamefont = new BitmapFont();
+        WinnerNamefont.setColor(Color.BLUE);
 
         textureRegionBullet.setTexture(bullet);
 
@@ -243,9 +247,18 @@ public class GameScreen implements Screen, ILobbyListener {
             }
 
             }
-            //servercheck();
+            DrawWin();
             batch.end();
         }
+
+
+
+    private void DrawWin(){
+	    if(worldSimulator.getWinner() != null) {
+            WinnerNamefont.getData().setScale(3);
+            WinnerNamefont.draw(batch,  worldSimulator.getWinner().getName() + " is the winner!", 130, 380);
+        }
+    }
 
     public void pause () {
 	    music.pause();
