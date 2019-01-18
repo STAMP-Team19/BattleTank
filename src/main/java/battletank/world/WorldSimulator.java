@@ -135,16 +135,11 @@ public class WorldSimulator  implements EventVisitor,Runnable{
                 if(gameObject instanceof Projectile){
                     Projectile projectile = (Projectile) gameObject;
                     if(!projectile.damageApplied()) {
-                        if(subject instanceof Projectile){
-                            Event subjectDestroyer = new DestroyGameObject(0, ((Projectile) gameObject).getDamage());
-                            this.addEvent(subject, subjectDestroyer);
-                        }else {
-                            ((Projectile) gameObject).setDamageApplied(true);
-                            Event subjectDestroyer = new DestroyGameObject(0, ((Projectile) gameObject).getDamage());
-                            Event projectileDestroyer = new DestroyGameObject(0, ((Projectile) gameObject).getDamage());
-                            this.addEvent(subject, subjectDestroyer);
-                            this.addEvent(gameObject, projectileDestroyer);
-                        }
+                        ((Projectile) gameObject).setDamageApplied(true);
+                        Event subjectDestroyer = new DestroyGameObject(0, ((Projectile) gameObject).getDamage());
+                        Event projectileDestroyer = new DestroyGameObject(0, ((Projectile) gameObject).getDamage());
+                        this.addEvent(subject, subjectDestroyer);
+                        this.addEvent(gameObject, projectileDestroyer);
                     }
 
                 }
@@ -234,7 +229,6 @@ public class WorldSimulator  implements EventVisitor,Runnable{
             }
         }
 
-
         double startingDistanceFromOri = player.getHeight()/2+1;
         double aRadians = player.getRotation() * Math.PI / 180;
         double projectileX = player.getPositionX() + player.getOriginX() + startingDistanceFromOri * Math.cos(aRadians);
@@ -285,10 +279,14 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     }
 
     public void setGameObject(GameObject target) {
+
+        Optional<GameObject> oldTarget = simulatedEvents.keySet().stream().filter(x->x.equals(target)).findFirst();
         Map<String, Event> events =simulatedEvents.remove(target);
         if(events==null){
             events=new ConcurrentHashMap<>();
-
+        }
+        if(oldTarget.isPresent()){
+            target.setHealthpoints(Math.min(oldTarget.get().getHealthpoints(), target.getHealthpoints()));
         }
         simulatedEvents.put(target,events);
     }
