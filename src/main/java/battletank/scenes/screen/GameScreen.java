@@ -53,6 +53,8 @@ public class GameScreen implements Screen {
 	private ShapeRenderer shapeRenderer;
 	private String Ip;
 
+    private Texture bullet;
+
 	private Texture healthCon;
     private Texture healthbar;
     private Texture healthbar90;
@@ -60,6 +62,7 @@ public class GameScreen implements Screen {
     private Texture healthbar10;
 
 	private TextureRegion textureRegion = new TextureRegion();
+    private TextureRegion textureRegionBullet = new TextureRegion();
 
 	private ColorTextureMapper colorTextureMapper = new ColorTextureMapper();
 
@@ -104,6 +107,10 @@ public class GameScreen implements Screen {
         container = new NinePatch(healthCon, 5, 5, 2, 2);
 
         playerNamefont = new BitmapFont();
+
+        bullet = new Texture( Gdx.files.internal("src/main/resources/assets/img/bullet.png"));
+
+        textureRegionBullet.setTexture(bullet);
 
         batch = new SpriteBatch();
 
@@ -162,27 +169,6 @@ public class GameScreen implements Screen {
             GameObject player = go;
             //batch.draw(texture, (int) player.getPositionX(), (int) player.getPositionY(), (int) player.getWidth(), (int) player.getHeight());
 
-            if (textureMap.containsKey(player.getColor())) {
-                texture = textureMap.get(player.getColor());
-            } else {
-                texture = new Texture(Gdx.files.internal(colorTextureMapper.getTexstureFromEnum(player.getColor())));
-                textureMap.put(player.getColor(), texture);
-            }
-
-            textureRegion.setRegion(texture);
-
-            batch.draw(textureRegion,
-                    (float) player.getPositionX(),
-                    (float) player.getPositionY(),
-                    (float) player.getOriginX(),
-                    (float) player.getOriginY(),
-                    (float) player.getWidth(),
-                    (float) player.getHeight(),
-                    1,
-                    1,
-                    (float) player.getRotation() - 90
-            );
-
         /* shape of colider box
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);
@@ -192,6 +178,27 @@ public class GameScreen implements Screen {
 
             // healthbar
             if (go instanceof Player) {
+
+                if (textureMap.containsKey(player.getColor())) {
+                    texture = textureMap.get(player.getColor());
+                } else {
+                    texture = new Texture(Gdx.files.internal(colorTextureMapper.getTexstureFromEnum(player.getColor())));
+                    textureMap.put(player.getColor(), texture);
+                }
+
+                textureRegion.setRegion(texture);
+
+                batch.draw(textureRegion,
+                        (float) player.getPositionX(),
+                        (float) player.getPositionY(),
+                        (float) player.getOriginX(),
+                        (float) player.getOriginY(),
+                        (float) player.getWidth(),
+                        (float) player.getHeight(),
+                        1,
+                        1,
+                        (float) player.getRotation() - 90
+                );
 
                 int width =(int)(player.getHealthpoints() / 100.0 * totalBarWidth);
 
@@ -218,6 +225,20 @@ public class GameScreen implements Screen {
                     health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
                 }
                 playerNamefont.draw(batch, player.getName(), (float) player.getPositionX() - 10, (float) player.getPositionY() + 100);
+            }
+            else {
+                textureRegion.setTexture(bullet);
+                batch.draw(textureRegion,
+                        (float) player.getPositionX(),
+                        (float) player.getPositionY(),
+                        (float) player.getOriginX(),
+                        (float) player.getOriginY(),
+                        (float) player.getWidth(),
+                        (float) player.getHeight(),
+                        2,
+                        2,
+                        (float) player.getRotation() - 90
+                );
             }
 
             }
