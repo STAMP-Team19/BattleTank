@@ -1,41 +1,44 @@
 package battletank.scenes.screen;
 
 import battletank.controls.ActionListener;
+import battletank.lobby.PlayerInfo;
 import battletank.world.DeltaTime;
 import battletank.world.Game;
 import battletank.world.MapLoader;
 import battletank.world.WorldSimulator;
-import battletank.world.gameobjects.ColorTextureMapper;
-import battletank.world.gameobjects.GameObject;
-import battletank.world.gameobjects.Player;
-import battletank.world.gameobjects.PlayerColor;
+import battletank.world.gameobjects.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import spaces.game.connect.ActionSender;
+import spaces.game.connect.ILobbyListener;
 import spaces.game.connect.WorldEventsListener;
-import spaces.game.hosting.GameHost;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class GameScreen implements Screen {
-
+public class GameScreen implements Screen, ILobbyListener {
+    Projectile pro=null;
 	Texture texture;
 	SpriteBatch batch;
 	float elapsed;
     MapObjects objects;
 
     private Music music;
+    //private Boolean serverClosed_ENDGAME = false;
 
     WorldSimulator worldSimulator;
 
@@ -53,14 +56,39 @@ public class GameScreen implements Screen {
 	private Texture txtrLevelImage;
 	private ShapeRenderer shapeRenderer;
 	private String Ip;
+    private Stage stage;
+
+    private Texture bullet;
+
+	private Texture healthCon;
+    private Texture healthbar;
+    private Texture healthbar90;
+    private Texture healthbar50;
+    private Texture healthbar10;
 
 	private TextureRegion textureRegion = new TextureRegion();
+    private TextureRegion textureRegionBullet = new TextureRegion();
 
 	private ColorTextureMapper colorTextureMapper = new ColorTextureMapper();
 
 	Map<PlayerColor, Texture> textureMap = new EnumMap<PlayerColor, Texture>(PlayerColor.class);
 
-	// Current level
+	private Pixmap pixmap = new Pixmap(50, 10, Pixmap.Format.RGBA8888);
+	private TextureRegionDrawable drawable = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+
+	// healthbar
+	private int totalBarWidth = 50;
+	private NinePatch health;
+    private NinePatch health90;
+    private NinePatch health50;
+    private NinePatch health10;
+    private NinePatch container;
+
+    // name of player text
+    BitmapFont playerNamefont;
+    BitmapFont WinnerNamefont;
+
+    // Current level
 	private int level;
 
 	public GameScreen(Integer level, String IP, String playerName) {
@@ -69,6 +97,29 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
 		txtrBg   = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
 		txtrBack = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
+
+        healthCon = new Texture( Gdx.files.internal("src/main/resources/assets/img/container.png"));
+
+        healthbar = new Texture( Gdx.files.internal("src/main/resources/assets/img/bar.png"));
+        healthbar90 = new Texture( Gdx.files.internal("src/main/resources/assets/img/90bar.png"));
+        healthbar50 = new Texture( Gdx.files.internal("src/main/resources/assets/img/50bar.png"));
+        healthbar10 = new Texture( Gdx.files.internal("src/main/resources/assets/img/10bar.png"));
+
+        health = new NinePatch(healthbar, 0, 0, 0, 0);
+        health90 = new NinePatch(healthbar90, 0, 0, 0, 0);
+        health50 = new NinePatch(healthbar50, 0, 0, 0, 0);
+        health10 = new NinePatch(healthbar10, 0, 0, 0, 0);
+
+        container = new NinePatch(healthCon, 5, 5, 2, 2);
+
+        playerNamefont = new BitmapFont();
+
+        bullet = new Texture( Gdx.files.internal("src/main/resources/assets/img/bullet.png"));
+
+        WinnerNamefont = new BitmapFont();
+        WinnerNamefont.setColor(Color.BLUE);
+
+        textureRegionBullet.setTexture(bullet);
 
         batch = new SpriteBatch();
 
@@ -104,10 +155,12 @@ public class GameScreen implements Screen {
     public void resize (int width, int height) {
     }
 
+
+
     @Override
     public void render (float v) {
-	    deltaTime.setTime((long) ((1000)*Gdx.graphics.getDeltaTime()));
-	    worldSimulator.handleTick();
+        deltaTime.setTime((long) ((1000) * Gdx.graphics.getDeltaTime()));
+        worldSimulator.handleTick();
         elapsed += Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
@@ -120,42 +173,91 @@ public class GameScreen implements Screen {
         tiledMapRenderer.render();
 
         batch.begin();
-        List<GameObject> gameObjects =worldSimulator.getGameObjects();
-        for(GameObject go : gameObjects) {
-            Player player = (Player) go;
+
+        List<GameObject> gameObjects = worldSimulator.getGameObjects();
+        for (GameObject go : gameObjects) {
+            GameObject player = go;
             //batch.draw(texture, (int) player.getPositionX(), (int) player.getPositionY(), (int) player.getWidth(), (int) player.getHeight());
 
-            if(textureMap.containsKey(player.getColor())){
-                texture = textureMap.get(player.getColor());
-            }
-            else{
-                texture = new Texture(Gdx.files.internal(colorTextureMapper.getTexstureFromEnum(player.getColor())));
-                textureMap.put(player.getColor(), texture);
-            }
-
-            textureRegion.setRegion(texture);
-
-            batch.draw(textureRegion,
-                    (float) player.getPositionX(),
-                    (float) player.getPositionY(),
-                    (float) player.getOriginX(),
-                    (float) player.getOriginY(),
-                    (float) player.getWidth(),
-                    (float) player.getHeight(),
-                    1,
-                    1,
-                    (float)player.getRotation()-90
-            );
-
-        /*
+        /* shape of colider box
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.rect(playerbody.x, playerbody.y, playerbody.getWidth(), playerbody.getHeight());
         shapeRenderer.end();
         */
-        }
-        batch.end();
 
+            // healthbar
+            if (go instanceof Player) {
+
+                if (textureMap.containsKey(player.getColor())) {
+                    texture = textureMap.get(player.getColor());
+                } else {
+                    texture = new Texture(Gdx.files.internal(colorTextureMapper.getTexstureFromEnum(player.getColor())));
+                    textureMap.put(player.getColor(), texture);
+                }
+
+                textureRegion.setRegion(texture);
+
+                batch.draw(textureRegion,
+                        (float) player.getPositionX(),
+                        (float) player.getPositionY(),
+                        (float) player.getOriginX(),
+                        (float) player.getOriginY(),
+                        (float) player.getWidth(),
+                        (float) player.getHeight(),
+                        1,
+                        1,
+                        (float) player.getRotation() - 90
+                );
+
+                int width =(int)(player.getHealthpoints() / 100.0 * totalBarWidth);
+
+                container.draw(batch, (float) player.getPositionX() - 10, (float) player.getPositionY() + 70, totalBarWidth + 4, 9);
+
+                if(player.getHealthpoints() >= 100) {
+                    health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+                }
+                else if(player.getHealthpoints() <= 99 && player.getHealthpoints() >= 60){
+                    health90.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+                }
+                else if(player.getHealthpoints() <= 59 && player.getHealthpoints() >= 30){
+                    health50.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+                }
+                else if(player.getHealthpoints() <= 29 && player.getHealthpoints() >= 0){
+                    health10.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+                }
+                else {
+                    health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+                }
+                playerNamefont.draw(batch, player.getName(), (float) player.getPositionX() - 10, (float) player.getPositionY() + 100);
+            }
+            else {
+                textureRegion.setTexture(bullet);
+                batch.draw(textureRegion,
+                        (float) player.getPositionX(),
+                        (float) player.getPositionY(),
+                        (float) player.getOriginX(),
+                        (float) player.getOriginY(),
+                        (float) player.getWidth(),
+                        (float) player.getHeight(),
+                        2,
+                        2,
+                        (float) player.getRotation() - 90
+                );
+            }
+
+            }
+            DrawWin();
+            batch.end();
+        }
+
+
+
+    private void DrawWin(){
+	    if(worldSimulator.getWinner() != null) {
+            WinnerNamefont.getData().setScale(3);
+            WinnerNamefont.draw(batch,  worldSimulator.getWinner().getName() + " is the winner!", 130, 380);
+        }
     }
 
     public void pause () {
@@ -201,4 +303,44 @@ public class GameScreen implements Screen {
 		music.dispose();
 	}
 
+    @Override
+    public void notifyLobby(ArrayList<PlayerInfo> playersList) {
+
+    }
+
+    @Override
+    public void startGame() {
+
+    }
+
+    @Override
+    public void deleteLobby() {
+
+    }
+
+    @Override
+    public void notifyLobbymap(int level) {
+
+    }
+
+    @Override
+    public void endGame() {
+        //serverClosed_ENDGAME = true;
+    }
+
+    /*
+    private void servercheck(){
+        if(serverClosed_ENDGAME){
+            playerNamefont.draw(batch, "Server is down!", 400, 400);
+
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            System.exit(0);
+        }
+    }
+    */
 }

@@ -33,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import org.lwjgl.Sys;
 import spaces.game.connect.ILobbyListener;
 import spaces.game.connect.LobbyCommandsListenerSender;
 import spaces.game.hosting.LobbyProvider;
@@ -69,7 +70,7 @@ public class JoinScreen implements Screen, ILobbyListener {
     private Stage stage;
     private String name = "";
     private String msg = "";
-    private String IP = "0.0.0.0";
+    private static String IP = "0.0.0.0";
     private Boolean playgame = false;
     private String ShowIp = "";
     private LobbyProvider provider;
@@ -92,6 +93,8 @@ public class JoinScreen implements Screen, ILobbyListener {
 
     private int chosenMap = -1;
 
+    private Boolean serverClosed_ENDGAME = false;
+
     private static Texture backgroundTexture;
     private static Sprite backgroundSprite;
 
@@ -105,6 +108,7 @@ public class JoinScreen implements Screen, ILobbyListener {
         // create the camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
+
 
         Gdx.input.setInputProcessor(stage); //Start taking input from the ui
     }
@@ -145,6 +149,8 @@ public class JoinScreen implements Screen, ILobbyListener {
                 System.out.println("Enter new server");
                 Gdx.input.getTextInput(joinInputListener, "Write IP of server", "", "IP");
                 joined = true;
+                playButton.setVisible(false);
+                createButton.setVisible(false);
             }
         });
 
@@ -217,6 +223,8 @@ public class JoinScreen implements Screen, ILobbyListener {
 
                 controller.sendMAPCommand(chosenMap, LOBBYCOMMANDS.SETMAP);
 
+                playButton.setVisible(true);
+                createButton.setVisible(true);
             }
         });
 
@@ -242,6 +250,13 @@ public class JoinScreen implements Screen, ILobbyListener {
                     }
                     launchBtn.setVisible(creater);
 
+                    joinbtn.setDisabled(true);
+                    joinbtn.setVisible(!creater);
+                    createButton.setDisabled(true);
+                    createButton.setVisible(!creater);
+                    leaveBtn.setDisabled(true);
+                    leaveBtn.setVisible(!creater);
+
                 } else {
                     creater = false;
                     createButton.setBackground(drawcreateserver);
@@ -249,8 +264,14 @@ public class JoinScreen implements Screen, ILobbyListener {
                         btn.setVisible(creater);
                     }
                     launchBtn.setVisible(creater);
-                }
 
+                    joinbtn.setDisabled(false);
+                    createButton.setDisabled(false);
+                    leaveBtn.setDisabled(false);
+                    joinbtn.setVisible(creater);
+                    createButton.setVisible(creater);
+                    leaveBtn.setVisible(creater);
+                }
             }
         });
 
@@ -347,10 +368,23 @@ public class JoinScreen implements Screen, ILobbyListener {
         if(controller==null) {
             controller = new LobbyCommandsListenerSender(name, IP, this);
         }
+
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            public void run() {
+                LobbyCommandsListenerSender controller = new LobbyCommandsListenerSender("shutdown", IP, new JoinScreen(MyGame.getInstance()));
+                controller.sendCommand(new PlayerInfo("shutdown"), LOBBYCOMMANDS.ENDGAME);
+            }
+        }, "Shutdown-thread"));
     }
 
     @Override
     public void render(float delta) {
+
+        if(chosenMap == -1){
+            launchBtn.setDisabled(true);
+        }else{
+            launchBtn.setDisabled(false);
+        }
 
         if(playgame){
             game.setScreen(new GameScreen(chosenMap, IP, name));
@@ -359,11 +393,14 @@ public class JoinScreen implements Screen, ILobbyListener {
         name = createInputListener.getLastoutput();
 
 
-        if(joinInputListener.getInputgiven()&&startupDone){
+        if(joined && joinInputListener.getLastoutput() != ""){
             IP = joinInputListener.getLastoutput();
-            try {
+
             lobby();
-            System.out.println("Lobby Open: "+controller.isLobbyOpen());
+
+            //controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.OPEN);
+
+            try {
             if (controller.isLobbyOpen()) {
 
                     controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.JOIN);
@@ -390,11 +427,9 @@ public class JoinScreen implements Screen, ILobbyListener {
             createButton.setDisabled(false);
         }
 
-        if(!joined){
-            joinbtn.setDisabled(false);
-        }else {
-            joinbtn.setDisabled(true);
-        }
+
+
+
 
         // clear the screen with a dark blue color. The
         // arguments to glClearColor are the red, green
@@ -424,11 +459,27 @@ public class JoinScreen implements Screen, ILobbyListener {
             }
         }
 
+
+        servercheck();
         game.batch.end();
 
         stage.act(Gdx.graphics.getDeltaTime()); //Perform ui logic
         stage.draw(); //Draw the ui
 
+    }
+
+    private void servercheck(){
+        if(serverClosed_ENDGAME){
+            game.font.draw(game.batch, "The server has shut down!", 800/2-(name.length()*3), 400);
+
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            System.exit(0);
+        }
     }
 
     @Override
@@ -495,7 +546,10 @@ public class JoinScreen implements Screen, ILobbyListener {
     @Override
     public void notifyLobbymap(int level) {
         chosenMap = level;
-        MapLoader mapLoader = new MapLoader();
-        mapLoader.loadMap(level);
+    }
+
+    @Override
+    public void endGame() {
+        serverClosed_ENDGAME = true;
     }
 }

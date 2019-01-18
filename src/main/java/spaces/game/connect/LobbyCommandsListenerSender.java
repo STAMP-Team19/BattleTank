@@ -37,6 +37,9 @@ public class LobbyCommandsListenerSender implements ILobbyCommandsSender {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        catch (IllegalStateException e){
+            sendCommand(playerInfo,command);
+        }
     }
 
     @Override
@@ -89,14 +92,13 @@ class LobbyObserver implements Runnable{
                 int maplevel = -1;
 
                 if(command == LOBBYCOMMANDS.SETMAP){
-                    maplevel = (Integer) information[1];
+                    maplevel = Integer.parseInt((String) information[1]);
                 }
                 else {
                     playerinfo = gson.fromJson((String) information[1], new TypeToken<ArrayList<PlayerInfo>>() {
                     }.getType());
                     System.out.println(playerinfo+" "+command.toString());
                 }
-
 
 
                 switch(command){
@@ -113,10 +115,20 @@ class LobbyObserver implements Runnable{
                         break loop;
                     case SETMAP:
                         listener.notifyLobbymap(maplevel);
+                        break;
+                    case ENDGAME:
+                        listener.endGame();
+
                 }
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            catch (NullPointerException e){
+
+            }
+            catch (IllegalStateException e){
+
             }
         }
     }

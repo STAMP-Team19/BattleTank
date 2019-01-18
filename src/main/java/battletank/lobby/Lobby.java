@@ -102,6 +102,7 @@ class CommandsListener implements Runnable{
                             playerinfodata = gson.toJson(info);
                             for (PlayerInfo player : info) {
                                 lobbyspace.put(player.getName(), playerinfodata, LOBBYCOMMANDS.REFRESH);
+                                lobbyspace.put(player.getName(), level+"", LOBBYCOMMANDS.SETMAP);
                             }
                             ++numberOfActualPlayers;
                         }

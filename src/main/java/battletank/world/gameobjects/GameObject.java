@@ -19,7 +19,10 @@ public abstract class GameObject {
 
     boolean hidden;
 
+    public GameObject(){}
+
     public GameObject(String name, int positionX, int positionY, int width, int height, int rotation, int speed, int rotationSpeed, int healthpoints, PlayerColor color) {
+
         this.name = name;
         this.positionX = positionX;
         this.positionY = positionY;
@@ -156,4 +159,5 @@ public abstract class GameObject {
         GameObject otherGO = (GameObject) other;
         return otherGO.getName().equals(this.getName());
     }
+
 }

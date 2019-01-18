@@ -8,6 +8,8 @@ public class UpdateGameObject extends Event {
 
     GameObject newGameObject;
 
+    public UpdateGameObject(){}
+
     public UpdateGameObject(GameObject newGameObject){
         this.newGameObject = newGameObject;
     }

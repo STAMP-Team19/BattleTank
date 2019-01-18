@@ -47,8 +47,8 @@ public class CollisionChecker {
             }
 
             return new Collision(
-                    collisionMap.get(temp)==up||collisionMap.get(temp)==down,
-                    collisionMap.get(temp)==left||collisionMap.get(temp)==right
+                    collisionMap.get(temp)==left||collisionMap.get(temp)==right,
+                    collisionMap.get(temp)==up||collisionMap.get(temp)==down
                     ,collisionMap.get(temp));
 
         }

@@ -22,6 +22,8 @@ public class ActionControllerFactory {
             case ROTATE_RIGHT:
             case ROTATE_STOP:
                 return new RotationController(game,action);
+            case SHOOT:
+                return new ProjectileController(game,action);
         }
         return null;
     }
