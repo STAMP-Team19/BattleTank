@@ -1,6 +1,7 @@
 package battletank.scenes.screen;
 
 import battletank.controls.ActionListener;
+import battletank.lobby.PlayerInfo;
 import battletank.world.DeltaTime;
 import battletank.world.Game;
 import battletank.world.MapLoader;
@@ -18,16 +19,18 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import spaces.game.connect.ActionSender;
+import spaces.game.connect.ILobbyListener;
 import spaces.game.connect.WorldEventsListener;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class GameScreen implements Screen {
+public class GameScreen implements Screen, ILobbyListener {
     Projectile pro=null;
 	Texture texture;
 	SpriteBatch batch;
@@ -35,6 +38,7 @@ public class GameScreen implements Screen {
     MapObjects objects;
 
     private Music music;
+    private Boolean serverClosed_ENDGAME;
 
     WorldSimulator worldSimulator;
 
@@ -52,6 +56,7 @@ public class GameScreen implements Screen {
 	private Texture txtrLevelImage;
 	private ShapeRenderer shapeRenderer;
 	private String Ip;
+    private Stage stage;
 
     private Texture bullet;
 
@@ -164,6 +169,7 @@ public class GameScreen implements Screen {
         tiledMapRenderer.render();
 
         batch.begin();
+
         List<GameObject> gameObjects = worldSimulator.getGameObjects();
         for (GameObject go : gameObjects) {
             GameObject player = go;
@@ -237,6 +243,7 @@ public class GameScreen implements Screen {
             }
 
             }
+            servercheck();
             batch.end();
         }
 
@@ -283,4 +290,42 @@ public class GameScreen implements Screen {
 		music.dispose();
 	}
 
+    @Override
+    public void notifyLobby(ArrayList<PlayerInfo> playersList) {
+
+    }
+
+    @Override
+    public void startGame() {
+
+    }
+
+    @Override
+    public void deleteLobby() {
+
+    }
+
+    @Override
+    public void notifyLobbymap(int level) {
+
+    }
+
+    @Override
+    public void endGame() {
+        serverClosed_ENDGAME = true;
+    }
+
+    private void servercheck(){
+        if(serverClosed_ENDGAME){
+            playerNamefont.draw(batch, "Server is down!", 400, 400);
+
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            System.exit(0);
+        }
+    }
 }
