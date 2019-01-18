@@ -267,7 +267,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         GameObject oldTarget = getOldTarget(go);
 
         if(oldTarget!=null) {
-            go.setHealthpoints(Math.max(oldTarget.getHealthpoints(), go.getHealthpoints()));
+            go.setHealthpoints(Math.min(oldTarget.getHealthpoints(), go.getHealthpoints()));
         }
 
         Map<String,Event> events = simulatedEvents.get(go);
