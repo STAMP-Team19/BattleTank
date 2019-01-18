@@ -282,11 +282,18 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     }
 
     public void setGameObject(GameObject target) {
+        Optional<GameObject> oldTarget = simulatedEvents.keySet().stream().filter(x->target.equals(x)).findFirst();
+
         Map<String, Event> events =simulatedEvents.remove(target);
         if(events==null){
             events=new ConcurrentHashMap<>();
         }
-        simulatedEvents.put(target,events);
+
+        oldTarget.ifPresent(gameObject -> target.setHealthpoints(
+                Math.min(gameObject.getHealthpoints(),target.getHealthpoints()))
+        );
+        simulatedEvents.put(target, events);
+
     }
 
     public void setGateway(WorldGateway gateway){
@@ -294,6 +301,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         for(GameObject go: simulatedEvents.keySet()){
             gateway.update(go,new StopTransition());
         }
+
     }
 
     public Player getWinner(){

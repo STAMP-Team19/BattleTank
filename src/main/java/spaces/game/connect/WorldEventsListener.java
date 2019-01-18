@@ -2,7 +2,9 @@ package spaces.game.connect;
 
 import battletank.world.WorldSimulator;
 import battletank.world.events.Event;
+import battletank.world.events.go.DestroyGameObject;
 import battletank.world.gameobjects.GameObject;
+import battletank.world.gameobjects.Player;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
