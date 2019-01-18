@@ -53,6 +53,15 @@ public class ChatMsgManager implements IChatMsgManager {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void addPlayer(PlayerInfo player) {
+        try {
+            chatspace.put("UPDATE_ONCE", new Gson().toJson(player));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 class ChatObserver implements Runnable{

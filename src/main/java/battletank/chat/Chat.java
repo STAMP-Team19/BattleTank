@@ -20,29 +20,33 @@ public class Chat {
 
 }
 
-class MessageListener implements Runnable{
+class MessageListener implements Runnable {
 
     SequentialSpace chatspace;
     ArrayList<PlayerInfo> players;
 
     public MessageListener(SequentialSpace chatspace) {
         this.chatspace = chatspace;
+        players = new ArrayList<>();
     }
 
     @Override
     public void run() {
         Gson gson = new Gson();
-        while(true){
+        while (true) {
             try {
                 Object[] chatcommand = chatspace.get(new FormalField(String.class), new FormalField(String.class));
                 String target = (String) chatcommand[0];
                 String message = (String) chatcommand[1];
 
-                if(target.equals("UPDATE")){
-                    players = gson.fromJson((String) chatcommand[1], new TypeToken<ArrayList<PlayerInfo>>() {
-                    }.getType());
-                }else{
-                    for(PlayerInfo player:players){
+                System.out.println("PL"+players);
+
+                 if (target.equals("UPDATE_ONCE")) {
+                    PlayerInfo pl = gson.fromJson((String) chatcommand[1], PlayerInfo.class);
+                    players.add(pl);
+
+                } else {
+                    for (PlayerInfo player : players) {
                         chatspace.put(player.getName(), target, message);
                     }
                 }

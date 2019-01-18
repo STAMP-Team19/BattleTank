@@ -1,5 +1,7 @@
 package battletank.scenes.screen.chat;
 
+import battletank.lobby.PlayerInfo;
+import battletank.world.gameobjects.Player;
 import spaces.game.connect.chat.ChatMsgManager;
 import spaces.game.connect.chat.IChatListener;
 
@@ -9,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 public class chatwindow implements IChatListener, Runnable, KeyListener {
     private JTextField textFieldInput;
@@ -16,14 +19,20 @@ public class chatwindow implements IChatListener, Runnable, KeyListener {
     private JPanel JPanelMain;
     private JTextArea textAreaChat;
 
-    private String ip, username;
+    private String ip, name;
     private ChatMsgManager manager;
     Dimension border = new Dimension(500, 400);
 
+    public void initOwner(String username){
+        manager.addPlayer(new PlayerInfo(username));
+    }
 
-    public chatwindow(String username, String ip) {
-        this.username = username;
+    public chatwindow(String name, String ip) {
+        this.name = name;
         this.ip = ip;
+
+        if(manager==null)
+            manager = new ChatMsgManager(name, this, ip);
 
         buttonSendMessage.addKeyListener(this);
 
@@ -32,7 +41,8 @@ public class chatwindow implements IChatListener, Runnable, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String msgInput = textFieldInput.getText();
-                textAreaChat.append(username + ": " + msgInput + "\n");
+                //textAreaChat.append(name + ": " + msgInput + "\n");
+                manager.sendMessage(name, msgInput);
                 textFieldInput.setText("");
             }
         });
@@ -41,23 +51,21 @@ public class chatwindow implements IChatListener, Runnable, KeyListener {
 
     @Override
     public void notifyNewMessage(String username, String message) {
-        System.out.println("TODO IMPLEMENT");
+        textAreaChat.append(username + ": " + message + "\n");
     }
 
 
     @Override
     public void run() {
         JFrame frame = new JFrame("chatwindow");
-        frame.setContentPane(new chatwindow(username, ip).JPanelMain);
+        frame.setContentPane(this.JPanelMain);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(border);
 
 
         frame.pack();
         frame.setVisible(true);
-
-        manager = new ChatMsgManager(username, this, ip);
-        manager.sendMessage(username, "Test message: Chat started correctly.");
+        //manager.sendMessage(username, "Test message: Chat started correctly.");
     }
 
     @Override

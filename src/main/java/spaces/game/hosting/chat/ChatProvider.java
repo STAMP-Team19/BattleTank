@@ -10,6 +10,7 @@ public class ChatProvider {
     private Chat chat;
 
     public void createChat(){
+        spaceRepository = new SpaceRepository();
         SequentialSpace chatspace = new SequentialSpace();
         spaceRepository.add("chat", chatspace);
 
