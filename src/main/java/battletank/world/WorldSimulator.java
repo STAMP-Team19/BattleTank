@@ -67,7 +67,6 @@ public class WorldSimulator  implements EventVisitor,Runnable{
             e.printStackTrace();
         }
         updateTime.update();
-        System.out.println(getWinner());
     }
 
 
