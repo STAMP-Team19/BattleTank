@@ -389,7 +389,6 @@ public class JoinScreen implements Screen, ILobbyListener {
             //controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.OPEN);
 
             try {
-            System.out.println("Lobby Open: "+controller.isLobbyOpen());
             if (controller.isLobbyOpen()) {
 
                     controller.sendCommand(new PlayerInfo(name), LOBBYCOMMANDS.JOIN);
