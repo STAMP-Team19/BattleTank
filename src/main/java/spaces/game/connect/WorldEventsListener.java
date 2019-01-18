@@ -73,7 +73,7 @@ class WorldObserver implements Runnable{
                     }
                     else{
                         if(oldTarget!=null){
-                            target.setHealthpoints(Math.min(oldTarget.getHealthpoints(),target.getHealthpoints()));
+                            target.setHealthpoints(oldTarget.getHealthpoints());
                         }
                         worldSimulator.setGameObject(target);
                         worldSimulator.addEvent(target,targetEvent);
