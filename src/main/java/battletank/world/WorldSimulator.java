@@ -60,12 +60,12 @@ public class WorldSimulator  implements EventVisitor,Runnable{
                 }
             }
         }
-        updateTime.update();
         try {
             Thread.sleep(10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        updateTime.update();
     }
 
 
@@ -105,7 +105,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
 
                 if(gameObject instanceof Projectile){
-                    Event colliderDestroyer= new DestroyGameObject(0);
+                    Event colliderDestroyer= new DestroyGameObject(0, ((Projectile)gameObject).getDamage());
                     this.addEvent(gameObject,colliderDestroyer);
                 }
             }
@@ -132,10 +132,14 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
 
                 if(gameObject instanceof Projectile){
-                    Event subjectDestroyer = new DestroyGameObject(0);
-                    Event projectileDestroyer= new DestroyGameObject(0);
-                    this.addEvent(subject,subjectDestroyer);
-                    this.addEvent(gameObject,projectileDestroyer);
+                    Projectile projectile = (Projectile) gameObject;
+                    if(!projectile.damageApplied()) {
+                        ((Projectile) gameObject).setDamageApplied(true);
+                        Event subjectDestroyer = new DestroyGameObject(0, ((Projectile) gameObject).getDamage());
+                        Event projectileDestroyer = new DestroyGameObject(0, ((Projectile) gameObject).getDamage());
+                        this.addEvent(subject, subjectDestroyer);
+                        this.addEvent(gameObject, projectileDestroyer);
+                    }
 
                 }
             }
@@ -186,11 +190,25 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     }
 
     @Override
-    public void handle(GameObject gameObject, DestroyGameObject destroyGameObject) {
+    public synchronized void handle(GameObject gameObject, DestroyGameObject destroyGameObject) {
         if(gameObject instanceof Player){
-            deadPlayers.add(gameObject);
+            Player p = (Player) gameObject;
+            if(!destroyGameObject.damageApplied()) {
+                p.setHealthpoints(p.getHealthpoints() - destroyGameObject.getDamage());
+                destroyGameObject.setDamageApplied(true);
+            }
+            if(p.getHealthpoints()<=0) {
+                deadPlayers.add(gameObject);
+                p.setDead(true);
+                simulatedEvents.remove(gameObject);
+            }
+            else{
+                simulatedEvents.get(gameObject).remove(destroyGameObject.getClass().getSimpleName());
+            }
         }
-        simulatedEvents.remove(gameObject);
+        else {
+            simulatedEvents.remove(gameObject);
+        }
     }
 
     @Override
@@ -214,18 +232,14 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         double projectileX = player.getPositionX() + player.getOriginX() + startingDistanceFromOri * Math.cos(aRadians);
         double projectileY = player.getPositionY() + player.getOriginY() + startingDistanceFromOri * Math.sin(aRadians);
 
-        Projectile projectile = new Projectile(projectileNum++,(int) projectileX, (int) projectileY, 4, 4, (int) player.getRotation(), 150, 0, 10, 100, PlayerColor.purple);
+        Projectile projectile = new Projectile(projectileNum++,(int) projectileX, (int) projectileY, 4, 4, (int) player.getRotation(), 150, 0, 10, 10, PlayerColor.purple);
         Event event = new StartTransition(projectile.getSpeed());
 
         if (gateway != null) {
             gateway.update(projectile, event);
         }
-        try {
-            event.accept(projectile, this);
-            simulatedEvents.get(gameObject).remove(createProjectile.getClass().getSimpleName());
-        }catch(NullPointerException e){
+        addEvent(projectile,event);
 
-        }
         lastShot.put(player, System.currentTimeMillis());
     }
 
@@ -239,14 +253,8 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     public synchronized void addEvent(GameObject go, Event event) {
         if(deadPlayers.contains(go)){
-
-            System.out.println(go.getName()+", you cant shoot when you are dead.");
-            System.out.println(deadPlayers);
             return;
         }
-
-        System.out.println(go.getName()+", you are not dead so you can shoot.");
-        System.out.println(deadPlayers);
 
         Map<String,Event> events = simulatedEvents.get(go);
         if(events==null){
@@ -286,5 +294,12 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         for(GameObject go: simulatedEvents.keySet()){
             gateway.update(go,new StopTransition());
         }
+    }
+
+
+
+    private void printStatus(String status){
+        System.out.println(Thread.currentThread().getName()+": "+status);
+        System.out.println("Dead players: " + deadPlayers);
     }
 }
