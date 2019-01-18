@@ -39,8 +39,6 @@ class MessageListener implements Runnable {
                 String target = (String) chatcommand[0];
                 String message = (String) chatcommand[1];
 
-                System.out.println("PL"+players);
-
                  if (target.equals("UPDATE_ONCE")) {
                     PlayerInfo pl = gson.fromJson((String) chatcommand[1], PlayerInfo.class);
                     players.add(pl);

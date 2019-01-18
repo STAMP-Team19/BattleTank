@@ -44,9 +44,10 @@ public class chatwindow implements IChatListener, Runnable, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String msgInput = textFieldInput.getText();
-                //textAreaChat.append(name + ": " + msgInput + "\n");
-                manager.sendMessage(name, msgInput);
-                textFieldInput.setText("");
+                if(!msgInput.isEmpty()) {
+                    manager.sendMessage(name, msgInput);
+                    textFieldInput.setText("");
+                }
             }
         });
     }
@@ -74,6 +75,8 @@ public class chatwindow implements IChatListener, Runnable, KeyListener {
         frame.setContentPane(this.JPanelMain);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(border);
+
+        frame.getRootPane().setDefaultButton(buttonSendMessage);
 
         frame.pack();
         frame.setLocationRelativeTo(null);
