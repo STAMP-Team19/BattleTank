@@ -2,6 +2,7 @@ package battletank.scenes.screen;
 
 import battletank.lobby.LOBBYCOMMANDS;
 import battletank.lobby.PlayerInfo;
+import battletank.scenes.screen.chat.chatwindow;
 import battletank.scenes.util.CreateInputListener;
 import battletank.scenes.util.JoinInputListener;
 import battletank.world.GameRules;
@@ -367,6 +368,10 @@ public class JoinScreen implements Screen, ILobbyListener {
     public void lobby(){
         if(controller==null) {
             controller = new LobbyCommandsListenerSender(name, IP, this);
+
+            // Open Chat Window
+            chatwindow window = new chatwindow(name, IP);
+            new Thread(window).start();
         }
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
