@@ -282,17 +282,18 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     }
 
     public void setGameObject(GameObject target) {
-        Optional<GameObject> oldTarget = simulatedEvents.keySet().stream().filter(x->target.equals(x)).findFirst();
-
         Map<String, Event> events =simulatedEvents.remove(target);
         if(events==null){
             events=new ConcurrentHashMap<>();
         }
-
-        oldTarget.ifPresent(gameObject -> target.setHealthpoints(
-                Math.min(gameObject.getHealthpoints(),target.getHealthpoints()))
-        );
         simulatedEvents.put(target, events);
+
+    }
+
+    public GameObject getOldTarget(GameObject target){
+        Optional<GameObject> oldTarget = simulatedEvents.keySet().stream().filter(target::equals).findFirst();
+        return oldTarget.orElse(null);
+
 
     }
 
