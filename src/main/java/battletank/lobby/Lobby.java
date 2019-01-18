@@ -8,6 +8,7 @@ import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
 import org.jspace.SpaceRepository;
 import spaces.game.hosting.GameHost;
+import spaces.game.hosting.chat.ChatProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,9 @@ public class Lobby {
         this.numberOfMaxPlayers = numberOfMaxPlayers;
         this.hostname = hostname;
         this.lobbyspace = lobbyspace;
+
+        //Chat creation
+        new ChatProvider().createChat();
 
         new Thread(new CommandsListener(lobbyspace, numberOfMaxPlayers, rules, spaceRepository, hostname, level)).start();
     }
