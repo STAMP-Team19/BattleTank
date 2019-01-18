@@ -2,6 +2,7 @@ package battletank.world;
 
 import battletank.world.events.Event;
 import battletank.world.events.go.CreateProjectile;
+import battletank.world.events.go.DeadPlayerEvent;
 import battletank.world.events.go.DestroyGameObject;
 import battletank.world.events.go.UpdateGameObject;
 import battletank.world.events.rotations.StartRotation;
@@ -199,8 +200,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
                 destroyGameObject.setDamageApplied(true);
             }
             if(p.getHealthpoints()<=0) {
-                deadPlayers.add(gameObject);
-                p.setDead(true);
+
                 simulatedEvents.remove(gameObject);
             }
             else{
@@ -240,6 +240,12 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         lastShot.put(player, System.currentTimeMillis());
     }
 
+    @Override
+    public void handle(GameObject gameObject, DeadPlayerEvent deadPlayerEvent) {
+        deadPlayers.add(gameObject);
+        ((Player)gameObject).setDead(true);
+    }
+
 
     public void addGameObject(GameObject go) {
         simulatedEvents.put(go,new ConcurrentHashMap<>());
@@ -249,16 +255,16 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     }
 
     public synchronized void addLocalEvent(GameObject go, Event event){
-        if(gateway!=null) {
-            if (deadPlayers.contains(go)) {
-                return;
-            }
+        if (deadPlayers.contains(go)) {
+            return;
         }
+        GameObject oldTarget = getOldTarget(go);
+
+        go.setHealthpoints(Math.max(oldTarget.getHealthpoints(),go.getHealthpoints()));
 
         Map<String,Event> events = simulatedEvents.get(go);
         if(events==null){
             events=new ConcurrentHashMap<>();
-
         }
         events.put(event.getClass().getSimpleName(),event);
         simulatedEvents.put(go,events);

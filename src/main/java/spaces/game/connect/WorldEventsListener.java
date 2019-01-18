@@ -66,22 +66,9 @@ class WorldObserver implements Runnable{
 
                 GameObject oldTarget =worldSimulator.getOldTarget(target);
 
-                if(target instanceof Player){
-                    if(targetEvent instanceof DestroyGameObject){
-                        worldSimulator.setGameObject(target);
-                        worldSimulator.addEvent(target,targetEvent);
-                    }
-                    else{
-                        if(oldTarget!=null){
-                            target.setHealthpoints(oldTarget.getHealthpoints());
-                        }
-                        worldSimulator.setGameObject(target);
-                        worldSimulator.addEvent(target,targetEvent);
-                    }
-                }else{
-                    worldSimulator.setGameObject(target);
-                    worldSimulator.addEvent(target,targetEvent);
-                }
+
+                worldSimulator.setGameObject(target);
+                worldSimulator.addEvent(target,targetEvent);
 
 
             } catch (InterruptedException e) {
