@@ -23,7 +23,7 @@ public class chatwindow implements IChatListener, Runnable, KeyListener {
     private ChatMsgManager manager;
     Dimension border = new Dimension(500, 400);
 
-    public void initOwner(String username){
+    private void addChatUser(String username){
         manager.addPlayer(new PlayerInfo(username));
     }
 
@@ -33,6 +33,8 @@ public class chatwindow implements IChatListener, Runnable, KeyListener {
 
         if(manager==null)
             manager = new ChatMsgManager(name, this, ip);
+
+        addChatUser(name);
 
         buttonSendMessage.addKeyListener(this);
 

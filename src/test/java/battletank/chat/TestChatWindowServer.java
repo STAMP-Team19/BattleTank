@@ -25,8 +25,6 @@ public class TestChatWindowServer {
 
         chatwindow window = new chatwindow("Peter", "0.0.0.0");
 
-        window.initOwner("Peter");
-
         new Thread(window).start();
     }
 }
