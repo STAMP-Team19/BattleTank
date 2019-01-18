@@ -26,4 +26,9 @@ public class LobbyClientTest implements ILobbyListener {
     @Override
     public void notifyLobbymap(int level) { System.out.println("SETMAP");
     }
+
+    @Override
+    public void endGame() {
+        System.out.println("ENDGAME");
+    }
 }
