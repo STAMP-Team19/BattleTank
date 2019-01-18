@@ -1,4 +1,4 @@
-package battletank.lobby.chat;
+package battletank.scenes.screen.chat;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
