@@ -62,9 +62,13 @@ class WorldObserver implements Runnable{
 
                 GameObject target = (GameObject) event[1];
                 Event targetEvent = (Event) event[2];
+
                 if(target instanceof Player){
                     if(targetEvent instanceof DestroyGameObject)
                         worldSimulator.setGameObject(target,true);
+                    else{
+                        worldSimulator.setGameObject(target, false);
+                    }
                 }
                 else {
                     worldSimulator.setGameObject(target, false);
