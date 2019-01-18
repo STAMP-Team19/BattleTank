@@ -149,6 +149,8 @@ public class JoinScreen implements Screen, ILobbyListener {
                 System.out.println("Enter new server");
                 Gdx.input.getTextInput(joinInputListener, "Write IP of server", "", "IP");
                 joined = true;
+                playButton.setVisible(false);
+                createButton.setVisible(false);
             }
         });
 
@@ -220,6 +222,9 @@ public class JoinScreen implements Screen, ILobbyListener {
                 }
 
                 controller.sendMAPCommand(chosenMap, LOBBYCOMMANDS.SETMAP);
+
+                playButton.setVisible(true);
+                createButton.setVisible(true);
             }
         });
 
