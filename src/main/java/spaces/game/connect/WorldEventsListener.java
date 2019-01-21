@@ -64,11 +64,8 @@ class WorldObserver implements Runnable{
                 Event targetEvent = (Event) event[2];
 
 
-                GameObject oldTarget =worldSimulator.getOldTarget(target);
-
-
                 worldSimulator.setGameObject(target);
-                worldSimulator.addEvent(target,targetEvent);
+                worldSimulator.addLocalEvent(target,targetEvent);
 
 
             } catch (InterruptedException e) {

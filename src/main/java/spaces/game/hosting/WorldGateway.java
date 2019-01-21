@@ -3,6 +3,7 @@ package spaces.game.hosting;
 import battletank.world.IGame;
 import battletank.world.events.Event;
 import battletank.world.gameobjects.GameObject;
+import com.google.gson.Gson;
 import org.jspace.SequentialSpace;
 
 public class WorldGateway {

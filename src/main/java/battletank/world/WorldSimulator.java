@@ -203,6 +203,8 @@ public class WorldSimulator  implements EventVisitor,Runnable{
             Player p = (Player) gameObject;
             if(!destroyGameObject.damageApplied()) {
                 p.setHealthpoints(p.getHealthpoints() - destroyGameObject.getDamage());
+                printStatus(p.getName() + " took damage: "+destroyGameObject.getDamage());
+                printStatus(p.getName() + "'s health is now: "+p.getHealthpoints());
                 destroyGameObject.setDamageApplied(true);
             }
             if(p.getHealthpoints()<=0) {
@@ -240,7 +242,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
         Projectile projectile = new Projectile(projectileNum++,(int) projectileX, (int) projectileY, 4, 4, (int) player.getRotation(), 150, 0, 10, 10, PlayerColor.purple);
         Event event = new StartTransition(projectile.getSpeed());
-        addLocalEvent(projectile,event);
+        addEvent(projectile,event);
 
         lastShot.put(player, System.currentTimeMillis());
     }
@@ -264,11 +266,6 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         if (deadPlayers.contains(go)) {
             return;
         }
-        GameObject oldTarget = getOldTarget(go);
-
-        if(oldTarget!=null) {
-            go.setHealthpoints(Math.min(oldTarget.getHealthpoints(), go.getHealthpoints()));
-        }
 
         Map<String,Event> events = simulatedEvents.get(go);
         if(events==null){
@@ -279,11 +276,13 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     }
 
     public synchronized void addEvent(GameObject go, Event event) {
-
-        addLocalEvent(go,event);
+        if(gateway==null){
+            return;
+        }
         if(gateway!=null) {
             gateway.update(go, event);
         }
+        addLocalEvent(go,event);
     }
 
     public List<GameObject> getGameObjects(){
@@ -298,9 +297,13 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     }
 
     public void setGameObject(GameObject target) {
+        GameObject oldTarget = getOldTarget(target);
         Map<String, Event> events =simulatedEvents.remove(target);
         if(events==null){
             events=new ConcurrentHashMap<>();
+        }
+        if(oldTarget!=null){
+            target.setHealthpoints(oldTarget.getHealthpoints());
         }
         simulatedEvents.put(target, events);
 

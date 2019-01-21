@@ -2,7 +2,7 @@ package battletank.world.gameobjects;
 
 import com.badlogic.gdx.math.Rectangle;
 
-public abstract class GameObject {
+public class GameObject {
 
     String name;
     String[] tags;
@@ -144,6 +144,10 @@ public abstract class GameObject {
 
     public void setColor(PlayerColor color) {
         this.color = color;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
     }
 
     @Override
