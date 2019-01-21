@@ -8,8 +8,11 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
+import java.util.Arrays;
+
 public class MapLoader {
 
+    private Boolean loaded = false;
 
     private OrthographicCamera camera;
 
@@ -17,24 +20,35 @@ public class MapLoader {
     private OrthogonalTiledMapRenderer tiledMapRenderer;
     private MapObjects objects;
 
+    public void loadMapNoUI(int level){
+        if(Thread.currentThread().getName().equals("LWJGL Application")){
+            loadMap(level);
+            return;
+        }
+        Gdx.app.postRunnable(()-> loadMap(level));
+        while(!loaded){
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public void loadMap(int level){
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
-
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false,w,h);
-        camera.update();
 
         switch (level){
             case 0:
                 tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/desertmap2/desertmap1new.tmx");
                 break;
             case 1:
-                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/maps/desertmap2new.tmx");
+                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/desertmap2/desertmap2new.tmx");
+                break;
+            case 2:
+                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/desertmap2/desertmap3new.tmx");
                 break;
             default:
-                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/maps/desertmap1new.tmx");
+                tiledMap = new TmxMapLoader().load("src/main/resources/assets/maps/desertmap2/desertmap1new.tmx");
                 break;
         }
 
@@ -45,12 +59,7 @@ public class MapLoader {
         MapLayer collisionObjectLayer = tiledMap.getLayers().get(objectLayerId);
         objects = collisionObjectLayer.getObjects();
 
-        String name = collisionObjectLayer.getName();
-        float opacity = collisionObjectLayer.getOpacity();
-        boolean isVisible = collisionObjectLayer.isVisible();
-
-        //System.out.println("obj til col: " + objects.getCount() + "  name: " + name + "op: " + opacity + "isvis: " + isVisible);
-
+        loaded = true;
     }
     public OrthographicCamera getCamera() {
         return camera;

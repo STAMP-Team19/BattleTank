@@ -13,7 +13,6 @@ public class RotationController extends ActionController {
 
     public RotationController(IGame game, ActionInfo action) {
         super();
-        WorldGateway gateway = game.getWorldGateway();
         Player player = game.getPlayer(action.getUserIdentifier());
 
         int direction = 0;
@@ -25,12 +24,10 @@ public class RotationController extends ActionController {
                 direction = 1;
                 break;
             case MOVE_STOP:
-                gateway.update(player, new StopRotation());
                 game.addPlayerEvent(player,new StopRotation());
                 return;
         }
         StartRotation transition = new StartRotation(player.getRotationSpeed() * direction);
-        gateway.update(player, transition);
         game.addPlayerEvent(player,transition);
     }
 }

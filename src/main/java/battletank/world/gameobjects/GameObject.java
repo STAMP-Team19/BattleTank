@@ -2,7 +2,7 @@ package battletank.world.gameobjects;
 
 import com.badlogic.gdx.math.Rectangle;
 
-public abstract class GameObject {
+public class GameObject {
 
     String name;
     String[] tags;
@@ -19,7 +19,10 @@ public abstract class GameObject {
 
     boolean hidden;
 
+    public GameObject(){}
+
     public GameObject(String name, int positionX, int positionY, int width, int height, int rotation, int speed, int rotationSpeed, int healthpoints, PlayerColor color) {
+
         this.name = name;
         this.positionX = positionX;
         this.positionY = positionY;
@@ -135,8 +138,17 @@ public abstract class GameObject {
         return (getHeight()*(1-(0.36/2.11)))/2;
     }
 
+    public PlayerColor getColor() {
+        return color;
+    }
 
+    public void setColor(PlayerColor color) {
+        this.color = color;
+    }
 
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
 
     @Override
     public int hashCode(){
@@ -151,4 +163,5 @@ public abstract class GameObject {
         GameObject otherGO = (GameObject) other;
         return otherGO.getName().equals(this.getName());
     }
+
 }

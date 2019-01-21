@@ -55,7 +55,7 @@ public class MyGame extends Game {
 
         texture = new Texture(Gdx.files.internal("src/main/resources/assets/img/Tank.png"));
         batch = new SpriteBatch();
-        loadMap();
+        //loadMap();
 
 
     }
@@ -102,7 +102,7 @@ public class MyGame extends Game {
     public void dispose () {
     }
 
-
+/*
     private void loadMap(){
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
@@ -114,5 +114,5 @@ public class MyGame extends Game {
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
        // Gdx.input.setInputProcessor(input);
     }
-
+*/
 }

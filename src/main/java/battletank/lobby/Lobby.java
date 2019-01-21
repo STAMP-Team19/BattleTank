@@ -8,11 +8,14 @@ import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
 import org.jspace.SpaceRepository;
 import spaces.game.hosting.GameHost;
+import spaces.game.hosting.chat.ChatProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Lobby {
+
+    public static boolean isReady=false;
 
     private int numberOfMaxPlayers;
     private String hostname;
@@ -20,12 +23,15 @@ public class Lobby {
 
     private SequentialSpace lobbyspace;
 
-    public Lobby(String hostname, int numberOfMaxPlayers, GameRules rules, SequentialSpace lobbyspace, SpaceRepository spaceRepository){
+    public Lobby(String hostname, int numberOfMaxPlayers, GameRules rules, SequentialSpace lobbyspace, SpaceRepository spaceRepository, int level){
         this.numberOfMaxPlayers = numberOfMaxPlayers;
         this.hostname = hostname;
         this.lobbyspace = lobbyspace;
 
-        new Thread(new CommandsListener(lobbyspace, numberOfMaxPlayers, rules, spaceRepository, hostname)).start();
+        //Chat creation
+        new ChatProvider().createChat();
+
+        new Thread(new CommandsListener(lobbyspace, numberOfMaxPlayers, rules, spaceRepository, hostname, level)).start();
     }
 
     public int getNumberOfMaxPlayers() {
@@ -40,6 +46,9 @@ public class Lobby {
         return game;
     }
 
+    public boolean isDone() {
+        return isReady;
+    }
 }
 
 class CommandsListener implements Runnable{
@@ -50,31 +59,23 @@ class CommandsListener implements Runnable{
     ArrayList<PlayerInfo> info;
     int numberOfMaxPlayers;
     int numberOfActualPlayers;
+    int level;
 
     boolean isOpen;
 
     SpaceRepository spaceRepository;
 
-    CommandsListener(SequentialSpace lobbyspace, int numberOfMaxPlayers, GameRules rules, SpaceRepository spaceRepository, String hostname){
+    CommandsListener(SequentialSpace lobbyspace, int numberOfMaxPlayers, GameRules rules, SpaceRepository spaceRepository, String hostname, int level){
         this.hostname = hostname;
         this.lobbyspace = lobbyspace;
         this.numberOfMaxPlayers = numberOfMaxPlayers;
         this.rules = rules;
         this.spaceRepository = spaceRepository;
         numberOfActualPlayers = 0;
+        this.level = level;
 
         info = new ArrayList<>();
         isOpen = false;
-    }
-
-    private boolean listContains(PlayerInfo player){
-        for(PlayerInfo pl:info){
-            if(player.getName().equals(pl.getName())){
-                return true;
-            }
-        }
-
-        return false;
     }
 
     @Override
@@ -85,7 +86,7 @@ class CommandsListener implements Runnable{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        Lobby.isReady = true;
         loop: while(true){
             Gson gson = new Gson();
             String playerinfodata;
@@ -100,11 +101,12 @@ class CommandsListener implements Runnable{
                     case JOIN:
                         if(numberOfActualPlayers<numberOfMaxPlayers
                                 && isOpen
-                                && !listContains(playerInfo)) {
+                                && !info.contains(playerInfo)) {
                             info.add(playerInfo);
                             playerinfodata = gson.toJson(info);
                             for (PlayerInfo player : info) {
                                 lobbyspace.put(player.getName(), playerinfodata, LOBBYCOMMANDS.REFRESH);
+                                lobbyspace.put(player.getName(), level+"", LOBBYCOMMANDS.SETMAP);
                             }
                             ++numberOfActualPlayers;
                         }
@@ -144,15 +146,21 @@ class CommandsListener implements Runnable{
                         break;
 
                     case STARTGAME:
-                        if(numberOfActualPlayers==numberOfMaxPlayers
-                                && isOpen
+                        if(isOpen
                                 && playerInfo.getName().equals(hostname)){
                             playerinfodata = gson.toJson(info);
                             for (PlayerInfo player : info) {
                                 lobbyspace.put(player.getName(), playerinfodata, LOBBYCOMMANDS.STARTGAME);
                             }
 
-                            GameHost gameHost = new GameHost(new Game(rules, info));
+                            GameHost gameHost = new GameHost(new Game(rules, info, level));
+                        }
+                        break;
+                    case SETMAP:
+                        if(isOpen && playerInfo.getName().equals(hostname)){
+                            for (PlayerInfo player : info) {
+                                lobbyspace.put(player.getName(),""+level, LOBBYCOMMANDS.SETMAP);
+                            }
                         }
                         break;
                 }

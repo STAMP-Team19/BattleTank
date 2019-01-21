@@ -13,8 +13,9 @@ public class MyGameDesktop {
        // config.backgroundFPS = 24;
         config.height = 800;
         config.width = 800;
-        config.resizable = true;
+        config.resizable = false;
         config.title = "BattleTank";
         new LwjglApplication(MyGame.getInstance(), config);
+
     }
 }

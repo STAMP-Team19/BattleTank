@@ -15,11 +15,11 @@ public class LobbyProvider {
         this.spaceRepository = new SpaceRepository();
     }
 
-    public void createLobby(String hostname, int numberOfMaxPlayers, GameRules rules){
+    public void createLobby(String hostname, int numberOfMaxPlayers, GameRules rules, int level){
         SequentialSpace lobbyspace = new SequentialSpace();
         spaceRepository.add("lobby", lobbyspace);
 
-        lobby = new Lobby(hostname, numberOfMaxPlayers, rules, lobbyspace, spaceRepository);
+        lobby = new Lobby(hostname, numberOfMaxPlayers, rules, lobbyspace, spaceRepository, level);
 
         openGates();
     }
@@ -31,5 +31,9 @@ public class LobbyProvider {
 
     private void openGates(){
         spaceRepository.addGate(uri);
+    }
+
+    public boolean isDone() {
+        return lobby.isDone();
     }
 }

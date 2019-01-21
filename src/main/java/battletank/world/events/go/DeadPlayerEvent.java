@@ -1,14 +1,11 @@
 package battletank.world.events.go;
 
 import battletank.world.EventVisitor;
+import battletank.world.Game;
 import battletank.world.events.Event;
 import battletank.world.gameobjects.GameObject;
 
-public class CreateGameObject extends Event {
-    public CreateGameObject(int delay){
-        super(delay);
-    }
-
+public class DeadPlayerEvent extends Event {
 
     @Override
     public void accept(GameObject gameObject, EventVisitor visitor) {

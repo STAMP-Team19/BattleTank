@@ -22,4 +22,14 @@ public class LobbyClient implements ILobbyListener {
     public void deleteLobby() {
         System.out.println("DELETELOBBY");
     }
+
+    @Override
+    public void notifyLobbymap(int level) {
+        System.out.println("LEVEL: " + level);
+    }
+
+    @Override
+    public void endGame() {
+        System.out.println("ENDGAME");
+    }
 }

@@ -16,12 +16,12 @@ public class Game implements IGame {
     private WorldGateway worldGateway;
     private WorldSimulator worldSimulator;
 
-    private HashMap<String, Player> players;
+    private HashMap<String, Player> players=new HashMap<>();
     private ArrayList<PlayerInfo> playersinfo;
 
-    public Game(HashMap<String,Player> players){
+    public Game(HashMap<String,Player> players, int level){
         this.players=players;
-        worldSimulator = new WorldSimulator(new DeltaTime());
+        worldSimulator = new WorldSimulator(new DeltaTime(), level);
 
         for(Player p :players.values()) {
             worldSimulator.addGameObject(p);
@@ -31,13 +31,14 @@ public class Game implements IGame {
         new Thread(worldSimulator).start();
     }
 
-    public Game(GameRules rules, ArrayList<PlayerInfo> playersinfo){
+    public Game(GameRules rules, ArrayList<PlayerInfo> playersinfo, int level){
         this.playersinfo = playersinfo;
-        worldSimulator = new WorldSimulator(new DeltaTime());
+        worldSimulator = new WorldSimulator(new DeltaTime(), level);
 
         int index = 0;
-        double[] xCoord = {96,672,416,416};
-        double[] yCoord = {416,416,672,96};
+        double[] xCoord = {80,700,416,416};
+        double[] yCoord = {416,416,700,40};
+        int[] rotation = {0,180,270,90};
         PlayerColor[] colors = PlayerColor.values();
 
         for(PlayerInfo playerInfo : playersinfo){
@@ -46,12 +47,12 @@ public class Game implements IGame {
                     (int)yCoord[index],
                     134/4,
                     249/4,
-                    90,
+                    rotation[index],
                     50,
                     90,
                     100,
                     colors[index]);
-
+            players.put(player.getName(),player);
 
             worldSimulator.addGameObject(player);
             index++;
@@ -69,6 +70,7 @@ public class Game implements IGame {
 
     public void setWorldGateway(WorldGateway worldGateway){
         this.worldGateway = worldGateway;
+        worldSimulator.setGateway(worldGateway);
     }
 
     @Override

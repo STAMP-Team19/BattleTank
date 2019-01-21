@@ -1,6 +1,6 @@
 package battletank.world;
 
-import battletank.world.events.go.CreateGameObject;
+import battletank.world.events.go.CreateProjectile;
 import battletank.world.events.transitions.StartTransition;
 import battletank.world.events.transitions.StopTransition;
 import battletank.world.gameobjects.DummyGameObject;
@@ -21,7 +21,7 @@ public class DummyWorld {
 
         controller.update(
                 new DummyGameObject("Mads", 0, 0, 10, 10, -3,10,5,1, PlayerColor.Blue),
-                new CreateGameObject(0));
+                new CreateProjectile(null,0));
 
         System.out.println("Mads has been created.");
 

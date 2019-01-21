@@ -2,7 +2,9 @@ package spaces.game.connect;
 
 import battletank.world.WorldSimulator;
 import battletank.world.events.Event;
+import battletank.world.events.go.DestroyGameObject;
 import battletank.world.gameobjects.GameObject;
+import battletank.world.gameobjects.Player;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
@@ -15,6 +17,18 @@ public class WorldEventsListener {
 
     public WorldEventsListener(String username, WorldSimulator worldSimulator){
         String uri = "tcp://127.0.0.1:9001/world?keep";
+        try {
+            world = new RemoteSpace(uri);
+
+            new Thread(new WorldObserver(world, username,worldSimulator)).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public WorldEventsListener(String username, WorldSimulator worldSimulator, String ip){
+        String uri = "tcp://" + ip + ":9001/world?keep";
         try {
             world = new RemoteSpace(uri);
 
@@ -45,14 +59,14 @@ class WorldObserver implements Runnable{
                 Object[] event = world.get(new ActualField(username),
                         new FormalField(GameObject.class),
                         new FormalField(Event.class));
-                if(event==null){
-                    continue;
-                }
+
                 GameObject target = (GameObject) event[1];
                 Event targetEvent = (Event) event[2];
 
+
                 worldSimulator.setGameObject(target);
-                worldSimulator.addEvent(target,targetEvent);
+                worldSimulator.addLocalEvent(target,targetEvent);
+
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

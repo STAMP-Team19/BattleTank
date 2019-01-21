@@ -14,7 +14,7 @@ public class WorldSimulatorTest {
 
         Player p = new Player("ho",0,0,10,10,45,10,1,1, PlayerColor.Blue);
         DeltaTime dt = new DeltaTime();
-        WorldSimulator es = new WorldSimulator(dt);
+        WorldSimulator es = new WorldSimulator(dt,0);
         dt.setTime(100);
 
         es.handle(p,new StartTransition(10));

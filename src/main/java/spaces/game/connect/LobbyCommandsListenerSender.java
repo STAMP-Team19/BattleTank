@@ -19,8 +19,9 @@ public class LobbyCommandsListenerSender implements ILobbyCommandsSender {
 
     private RemoteSpace lobbyspace;
 
+
     public LobbyCommandsListenerSender(String username, String ip, ILobbyListener listener){
-        String uri = "tcp://"+ip+":9001/lobby?keep";
+        String uri = "tcp://"+ip+":9002/lobby?keep";
         try {
             lobbyspace = new RemoteSpace(uri);
 
@@ -34,6 +35,18 @@ public class LobbyCommandsListenerSender implements ILobbyCommandsSender {
     public void sendCommand(PlayerInfo playerInfo, LOBBYCOMMANDS command) {
         try {
             lobbyspace.put(playerInfo, command);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        catch (IllegalStateException e){
+            sendCommand(playerInfo,command);
+        }
+    }
+
+    @Override
+    public void sendMAPCommand(int level, LOBBYCOMMANDS command) {
+        try {
+            lobbyspace.put(level, command);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -74,10 +87,20 @@ class LobbyObserver implements Runnable{
                         new FormalField(String.class),
                         new FormalField(LOBBYCOMMANDS.class));
 
-                ArrayList<PlayerInfo> playerinfo = gson.fromJson((String)information[1], new TypeToken<ArrayList<PlayerInfo>>(){}.getType());
                 LOBBYCOMMANDS command = (LOBBYCOMMANDS) information[2];
+                ArrayList<PlayerInfo> playerinfo = null;
 
-                System.out.println(playerinfo+" "+command.toString());
+                int maplevel = -1;
+
+                if(command == LOBBYCOMMANDS.SETMAP){
+                    maplevel = Integer.parseInt((String) information[1]);
+                }
+                else {
+                    playerinfo = gson.fromJson((String) information[1], new TypeToken<ArrayList<PlayerInfo>>() {
+                    }.getType());
+                    System.out.println(playerinfo+" "+command.toString());
+                }
+
 
                 switch(command){
                     case REFRESH:
@@ -91,10 +114,22 @@ class LobbyObserver implements Runnable{
                     case DELETELOBBY:
                         listener.deleteLobby();
                         break loop;
+                    case SETMAP:
+                        listener.notifyLobbymap(maplevel);
+                        break;
+                    case ENDGAME:
+                        listener.endGame();
+
                 }
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            catch (NullPointerException e){
+
+            }
+            catch (IllegalStateException e){
+
             }
         }
     }

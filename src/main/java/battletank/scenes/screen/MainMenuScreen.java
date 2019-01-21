@@ -65,7 +65,7 @@ public class MainMenuScreen implements Screen {
         game.batch.end();
 
         if(Gdx.input.isButtonPressed(Input.Keys.A)){
-            game.setScreen(new GameScreen(0));
+            //game.setScreen(new GameScreen(0, null));
             System.out.println("click");
             dispose();
         }

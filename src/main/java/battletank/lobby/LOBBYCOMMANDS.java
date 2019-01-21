@@ -7,6 +7,7 @@ public enum LOBBYCOMMANDS {
         DELETELOBBY,
         STARTGAME,
         REFRESH,
-        OPEN
-
+        OPEN,
+        ENDGAME,
+        SETMAP;
 }

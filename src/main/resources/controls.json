@@ -4,5 +4,6 @@
   "MOVE_STOP" : ["W_r","S_r"],
   "ROTATE_LEFT" : ["A_p"],
   "ROTATE_RIGHT" : ["D_p"],
-  "ROTATE_STOP" : ["A_r", "D_r"]
+  "ROTATE_STOP" : ["A_r", "D_r"],
+  "SHOOT" :["Space_p"]
 }
