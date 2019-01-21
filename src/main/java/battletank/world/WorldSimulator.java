@@ -106,8 +106,32 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
 
                 if(gameObject instanceof Projectile){
-                    Event colliderDestroyer= new DestroyGameObject(0, ((Projectile)gameObject).getDamage());
-                    this.addEvent(gameObject,colliderDestroyer);
+                    Projectile projectile = (Projectile) gameObject;
+                    if(projectile.getBounceCounter()>0) {
+                        double initialRotation = projectile.getRotation();
+                        int totRotation = 180;
+
+                        if (collision.collisionVertical) {
+                            initialRotation = initialRotation - 90;
+                        }
+
+                        //Calculate sigma, since (sigma - projectileRotation = 90 degrees)
+                        double sigma = (totRotation / 2.0) - initialRotation;
+
+                        //Using the formula: initialRotation + 2*sigma + resultRotation = 180 degrees, we get:
+                        double resRotation = initialRotation + (2 * sigma);
+
+                        if (collision.collisionVertical) {
+                            resRotation = resRotation + 90;
+                        }
+
+                        projectile.setRotation(resRotation);
+                        projectile.setBounceCounter(projectile.getBounceCounter()-1);
+                    }else {
+
+                        Event colliderDestroyer = new DestroyGameObject(0, ((Projectile) gameObject).getDamage());
+                        this.addEvent(gameObject, colliderDestroyer);
+                    }
                 }
             }
         }
@@ -147,17 +171,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
             }
         }
 
-        /*
-        double initialRotation = projectile.getRotation();
-        int totRotation = 180;
 
-        //Calculate sigma, since (sigma - projectileRotation = 90 degrees)
-        double sigma = (totRotation / 2) - initialRotation;
-
-        //Using the formula: initialRotation + 2*sigma + resultRotation = 180 degrees, we get:
-        double resRotation = initialRotation + (2 * sigma);
-
-        projectile.setRotation(resRotation);*/
 
 
     }
@@ -203,8 +217,6 @@ public class WorldSimulator  implements EventVisitor,Runnable{
             Player p = (Player) gameObject;
             if(!destroyGameObject.damageApplied()) {
                 p.setHealthpoints(p.getHealthpoints() - destroyGameObject.getDamage());
-                printStatus(p.getName() + " took damage: "+destroyGameObject.getDamage());
-                printStatus(p.getName() + "'s health is now: "+p.getHealthpoints());
                 destroyGameObject.setDamageApplied(true);
             }
             if(p.getHealthpoints()<=0) {
@@ -240,7 +252,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
         double projectileX = player.getPositionX() + player.getOriginX() + startingDistanceFromOri * Math.cos(aRadians);
         double projectileY = player.getPositionY() + player.getOriginY() + startingDistanceFromOri * Math.sin(aRadians);
 
-        Projectile projectile = new Projectile(projectileNum++,(int) projectileX, (int) projectileY, 4, 4, (int) player.getRotation(), 150, 0, 10, 10, PlayerColor.purple);
+        Projectile projectile = new Projectile(projectileNum++,(int) projectileX, (int) projectileY, 4, 4, (int) player.getRotation(), 150, 0, 10, 10, 3,PlayerColor.purple);
         Event event = new StartTransition(projectile.getSpeed());
         addEvent(projectile,event);
 
@@ -249,9 +261,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public void handle(GameObject gameObject, DeadPlayerEvent deadPlayerEvent) {
-        if(getWinner()!=null){
-            return;
-        }
+
         deadPlayers.add(gameObject);
         ((Player)gameObject).setDead(true);
         simulatedEvents.remove(gameObject);
