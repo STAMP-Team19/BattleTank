@@ -249,6 +249,9 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     @Override
     public void handle(GameObject gameObject, DeadPlayerEvent deadPlayerEvent) {
+        if(getWinner()!=null){
+            return;
+        }
         deadPlayers.add(gameObject);
         ((Player)gameObject).setDead(true);
         simulatedEvents.remove(gameObject);
