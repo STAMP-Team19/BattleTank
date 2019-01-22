@@ -96,14 +96,15 @@ public class JoinScreen implements Screen, ILobbyListener {
 
     private String[] randName = {"Player 1", "Player 2", "Player 3", "Player 4"};
 
-    private Boolean bounce = false;
+    private Boolean bounce = true;
 
     private Drawable ON;
     private Drawable OFF;
+    private GameRules gameRules;
 
     public JoinScreen(final MyGame game) {
         this.game = game;
-
+        gameRules=new GameRules();
         loadTextures();
         setupButtons();
         setupSound();
@@ -192,7 +193,8 @@ public class JoinScreen implements Screen, ILobbyListener {
 
                 if(provider == null){
                     provider = new LobbyProvider();
-                    provider.createLobby(name, 4, new GameRules(), chosenMap);
+
+                    provider.createLobby(name, 4, gameRules, chosenMap);
                     try {
                         Thread.sleep(800);
                     } catch (InterruptedException e) {
@@ -318,10 +320,12 @@ public class JoinScreen implements Screen, ILobbyListener {
                 if(bounce) {
                     Gdx.graphics.setContinuousRendering(checkBtn.isChecked());
                     bounce = false;
+                    gameRules.setBounce(bounce);
                 }
                 else {
                     Gdx.graphics.setContinuousRendering(checkBtn.isChecked());
                     bounce = true;
+                    gameRules.setBounce(bounce);
                 }
             }
         });
@@ -426,7 +430,7 @@ public class JoinScreen implements Screen, ILobbyListener {
         }
 
         if(playgame){
-            game.setScreen(new GameScreen(chosenMap, IP, name));
+            game.setScreen(new GameScreen(chosenMap, IP, name,gameRules));
         }
 
         name = createInputListener.getLastoutput();

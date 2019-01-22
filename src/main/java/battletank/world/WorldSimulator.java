@@ -30,12 +30,14 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     private Set<GameObject> deadPlayers =ConcurrentHashMap.newKeySet();
 
     private DeltaTime updateTime;
+    private final GameRules gameRules;
     private MapObjects objects;
     private WorldGateway gateway;
     private int projectileNum = 0;
 
-    public WorldSimulator(DeltaTime dt, int level){
+    public WorldSimulator(DeltaTime dt, int level,GameRules gameRules){
         updateTime=dt;
+        this.gameRules = gameRules;
         simulatedEvents = new ConcurrentHashMap<>();
         lastShot=new ConcurrentHashMap<>();
         MapLoader maploader=new MapLoader();
@@ -107,7 +109,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
                 if(gameObject instanceof Projectile){
                     Projectile projectile = (Projectile) gameObject;
-                    if(projectile.getBounceCounter()>0) {
+                    if(projectile.getBounceCounter()>0&&gameRules.bulletBounceAllowed()) {
                         double initialRotation = projectile.getRotation();
                         int totRotation = 180;
 

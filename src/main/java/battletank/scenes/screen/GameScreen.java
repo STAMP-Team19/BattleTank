@@ -2,10 +2,7 @@ package battletank.scenes.screen;
 
 import battletank.controls.ActionListener;
 import battletank.lobby.PlayerInfo;
-import battletank.world.DeltaTime;
-import battletank.world.Game;
-import battletank.world.MapLoader;
-import battletank.world.WorldSimulator;
+import battletank.world.*;
 import battletank.world.gameobjects.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -91,7 +88,7 @@ public class GameScreen implements Screen, ILobbyListener {
     // Current level
 	private int level;
 
-	public GameScreen(Integer level, String IP, String playerName) {
+	public GameScreen(Integer level, String IP, String playerName, GameRules rules) {
 		super();
         this.level = level.intValue();
         camera = new OrthographicCamera();
@@ -135,7 +132,7 @@ public class GameScreen implements Screen, ILobbyListener {
         loadMap(level);
 
         deltaTime=new DeltaTime();
-        worldSimulator = new WorldSimulator(deltaTime, level);
+        worldSimulator = new WorldSimulator(deltaTime, level,rules);
         new WorldEventsListener(playerName,worldSimulator,IP);
         input=new ActionListener(playerName, new ActionSender(playerName, IP));
 
