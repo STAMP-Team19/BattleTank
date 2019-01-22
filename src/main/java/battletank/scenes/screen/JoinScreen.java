@@ -52,6 +52,9 @@ public class JoinScreen implements Screen, ILobbyListener {
     private Texture stopbtnTextureDown;
     private Texture launchbtnTextureDown;
 
+    private Texture checkboxON;
+    private Texture checkboxOFF;
+
     private Music music;
     private Music ready;
     private OrthographicCamera camera;
@@ -74,6 +77,7 @@ public class JoinScreen implements Screen, ILobbyListener {
     private ImageButton createButton;
     private ImageButton leaveBtn;
     private ImageButton launchBtn;
+    private ImageButton checkBtn;
 
     static LobbyCommandsListenerSender controller;
 
@@ -90,9 +94,17 @@ public class JoinScreen implements Screen, ILobbyListener {
     private static Texture backgroundTexture;
     private static Sprite backgroundSprite;
 
+    private String[] randName = {"Player 1", "Player 2", "Player 3", "Player 4"};
+
+    private Boolean bounce = true;
+
+    private Drawable ON;
+    private Drawable OFF;
+    private GameRules gameRules;
+
     public JoinScreen(final MyGame game) {
         this.game = game;
-
+        gameRules=new GameRules();
         loadTextures();
         setupButtons();
         setupSound();
@@ -181,7 +193,8 @@ public class JoinScreen implements Screen, ILobbyListener {
 
                 if(provider == null){
                     provider = new LobbyProvider();
-                    provider.createLobby(name, 4, new GameRules(), chosenMap);
+
+                    provider.createLobby(name, 4, gameRules, chosenMap);
                     try {
                         Thread.sleep(800);
                     } catch (InterruptedException e) {
@@ -217,6 +230,7 @@ public class JoinScreen implements Screen, ILobbyListener {
 
                 playButton.setVisible(true);
                 createButton.setVisible(true);
+                playButton.setVisible(true);
             }
         });
 
@@ -248,6 +262,7 @@ public class JoinScreen implements Screen, ILobbyListener {
                     createButton.setVisible(!creater);
                     leaveBtn.setDisabled(true);
                     leaveBtn.setVisible(!creater);
+                    playButton.setVisible(!creater);
 
                 } else {
                     creater = false;
@@ -263,6 +278,7 @@ public class JoinScreen implements Screen, ILobbyListener {
                     joinbtn.setVisible(creater);
                     createButton.setVisible(creater);
                     leaveBtn.setVisible(creater);
+                    playButton.setVisible(creater);
                 }
             }
         });
@@ -289,6 +305,30 @@ public class JoinScreen implements Screen, ILobbyListener {
         createButton.setPosition(400-(createButton.getWidth()/2), 150);
         leaveBtn.setPosition(400-(leaveBtn.getWidth()/2), 0);
 
+        Drawable ON = new TextureRegionDrawable(new TextureRegion(checkboxOFF));
+        Drawable OFF = new TextureRegionDrawable(new TextureRegion(checkboxON));
+        checkBtn = new ImageButton(OFF,OFF,ON);
+
+        checkBtn.setPosition(100, 100);
+        checkBtn.setWidth(100);
+
+        checkBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                //Gdx.graphics.setContinuousRendering(checkBtn.isChecked());
+                System.out.println(bounce);
+                if(bounce) {
+                    Gdx.graphics.setContinuousRendering(checkBtn.isChecked());
+                    bounce = false;
+                    gameRules.setBounce(bounce);
+                }
+                else {
+                    Gdx.graphics.setContinuousRendering(checkBtn.isChecked());
+                    bounce = true;
+                    gameRules.setBounce(bounce);
+                }
+            }
+        });
 
         // add to stage
         stage = new Stage(new ScreenViewport()); //Set up a stage for the ui
@@ -297,6 +337,8 @@ public class JoinScreen implements Screen, ILobbyListener {
         stage.addActor(playButton); //Add the button to the stage to perform rendering and take input.
         stage.addActor(leaveBtn);
         stage.addActor(launchBtn);
+        stage.addActor(checkBtn);
+
 
             int x = 163;
             int y = 240;
@@ -347,6 +389,9 @@ public class JoinScreen implements Screen, ILobbyListener {
         stopbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/StopserverbtnDown.png"));
         launchbtnTextureDown = new Texture(Gdx.files.internal("src/main/resources/assets/img/launchDown.png"));
 
+        checkboxON = new Texture(Gdx.files.internal("src/main/resources/assets/img/on.png"));
+        checkboxOFF = new Texture(Gdx.files.internal("src/main/resources/assets/img/off.png"));
+
         map1 = new Texture(Gdx.files.internal("src/main/resources/assets/maps/maps/desertmap1new.png"));
         map2 = new Texture(Gdx.files.internal("src/main/resources/assets/maps/maps/desertmap2new.png"));
         map3 = new Texture(Gdx.files.internal("src/main/resources/assets/maps/maps/desertmap3new.png"));
@@ -385,7 +430,7 @@ public class JoinScreen implements Screen, ILobbyListener {
         }
 
         if(playgame){
-            game.setScreen(new GameScreen(chosenMap, IP, name));
+            game.setScreen(new GameScreen(chosenMap, IP, name,gameRules));
         }
 
         name = createInputListener.getLastoutput();
@@ -450,6 +495,7 @@ public class JoinScreen implements Screen, ILobbyListener {
         game.font.draw(game.batch, name, 800/2-(name.length()*3), 450);
         game.font.draw(game.batch, msg, 800/2-(msg.length()*3), 400);
         game.font.draw(game.batch, ShowIp, 800/2-(ShowIp.length()*3), 475);
+        game.font.draw(game.batch, "Bullet bounce:", 100, 115);
 
         if(joinedPlayersList != null) {
             for (int i = 0; i < joinedPlayersList.size(); i++) {

@@ -21,7 +21,7 @@ public class Game implements IGame {
 
     public Game(HashMap<String,Player> players, int level){
         this.players=players;
-        worldSimulator = new WorldSimulator(new DeltaTime(), level);
+        worldSimulator = new WorldSimulator(new DeltaTime(), level, new GameRules());
 
         for(Player p :players.values()) {
             worldSimulator.addGameObject(p);
@@ -33,7 +33,7 @@ public class Game implements IGame {
 
     public Game(GameRules rules, ArrayList<PlayerInfo> playersinfo, int level){
         this.playersinfo = playersinfo;
-        worldSimulator = new WorldSimulator(new DeltaTime(), level);
+        worldSimulator = new WorldSimulator(new DeltaTime(), level,rules);
 
         int index = 0;
         double[] xCoord = {80,700,416,416};

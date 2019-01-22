@@ -3,6 +3,7 @@ package spaces;
 import battletank.controls.Action;
 import battletank.world.DeltaTime;
 import battletank.world.Game;
+import battletank.world.GameRules;
 import battletank.world.WorldSimulator;
 import battletank.world.gameobjects.Player;
 import battletank.world.gameobjects.PlayerColor;
@@ -19,7 +20,7 @@ public class ConnectionTest {
         players.put("name", new Player("name", 1, 1, 0, 0, 1, 10, 10,1, PlayerColor.Blue));
         GameHost host = new GameHost(new Game(players, 0) {
         });
-        new WorldEventsListener("name",new WorldSimulator(new DeltaTime(), 0));
+        new WorldEventsListener("name",new WorldSimulator(new DeltaTime(), 0,new GameRules()));
         ActionSender sender = new ActionSender("name");
         for (int i = 0; i < 100; i++) {
             System.out.println("Sending action " + (i + 1));

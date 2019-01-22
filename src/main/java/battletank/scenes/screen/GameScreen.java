@@ -2,10 +2,7 @@ package battletank.scenes.screen;
 
 import battletank.controls.ActionListener;
 import battletank.lobby.PlayerInfo;
-import battletank.world.DeltaTime;
-import battletank.world.Game;
-import battletank.world.MapLoader;
-import battletank.world.WorldSimulator;
+import battletank.world.*;
 import battletank.world.gameobjects.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -20,10 +17,7 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import spaces.game.connect.ActionSender;
 import spaces.game.connect.ILobbyListener;
 import spaces.game.connect.WorldEventsListener;
@@ -32,9 +26,9 @@ import java.util.*;
 
 public class GameScreen implements Screen, ILobbyListener {
     Projectile pro=null;
-	Texture texture;
-	SpriteBatch batch;
-	float elapsed;
+    Texture texture;
+    SpriteBatch batch;
+    float elapsed;
     MapObjects objects;
 
     private Music music;
@@ -47,38 +41,38 @@ public class GameScreen implements Screen, ILobbyListener {
 
     private static ActionListener input = null;
 
-	TiledMap tiledMap;
-	OrthographicCamera camera;
-	TiledMapRenderer tiledMapRenderer;
+    TiledMap tiledMap;
+    OrthographicCamera camera;
+    TiledMapRenderer tiledMapRenderer;
 
-	private Texture txtrBg;
-	private Texture txtrBack;
-	private Texture txtrLevelImage;
-	private ShapeRenderer shapeRenderer;
-	private String Ip;
+    private Texture txtrBg;
+    private Texture txtrBack;
+    private Texture txtrLevelImage;
+    private ShapeRenderer shapeRenderer;
+    private String Ip;
     private Stage stage;
 
     private Texture bullet;
 
-	private Texture healthCon;
+    private Texture healthCon;
     private Texture healthbar;
     private Texture healthbar90;
     private Texture healthbar50;
     private Texture healthbar10;
 
-	private TextureRegion textureRegion = new TextureRegion();
+    private TextureRegion textureRegion = new TextureRegion();
     private TextureRegion textureRegionBullet = new TextureRegion();
 
-	private ColorTextureMapper colorTextureMapper = new ColorTextureMapper();
+    private ColorTextureMapper colorTextureMapper = new ColorTextureMapper();
 
-	Map<PlayerColor, Texture> textureMap = new EnumMap<PlayerColor, Texture>(PlayerColor.class);
+    Map<PlayerColor, Texture> textureMap = new EnumMap<PlayerColor, Texture>(PlayerColor.class);
 
-	private Pixmap pixmap = new Pixmap(50, 10, Pixmap.Format.RGBA8888);
-	private TextureRegionDrawable drawable = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+    private Pixmap pixmap = new Pixmap(50, 10, Pixmap.Format.RGBA8888);
+    private TextureRegionDrawable drawable = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
 
-	// healthbar
-	private int totalBarWidth = 50;
-	private NinePatch health;
+    // healthbar
+    private int totalBarWidth = 50;
+    private NinePatch health;
     private NinePatch health90;
     private NinePatch health50;
     private NinePatch health10;
@@ -89,14 +83,20 @@ public class GameScreen implements Screen, ILobbyListener {
     BitmapFont WinnerNamefont;
 
     // Current level
-	private int level;
+    private int level;
 
-	public GameScreen(Integer level, String IP, String playerName) {
-		super();
+    HashMap<GameObject,Animator> deadplayers;
+
+    public GameScreen(Integer level, String IP, String playerName, GameRules rules) {
+        super();
         this.level = level.intValue();
+
+
+        deadplayers = new HashMap<>();
+
         camera = new OrthographicCamera();
-		txtrBg   = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
-		txtrBack = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
+        txtrBg   = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
+        txtrBack = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
 
         healthCon = new Texture( Gdx.files.internal("src/main/resources/assets/img/container.png"));
 
@@ -135,14 +135,14 @@ public class GameScreen implements Screen, ILobbyListener {
         loadMap(level);
 
         deltaTime=new DeltaTime();
-        worldSimulator = new WorldSimulator(deltaTime, level);
+        worldSimulator = new WorldSimulator(deltaTime, level,rules);
         new WorldEventsListener(playerName,worldSimulator,IP);
         input=new ActionListener(playerName, new ActionSender(playerName, IP));
 
         Gdx.input.setInputProcessor(input);
-	}
+    }
 
-	private void setupOnlineGame(){
+    private void setupOnlineGame(){
 
     }
 
@@ -176,85 +176,102 @@ public class GameScreen implements Screen, ILobbyListener {
 
         List<GameObject> gameObjects = worldSimulator.getGameObjects();
         for (GameObject go : gameObjects) {
-            GameObject player = go;
-            //batch.draw(texture, (int) player.getPositionX(), (int) player.getPositionY(), (int) player.getWidth(), (int) player.getHeight());
-
-        /* shape of colider box
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(playerbody.x, playerbody.y, playerbody.getWidth(), playerbody.getHeight());
-        shapeRenderer.end();
-        */
-
             // healthbar
             if (go instanceof Player) {
-
-                if (textureMap.containsKey(player.getColor())) {
-                    texture = textureMap.get(player.getColor());
-                } else {
-                    texture = new Texture(Gdx.files.internal(colorTextureMapper.getTexstureFromEnum(player.getColor())));
-                    textureMap.put(player.getColor(), texture);
-                }
-
-                textureRegion.setRegion(texture);
-
-                batch.draw(textureRegion,
-                        (float) player.getPositionX(),
-                        (float) player.getPositionY(),
-                        (float) player.getOriginX(),
-                        (float) player.getOriginY(),
-                        (float) player.getWidth(),
-                        (float) player.getHeight(),
-                        1,
-                        1,
-                        (float) player.getRotation() - 90
-                );
-
-                int width =(int)(player.getHealthpoints() / 100.0 * totalBarWidth);
-
-                container.draw(batch, (float) player.getPositionX() - 10, (float) player.getPositionY() + 70, totalBarWidth + 4, 9);
-
-                if(player.getHealthpoints() >= 100) {
-                    health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
-                }
-                else if(player.getHealthpoints() <= 99 && player.getHealthpoints() >= 60){
-                    health90.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
-                }
-                else if(player.getHealthpoints() <= 59 && player.getHealthpoints() >= 30){
-                    health50.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
-                }
-                else if(player.getHealthpoints() <= 29 && player.getHealthpoints() >= 0){
-                    health10.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
-                }
-                else {
-                    health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
-                }
-                playerNamefont.draw(batch, player.getName(), (float) player.getPositionX() - 10, (float) player.getPositionY() + 100);
+                renderPlayer(go);
             }
             else {
                 textureRegion.setTexture(bullet);
                 batch.draw(textureRegion,
-                        (float) player.getPositionX(),
-                        (float) player.getPositionY(),
-                        (float) player.getOriginX(),
-                        (float) player.getOriginY(),
-                        (float) player.getWidth(),
-                        (float) player.getHeight(),
+                        (float) go.getPositionX(),
+                        (float) go.getPositionY(),
+                        (float) go.getOriginX(),
+                        (float) go.getOriginY(),
+                        (float) go.getWidth(),
+                        (float) go.getHeight(),
                         2,
                         2,
-                        (float) player.getRotation() - 90
+                        (float) go.getRotation() - 90
                 );
             }
 
-            }
-            DrawWin();
-            batch.end();
         }
 
+        renderWin();
+        renderDeadAnimation();
+        batch.end();
+    }
 
+    private void renderPlayer(GameObject go){
+        Player player = (Player)go;
+        if (textureMap.containsKey(player.getColor())) {
+            texture = textureMap.get(player.getColor());
+        } else {
+            texture = new Texture(Gdx.files.internal(colorTextureMapper.getTexstureFromEnum(player.getColor())));
+            textureMap.put(player.getColor(), texture);
+        }
 
-    private void DrawWin(){
-	    if(worldSimulator.getWinner() != null) {
+        textureRegion.setRegion(texture);
+
+        batch.draw(textureRegion,
+                (float) player.getPositionX(),
+                (float) player.getPositionY(),
+                (float) player.getOriginX(),
+                (float) player.getOriginY(),
+                (float) player.getWidth(),
+                (float) player.getHeight(),
+                1,
+                1,
+                (float) player.getRotation() - 90
+        );
+        renderPlayerInfo(player);
+    }
+
+    private void renderPlayerInfo(Player player){
+        int width =(int)(player.getHealthpoints() / 100.0 * totalBarWidth);
+
+        container.draw(batch, (float) player.getPositionX() - 10, (float) player.getPositionY() + 70, totalBarWidth + 4, 9);
+
+        if(player.getHealthpoints() >= 100) {
+            health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+        }
+        else if(player.getHealthpoints() <= 99 && player.getHealthpoints() >= 60){
+            health90.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+        }
+        else if(player.getHealthpoints() <= 59 && player.getHealthpoints() >= 30){
+            health50.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+        }
+        else if(player.getHealthpoints() <= 29 && player.getHealthpoints() >= 0){
+            health10.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+        }
+        else {
+            health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+        }
+        playerNamefont.draw(batch, player.getName(), (float) player.getPositionX() - 10, (float) player.getPositionY() + 100);
+
+    }
+
+    private void renderDeadAnimation(){
+        Set<GameObject> deadPlayers = worldSimulator.getDeadPlayers();
+        for(GameObject deadPlayer : deadPlayers) {
+            if (!deadplayers.containsKey(deadPlayer)) {
+                Animator animator = new Animator();
+                animator.create();
+                animator.setX((int) deadPlayer.getPositionX() - 29);
+                animator.setY((int) deadPlayer.getPositionY() - 23);
+                deadplayers.put(deadPlayer, animator);
+            }
+        }
+
+        for (Animator animator :deadplayers.values()) {
+            if(!animator.isDone()) {
+                animator.render();
+            }
+        }
+    }
+
+    private void renderWin(){
+        if(worldSimulator.getWinner() != null) {
             WinnerNamefont.getData().setScale(3);
             container.draw(batch, 0, 800/2-100, 800, 200);
             WinnerNamefont.draw(batch,  worldSimulator.getWinner().getName() + " is the winner!", 130, 400);
@@ -262,11 +279,11 @@ public class GameScreen implements Screen, ILobbyListener {
     }
 
     public void pause () {
-	    music.pause();
+        music.pause();
     }
 
     public void resume () {
-	    music.play();
+        music.play();
     }
 
     @Override
@@ -296,13 +313,13 @@ public class GameScreen implements Screen, ILobbyListener {
     }
 
 
-	@Override
-	public void dispose() {
-		txtrBg.dispose();
-		txtrBack.dispose();
-		txtrLevelImage.dispose();
-		music.dispose();
-	}
+    @Override
+    public void dispose() {
+        txtrBg.dispose();
+        txtrBack.dispose();
+        txtrLevelImage.dispose();
+        music.dispose();
+    }
 
     @Override
     public void notifyLobby(ArrayList<PlayerInfo> playersList) {
@@ -329,19 +346,5 @@ public class GameScreen implements Screen, ILobbyListener {
         //serverClosed_ENDGAME = true;
     }
 
-    /*
-    private void servercheck(){
-        if(serverClosed_ENDGAME){
-            playerNamefont.draw(batch, "Server is down!", 400, 400);
 
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            System.exit(0);
-        }
-    }
-    */
 }
