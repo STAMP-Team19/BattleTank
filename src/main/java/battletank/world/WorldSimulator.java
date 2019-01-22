@@ -342,6 +342,9 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     }
 
     public Player getWinner(){
+        if(winner!=null){
+            return winner;
+        }
         Player player=null;
         for(GameObject go : simulatedEvents.keySet()){
             if(go instanceof  Player){
@@ -349,7 +352,6 @@ public class WorldSimulator  implements EventVisitor,Runnable{
                     return null;
                 }
                 player=(Player)go;
-
             }
         }
         winner = player;

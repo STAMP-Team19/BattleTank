@@ -179,61 +179,9 @@ public class GameScreen implements Screen, ILobbyListener {
 
         List<GameObject> gameObjects = worldSimulator.getGameObjects();
         for (GameObject go : gameObjects) {
-
-            //batch.draw(texture, (int) player.getPositionX(), (int) player.getPositionY(), (int) player.getWidth(), (int) player.getHeight());
-
-        /* shape of colider box
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(playerbody.x, playerbody.y, playerbody.getWidth(), playerbody.getHeight());
-        shapeRenderer.end();
-        */
-
             // healthbar
             if (go instanceof Player) {
-                GameObject player = (Player)go;
-                if (textureMap.containsKey(player.getColor())) {
-                    texture = textureMap.get(player.getColor());
-                } else {
-                    texture = new Texture(Gdx.files.internal(colorTextureMapper.getTexstureFromEnum(player.getColor())));
-                    textureMap.put(player.getColor(), texture);
-                }
-
-                textureRegion.setRegion(texture);
-
-                batch.draw(textureRegion,
-                        (float) player.getPositionX(),
-                        (float) player.getPositionY(),
-                        (float) player.getOriginX(),
-                        (float) player.getOriginY(),
-                        (float) player.getWidth(),
-                        (float) player.getHeight(),
-                        1,
-                        1,
-                        (float) player.getRotation() - 90
-                );
-
-                int width =(int)(player.getHealthpoints() / 100.0 * totalBarWidth);
-
-                container.draw(batch, (float) player.getPositionX() - 10, (float) player.getPositionY() + 70, totalBarWidth + 4, 9);
-
-                if(player.getHealthpoints() >= 100) {
-                    health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
-                }
-                else if(player.getHealthpoints() <= 99 && player.getHealthpoints() >= 60){
-                    health90.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
-                }
-                else if(player.getHealthpoints() <= 59 && player.getHealthpoints() >= 30){
-                    health50.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
-                }
-                else if(player.getHealthpoints() <= 29 && player.getHealthpoints() >= 0){
-                    health10.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
-                }
-                else {
-                    health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
-                }
-                playerNamefont.draw(batch, player.getName(), (float) player.getPositionX() - 10, (float) player.getPositionY() + 100);
-
+                renderPlayer(go);
             }
             else {
                 textureRegion.setTexture(bullet);
@@ -256,6 +204,54 @@ public class GameScreen implements Screen, ILobbyListener {
         batch.end();
     }
 
+    private void renderPlayer(GameObject go){
+        Player player = (Player)go;
+        if (textureMap.containsKey(player.getColor())) {
+            texture = textureMap.get(player.getColor());
+        } else {
+            texture = new Texture(Gdx.files.internal(colorTextureMapper.getTexstureFromEnum(player.getColor())));
+            textureMap.put(player.getColor(), texture);
+        }
+
+        textureRegion.setRegion(texture);
+
+        batch.draw(textureRegion,
+                (float) player.getPositionX(),
+                (float) player.getPositionY(),
+                (float) player.getOriginX(),
+                (float) player.getOriginY(),
+                (float) player.getWidth(),
+                (float) player.getHeight(),
+                1,
+                1,
+                (float) player.getRotation() - 90
+        );
+        renderPlayerInfo(player);
+    }
+
+    private void renderPlayerInfo(Player player){
+        int width =(int)(player.getHealthpoints() / 100.0 * totalBarWidth);
+
+        container.draw(batch, (float) player.getPositionX() - 10, (float) player.getPositionY() + 70, totalBarWidth + 4, 9);
+
+        if(player.getHealthpoints() >= 100) {
+            health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+        }
+        else if(player.getHealthpoints() <= 99 && player.getHealthpoints() >= 60){
+            health90.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+        }
+        else if(player.getHealthpoints() <= 59 && player.getHealthpoints() >= 30){
+            health50.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+        }
+        else if(player.getHealthpoints() <= 29 && player.getHealthpoints() >= 0){
+            health10.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+        }
+        else {
+            health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
+        }
+        playerNamefont.draw(batch, player.getName(), (float) player.getPositionX() - 10, (float) player.getPositionY() + 100);
+
+    }
 
     private void runDeadAnimation(){
         Set<GameObject> deadPlayers = worldSimulator.getDeadPlayers();
