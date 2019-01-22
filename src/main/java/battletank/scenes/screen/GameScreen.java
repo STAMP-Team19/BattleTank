@@ -263,7 +263,9 @@ public class GameScreen implements Screen, ILobbyListener {
         }
 
         for (Animator animator :deadplayers.values()) {
-            animator.render();
+            if(!animator.isDone()) {
+                animator.render();
+            }
         }
             DrawWin();
             batch.end();

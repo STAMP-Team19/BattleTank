@@ -107,6 +107,6 @@ public class Animator implements ApplicationListener {
     }
 
     public boolean isDone(){
-        return stateTime>frameDuration*FRAME_COLS*FRAME_ROWS;
+        return stateTime>frameDuration*FRAME_COLS*FRAME_ROWS-2*frameDuration;
     }
 }
