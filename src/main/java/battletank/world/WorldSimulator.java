@@ -343,6 +343,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
     public Player getWinner(){
         if(winner!=null){
+            System.out.println(winner.getName());
             return winner;
         }
         Player player=null;

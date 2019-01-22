@@ -17,10 +17,7 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import spaces.game.connect.ActionSender;
 import spaces.game.connect.ILobbyListener;
 import spaces.game.connect.WorldEventsListener;
@@ -199,8 +196,9 @@ public class GameScreen implements Screen, ILobbyListener {
             }
 
         }
-        runDeadAnimation();
-        DrawWin();
+
+        renderWin();
+        renderDeadAnimation();
         batch.end();
     }
 
@@ -253,7 +251,7 @@ public class GameScreen implements Screen, ILobbyListener {
 
     }
 
-    private void runDeadAnimation(){
+    private void renderDeadAnimation(){
         Set<GameObject> deadPlayers = worldSimulator.getDeadPlayers();
         for(GameObject deadPlayer : deadPlayers) {
             if (!deadplayers.containsKey(deadPlayer)) {
@@ -272,7 +270,7 @@ public class GameScreen implements Screen, ILobbyListener {
         }
     }
 
-    private void DrawWin(){
+    private void renderWin(){
         if(worldSimulator.getWinner() != null) {
             WinnerNamefont.getData().setScale(3);
             container.draw(batch, 0, 800/2-100, 800, 200);
