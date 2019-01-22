@@ -88,9 +88,21 @@ public class GameScreen implements Screen, ILobbyListener {
     // Current level
 	private int level;
 
+    ArrayList<Player> deadplayers;
+
+    private Animator animator;
+
+    private int animationCounter = 0;
+
 	public GameScreen(Integer level, String IP, String playerName, GameRules rules) {
 		super();
         this.level = level.intValue();
+
+        animator = new Animator();
+        animator.create();
+
+        deadplayers = new ArrayList<>();
+
         camera = new OrthographicCamera();
 		txtrBg   = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
 		txtrBack = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
@@ -227,6 +239,17 @@ public class GameScreen implements Screen, ILobbyListener {
                     health.draw(batch, (float) player.getPositionX() + 2 - 10, (float) player.getPositionY() + 70 + 2, width, 5);
                 }
                 playerNamefont.draw(batch, player.getName(), (float) player.getPositionX() - 10, (float) player.getPositionY() + 100);
+
+                if(go.getHealthpoints() <=10 && !deadplayers.contains(go) || animationCounter>0) {
+                    animator.setX((int) go.getPositionX()-29);
+                    animator.setY((int) go.getPositionY()-23);
+                    deadplayers.add((Player) player);
+                    animationCounter++;
+                    if(animationCounter> 82){
+                        animationCounter = 0;
+                    }
+                    animator.render();
+                }
             }
             else {
                 textureRegion.setTexture(bullet);
@@ -244,6 +267,7 @@ public class GameScreen implements Screen, ILobbyListener {
             }
 
             }
+
             DrawWin();
             batch.end();
         }
