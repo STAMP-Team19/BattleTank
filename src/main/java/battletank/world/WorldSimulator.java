@@ -34,6 +34,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     private MapObjects objects;
     private WorldGateway gateway;
     private int projectileNum = 0;
+    private Player winner=null;
 
     public WorldSimulator(DeltaTime dt, int level,GameRules gameRules){
         updateTime=dt;
@@ -351,7 +352,9 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
             }
         }
-        return player;
+        winner = player;
+
+        return winner;
     }
 
 
