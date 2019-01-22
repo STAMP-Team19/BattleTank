@@ -129,6 +129,7 @@ public class WorldSimulator  implements EventVisitor,Runnable{
 
                         projectile.setRotation(resRotation);
                         projectile.setBounceCounter(projectile.getBounceCounter()-1);
+                        this.addEvent(projectile,transition);
                     }else {
 
                         Event colliderDestroyer = new DestroyGameObject(0, ((Projectile) gameObject).getDamage());
