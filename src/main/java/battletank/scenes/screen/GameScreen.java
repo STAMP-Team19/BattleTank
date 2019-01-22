@@ -29,9 +29,9 @@ import java.util.*;
 
 public class GameScreen implements Screen, ILobbyListener {
     Projectile pro=null;
-	Texture texture;
-	SpriteBatch batch;
-	float elapsed;
+    Texture texture;
+    SpriteBatch batch;
+    float elapsed;
     MapObjects objects;
 
     private Music music;
@@ -44,38 +44,38 @@ public class GameScreen implements Screen, ILobbyListener {
 
     private static ActionListener input = null;
 
-	TiledMap tiledMap;
-	OrthographicCamera camera;
-	TiledMapRenderer tiledMapRenderer;
+    TiledMap tiledMap;
+    OrthographicCamera camera;
+    TiledMapRenderer tiledMapRenderer;
 
-	private Texture txtrBg;
-	private Texture txtrBack;
-	private Texture txtrLevelImage;
-	private ShapeRenderer shapeRenderer;
-	private String Ip;
+    private Texture txtrBg;
+    private Texture txtrBack;
+    private Texture txtrLevelImage;
+    private ShapeRenderer shapeRenderer;
+    private String Ip;
     private Stage stage;
 
     private Texture bullet;
 
-	private Texture healthCon;
+    private Texture healthCon;
     private Texture healthbar;
     private Texture healthbar90;
     private Texture healthbar50;
     private Texture healthbar10;
 
-	private TextureRegion textureRegion = new TextureRegion();
+    private TextureRegion textureRegion = new TextureRegion();
     private TextureRegion textureRegionBullet = new TextureRegion();
 
-	private ColorTextureMapper colorTextureMapper = new ColorTextureMapper();
+    private ColorTextureMapper colorTextureMapper = new ColorTextureMapper();
 
-	Map<PlayerColor, Texture> textureMap = new EnumMap<PlayerColor, Texture>(PlayerColor.class);
+    Map<PlayerColor, Texture> textureMap = new EnumMap<PlayerColor, Texture>(PlayerColor.class);
 
-	private Pixmap pixmap = new Pixmap(50, 10, Pixmap.Format.RGBA8888);
-	private TextureRegionDrawable drawable = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+    private Pixmap pixmap = new Pixmap(50, 10, Pixmap.Format.RGBA8888);
+    private TextureRegionDrawable drawable = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
 
-	// healthbar
-	private int totalBarWidth = 50;
-	private NinePatch health;
+    // healthbar
+    private int totalBarWidth = 50;
+    private NinePatch health;
     private NinePatch health90;
     private NinePatch health50;
     private NinePatch health10;
@@ -86,20 +86,20 @@ public class GameScreen implements Screen, ILobbyListener {
     BitmapFont WinnerNamefont;
 
     // Current level
-	private int level;
+    private int level;
 
     HashMap<GameObject,Animator> deadplayers;
 
-	public GameScreen(Integer level, String IP, String playerName, GameRules rules) {
-		super();
+    public GameScreen(Integer level, String IP, String playerName, GameRules rules) {
+        super();
         this.level = level.intValue();
 
 
         deadplayers = new HashMap<>();
 
         camera = new OrthographicCamera();
-		txtrBg   = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
-		txtrBack = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
+        txtrBg   = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
+        txtrBack = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
 
         healthCon = new Texture( Gdx.files.internal("src/main/resources/assets/img/container.png"));
 
@@ -143,9 +143,9 @@ public class GameScreen implements Screen, ILobbyListener {
         input=new ActionListener(playerName, new ActionSender(playerName, IP));
 
         Gdx.input.setInputProcessor(input);
-	}
+    }
 
-	private void setupOnlineGame(){
+    private void setupOnlineGame(){
 
     }
 
@@ -251,6 +251,13 @@ public class GameScreen implements Screen, ILobbyListener {
             }
 
         }
+        runDeadAnimation();
+        DrawWin();
+        batch.end();
+    }
+
+
+    private void runDeadAnimation(){
         Set<GameObject> deadPlayers = worldSimulator.getDeadPlayers();
         for(GameObject deadPlayer : deadPlayers) {
             if (!deadplayers.containsKey(deadPlayer)) {
@@ -267,14 +274,10 @@ public class GameScreen implements Screen, ILobbyListener {
                 animator.render();
             }
         }
-            DrawWin();
-            batch.end();
-        }
-
-
+    }
 
     private void DrawWin(){
-	    if(worldSimulator.getWinner() != null) {
+        if(worldSimulator.getWinner() != null) {
             WinnerNamefont.getData().setScale(3);
             container.draw(batch, 0, 800/2-100, 800, 200);
             WinnerNamefont.draw(batch,  worldSimulator.getWinner().getName() + " is the winner!", 130, 400);
@@ -282,11 +285,11 @@ public class GameScreen implements Screen, ILobbyListener {
     }
 
     public void pause () {
-	    music.pause();
+        music.pause();
     }
 
     public void resume () {
-	    music.play();
+        music.play();
     }
 
     @Override
@@ -316,13 +319,13 @@ public class GameScreen implements Screen, ILobbyListener {
     }
 
 
-	@Override
-	public void dispose() {
-		txtrBg.dispose();
-		txtrBack.dispose();
-		txtrLevelImage.dispose();
-		music.dispose();
-	}
+    @Override
+    public void dispose() {
+        txtrBg.dispose();
+        txtrBack.dispose();
+        txtrLevelImage.dispose();
+        music.dispose();
+    }
 
     @Override
     public void notifyLobby(ArrayList<PlayerInfo> playersList) {
@@ -349,19 +352,5 @@ public class GameScreen implements Screen, ILobbyListener {
         //serverClosed_ENDGAME = true;
     }
 
-    /*
-    private void servercheck(){
-        if(serverClosed_ENDGAME){
-            playerNamefont.draw(batch, "Server is down!", 400, 400);
 
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            System.exit(0);
-        }
-    }
-    */
 }
