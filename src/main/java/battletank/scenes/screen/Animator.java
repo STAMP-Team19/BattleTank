@@ -13,6 +13,7 @@ public class Animator implements ApplicationListener {
     // Constant rows and columns of the sprite sheet
     private static final int FRAME_COLS = 9, FRAME_ROWS = 9;
 
+    private float frameDuration = 0.025f;
     // Objects used
     Animation<TextureRegion> walkAnimation; // Must declare frame type (TextureRegion)
     Texture walkSheet;
@@ -64,7 +65,7 @@ public class Animator implements ApplicationListener {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        walkAnimation = new Animation<TextureRegion>(0.025f, walkFrames);
+        walkAnimation = new Animation<TextureRegion>(frameDuration, walkFrames);
 
         // Instantiate a SpriteBatch for drawing and reset the elapsed animation
         // time to 0
@@ -103,5 +104,9 @@ public class Animator implements ApplicationListener {
     public void dispose() { // SpriteBatches and Textures must always be disposed
         spriteBatch.dispose();
         walkSheet.dispose();
+    }
+
+    public boolean isDone(){
+        return stateTime>frameDuration*FRAME_COLS*FRAME_ROWS;
     }
 }

@@ -88,20 +88,14 @@ public class GameScreen implements Screen, ILobbyListener {
     // Current level
 	private int level;
 
-    ArrayList<Player> deadplayers;
-
-    private Animator animator;
-
-    private int animationCounter = 0;
+    HashMap<GameObject,Animator> deadplayers;
 
 	public GameScreen(Integer level, String IP, String playerName, GameRules rules) {
 		super();
         this.level = level.intValue();
 
-        animator = new Animator();
-        animator.create();
 
-        deadplayers = new ArrayList<>();
+        deadplayers = new HashMap<>();
 
         camera = new OrthographicCamera();
 		txtrBg   = new Texture( Gdx.files.internal("src/main/resources/assets/img/playbtn.png") );
@@ -185,7 +179,7 @@ public class GameScreen implements Screen, ILobbyListener {
 
         List<GameObject> gameObjects = worldSimulator.getGameObjects();
         for (GameObject go : gameObjects) {
-            GameObject player = go;
+
             //batch.draw(texture, (int) player.getPositionX(), (int) player.getPositionY(), (int) player.getWidth(), (int) player.getHeight());
 
         /* shape of colider box
@@ -197,7 +191,7 @@ public class GameScreen implements Screen, ILobbyListener {
 
             // healthbar
             if (go instanceof Player) {
-
+                GameObject player = (Player)go;
                 if (textureMap.containsKey(player.getColor())) {
                     texture = textureMap.get(player.getColor());
                 } else {
@@ -240,34 +234,37 @@ public class GameScreen implements Screen, ILobbyListener {
                 }
                 playerNamefont.draw(batch, player.getName(), (float) player.getPositionX() - 10, (float) player.getPositionY() + 100);
 
-                if(go.getHealthpoints() <=10 && !deadplayers.contains(go) || animationCounter>0) {
-                    animator.setX((int) go.getPositionX()-29);
-                    animator.setY((int) go.getPositionY()-23);
-                    deadplayers.add((Player) player);
-                    animationCounter++;
-                    if(animationCounter> 82){
-                        animationCounter = 0;
-                    }
-                    animator.render();
-                }
             }
             else {
                 textureRegion.setTexture(bullet);
                 batch.draw(textureRegion,
-                        (float) player.getPositionX(),
-                        (float) player.getPositionY(),
-                        (float) player.getOriginX(),
-                        (float) player.getOriginY(),
-                        (float) player.getWidth(),
-                        (float) player.getHeight(),
+                        (float) go.getPositionX(),
+                        (float) go.getPositionY(),
+                        (float) go.getOriginX(),
+                        (float) go.getOriginY(),
+                        (float) go.getWidth(),
+                        (float) go.getHeight(),
                         2,
                         2,
-                        (float) player.getRotation() - 90
+                        (float) go.getRotation() - 90
                 );
             }
 
+        }
+        Set<GameObject> deadPlayers = worldSimulator.getDeadPlayers();
+        for(GameObject deadPlayer : deadPlayers) {
+            if (!deadplayers.containsKey(deadPlayer)) {
+                Animator animator = new Animator();
+                animator.create();
+                animator.setX((int) deadPlayer.getPositionX() - 29);
+                animator.setY((int) deadPlayer.getPositionY() - 23);
+                deadplayers.put(deadPlayer, animator);
             }
+        }
 
+        for (Animator animator :deadplayers.values()) {
+            animator.render();
+        }
             DrawWin();
             batch.end();
         }

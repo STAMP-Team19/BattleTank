@@ -358,4 +358,8 @@ public class WorldSimulator  implements EventVisitor,Runnable{
     private void printStatus(String status){
         System.out.println(Thread.currentThread().getName()+": "+status);
     }
+
+    public Set<GameObject> getDeadPlayers() {
+        return deadPlayers;
+    }
 }
