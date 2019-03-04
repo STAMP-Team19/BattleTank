@@ -8,10 +8,12 @@ import battletank.scenes.util.JoinInputListener;
 import battletank.world.GameRules;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -375,6 +377,9 @@ public class JoinScreen implements Screen, ILobbyListener {
     private void loadTextures() {
         // load the images for the droplet and the bucket, 64x64 pixels each
         //tankImage = new Texture(Gdx.files.internal("src/main/resources/assets/img/Tank.png"));
+
+        //Get file from resources folder
+
         playbtn = new Texture(Gdx.files.internal("src/main/resources/assets/img/playbtn.png"));
         serverbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/editserverbtn.png"));
         createserverbtnTexture = new Texture(Gdx.files.internal("src/main/resources/assets/img/createserverbtn.png"));
@@ -400,6 +405,13 @@ public class JoinScreen implements Screen, ILobbyListener {
         backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setSize(800, 480);
 
+    }
+    private FileHandle getFileHandle(String path){
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource(path).getFile());
+
+        return new FileHandle(file);
     }
 
     public void lobby(){

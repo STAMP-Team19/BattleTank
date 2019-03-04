@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +55,7 @@ public class ActionKeyParser {
 
         //Get file from resources folder
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource(fileName).getFile());
+        InputStream file = classLoader.getResourceAsStream(fileName);
 
         try (Scanner scanner = new Scanner(file)) {
 
@@ -63,7 +64,7 @@ public class ActionKeyParser {
                 result.append(line).append("\n");
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
